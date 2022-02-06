@@ -7,15 +7,15 @@ from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, Recipe
 
 EMPTY = ' '
 COUNTER = 'X'
-ONION_DISPENSER = 'O'
-TOMATO_DISPENSER = 'T'
-SOLAR_CELL = 'C'
+PROJECTOR_DISPENSER = 'O'
+LAPTOP_DISPENSER = 'T'
+SOLAR_CELL_DISPENSER = 'C'
 POT = 'P'
 DISH_DISPENSER = 'D'
 SERVING_LOC = 'S'
 
-CODE_TO_TYPE = {0: EMPTY, 1: COUNTER, 2: ONION_DISPENSER, 3: TOMATO_DISPENSER, 4: POT, 5: DISH_DISPENSER,
-                6: SERVING_LOC, 7: SOLAR_CELL}
+CODE_TO_TYPE = {0: EMPTY, 1: COUNTER, 2: PROJECTOR_DISPENSER, 3: LAPTOP_DISPENSER, 4: POT, 5: DISH_DISPENSER,
+                6: SERVING_LOC, 7: SOLAR_CELL_DISPENSER}
 TYPE_TO_CODE = {v: k for k, v in CODE_TO_TYPE.items()}
 
 
@@ -83,7 +83,7 @@ class MDPParamsGenerator(object):
         mdp_params = self.params_schedule_fn(outside_information)
         return mdp_params
 
-DEFAULT_FEATURE_TYPES = (POT, ONION_DISPENSER, DISH_DISPENSER, SERVING_LOC, TOMATO_DISPENSER) # NOTE: TOMATO_DISPENSER is disabled by default
+DEFAULT_FEATURE_TYPES = (POT, PROJECTOR_DISPENSER, DISH_DISPENSER, SERVING_LOC, LAPTOP_DISPENSER, SOLAR_CELL_DISPENSER) # NOTE: TOMATO_DISPENSER is disabled by default
 
 class LayoutGenerator(object):
     # NOTE: This class hasn't been tested extensively.

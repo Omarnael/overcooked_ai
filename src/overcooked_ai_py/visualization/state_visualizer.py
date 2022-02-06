@@ -2,7 +2,7 @@ import pygame
 import os, copy, math
 from overcooked_ai_py.utils import generate_temporary_file_path, classproperty, cumulative_rewards_from_rew_list
 from overcooked_ai_py.static import GRAPHICS_DIR, FONTS_DIR
-from overcooked_ai_py.mdp.layout_generator import EMPTY, COUNTER, ONION_DISPENSER, TOMATO_DISPENSER, POT, DISH_DISPENSER, SERVING_LOC
+from overcooked_ai_py.mdp.layout_generator import EMPTY, COUNTER, PROJECTOR_DISPENSER, LAPTOP_DISPENSER, SOLAR_CELL_DISPENSER, POT, DISH_DISPENSER, SERVING_LOC
 from overcooked_ai_py.visualization.visualization_utils import show_image_in_ipython, show_ipython_images_slider
 from overcooked_ai_py.visualization.pygame_utils import MultiFramePygameImage, run_static_resizeable_window, vstack_surfaces, scale_surface_by_factor, blit_on_new_surface_of_size
 from overcooked_ai_py.mdp.actions import Direction, Action
@@ -50,9 +50,10 @@ class StateVisualizer:
     TILE_TO_FRAME_NAME = {
         EMPTY: "floor",
         COUNTER: "counter",
-        ONION_DISPENSER: "onions",
-        TOMATO_DISPENSER: "tomatoes",
+        PROJECTOR_DISPENSER: "onions",
+        LAPTOP_DISPENSER: "tomatoes",
         POT: "pot",
+        SOLAR_CELL_DISPENSER: "solar_cells",
         DISH_DISPENSER: "dishes",
         SERVING_LOC: "serve"
     }
