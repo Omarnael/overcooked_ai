@@ -80,7 +80,7 @@
 				"h": 15
 			}
 		},
-		"EAST-onion.png": {
+		"EAST-projector.png": {
 			"frame": {
 				"x": 69,
 				"y": 1,
@@ -160,7 +160,7 @@
 				"h": 15
 			}
 		},
-		"EAST-soup-onion.png": {
+		"EAST-soup-projector.png": {
 			"frame": {
 				"x": 35,
 				"y": 18,
@@ -180,7 +180,7 @@
 				"h": 15
 			}
 		},
-		"EAST-soup-tomato.png": {
+		"EAST-soup-laptop.png": {
 			"frame": {
 				"x": 52,
 				"y": 18,
@@ -200,7 +200,27 @@
 				"h": 15
 			}
 		},
-		"EAST-tomato.png": {
+		"EAST-laptop.png": {
+			"frame": {
+				"x": 69,
+				"y": 18,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"EAST-solar_cell.png": {
 			"frame": {
 				"x": 69,
 				"y": 18,
@@ -300,7 +320,7 @@
 				"h": 15
 			}
 		},
-		"NORTH-onion.png": {
+		"NORTH-projector.png": {
 			"frame": {
 				"x": 52,
 				"y": 35,
@@ -380,7 +400,7 @@
 				"h": 15
 			}
 		},
-		"NORTH-soup-onion.png": {
+		"NORTH-soup-projector.png": {
 			"frame": {
 				"x": 18,
 				"y": 52,
@@ -400,7 +420,7 @@
 				"h": 15
 			}
 		},
-		"NORTH-soup-tomato.png": {
+		"NORTH-soup-laptop.png": {
 			"frame": {
 				"x": 35,
 				"y": 52,
@@ -420,7 +440,27 @@
 				"h": 15
 			}
 		},
-		"NORTH-tomato.png": {
+		"NORTH-laptop.png": {
+			"frame": {
+				"x": 52,
+				"y": 52,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"NORTH-solar_cell.png": {
 			"frame": {
 				"x": 52,
 				"y": 52,
@@ -520,7 +560,7 @@
 				"h": 15
 			}
 		},
-		"SOUTH-onion.png": {
+		"SOUTH-projector.png": {
 			"frame": {
 				"x": 35,
 				"y": 69,
@@ -600,7 +640,7 @@
 				"h": 15
 			}
 		},
-		"SOUTH-soup-onion.png": {
+		"SOUTH-soup-projector.png": {
 			"frame": {
 				"x": 1,
 				"y": 86,
@@ -620,7 +660,7 @@
 				"h": 15
 			}
 		},
-		"SOUTH-soup-tomato.png": {
+		"SOUTH-soup-laptop.png": {
 			"frame": {
 				"x": 18,
 				"y": 86,
@@ -640,7 +680,27 @@
 				"h": 15
 			}
 		},
-		"SOUTH-tomato.png": {
+		"SOUTH-laptop.png": {
+			"frame": {
+				"x": 35,
+				"y": 86,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"SOUTH-solar_cell.png": {
 			"frame": {
 				"x": 35,
 				"y": 86,
@@ -740,7 +800,7 @@
 				"h": 15
 			}
 		},
-		"WEST-onion.png": {
+		"WEST-projector.png": {
 			"frame": {
 				"x": 103,
 				"y": 18,
@@ -820,7 +880,7 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-onion.png": {
+		"WEST-soup-projector.png": {
 			"frame": {
 				"x": 103,
 				"y": 86,
@@ -840,7 +900,7 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-tomato.png": {
+		"WEST-soup-laptop.png": {
 			"frame": {
 				"x": 1,
 				"y": 103,
@@ -860,7 +920,27 @@
 				"h": 15
 			}
 		},
-		"WEST-tomato.png": {
+		"WEST-laptop.png": {
+			"frame": {
+				"x": 18,
+				"y": 103,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"WEST-solar_cell.png": {
 			"frame": {
 				"x": 18,
 				"y": 103,
