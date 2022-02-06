@@ -15,7 +15,7 @@ class Recipe:
     ALL_INGREDIENTS = [LAPTOP, PROJECTOR, SOLAR_CELL]
 
     ALL_RECIPES_CACHE = {}
-    STR_REP = {'laptop': "†", 'projector': "ø"}
+    STR_REP = {'laptop': "†", 'projector': "ø", 'solar_cell': '%'}
 
     _computed = False
     _configured = False
