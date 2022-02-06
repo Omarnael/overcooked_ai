@@ -1637,7 +1637,7 @@ class OvercookedGridworld(object):
 
         # Borders must not be free spaces
         def is_not_free(c):
-            return c in 'XOPDST'
+            return c in 'XOPCDST'
 
         for y in range(height):
             assert is_not_free(grid[y][0]), 'Left border must not be free'
@@ -1654,7 +1654,7 @@ class OvercookedGridworld(object):
         layout_digits = list(sorted(map(int, layout_digits)))
         assert layout_digits == list(range(1, num_players + 1)), "Some players were missing"
 
-        assert all(c in 'XOPDST123456789 ' for c in all_elements), 'Invalid character in grid'
+        assert all(c in 'XOPDCST123456789 ' for c in all_elements), 'Invalid character in grid'
         assert all_elements.count('1') == 1, "'1' must be present exactly once"
         assert all_elements.count('D') >= 1, "'D' must be present at least once"
         assert all_elements.count('S') >= 1, "'S' must be present at least once"
