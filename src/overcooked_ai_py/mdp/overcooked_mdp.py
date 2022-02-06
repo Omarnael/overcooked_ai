@@ -11,7 +11,7 @@ class Recipe:
 
     LAPTOP = 'laptop'
     PROJECTOR = 'projector'
-    SOLAR_CELL = 'laptop'
+    SOLAR_CELL = 'solar_cell'
     ALL_INGREDIENTS = [LAPTOP, PROJECTOR, SOLAR_CELL]
 
     ALL_RECIPES_CACHE = {}
