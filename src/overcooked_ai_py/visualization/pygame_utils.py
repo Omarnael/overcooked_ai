@@ -66,6 +66,7 @@ class MultiFramePygameImage:
     ''' use to read frames of images from overcooked-demo repo easly
     '''
     def __init__(self, img_path, frames_path):
+        print(frames_path)
         self.image = pygame.image.load(img_path)
         self.frames_rectangles = MultiFramePygameImage.load_frames_rectangles(frames_path)
     
