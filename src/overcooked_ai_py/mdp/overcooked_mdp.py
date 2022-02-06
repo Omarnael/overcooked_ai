@@ -309,7 +309,7 @@ class ObjectState(object):
         self._position = new_pos
 
     def is_valid(self):
-        return self.name in ['projector', 'laptop', 'solar_cell', 'container']
+        return self.name in ['projector', 'laptop', 'solar_cell', 'dish']
 
     def deepcopy(self):
         return ObjectState(self.name, self.position)
