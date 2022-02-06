@@ -1535,6 +1535,8 @@ class OvercookedGridworld(object):
 
         # Check that objects have a valid state
         for obj_state in all_objects:
+            print(all_objects)
+            print(obj_state)
             assert obj_state.is_valid()
 
     def find_free_counters_valid_for_both_players(self, state, mlam):
