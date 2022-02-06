@@ -292,7 +292,7 @@ class StateVisualizer:
             num_projectors = ingredients_names.count("projector")
             num_laptops = ingredients_names.count("laptop")
             num_solar_cells = ingredients_names.count("solar_cell")
-            return "soup_%s_laptop_%i_projector_%i_solar_cell%i" %(status, num_laptops, num_projectors, num_solar_cells)
+            return "soup_%s_laptop_%i_projector_%i_solar_cell_%i" %(status, num_laptops, num_projectors, num_solar_cells)
 
     def _render_objects(self, surface, objects, grid):
         def render_soup(surface, obj, grid):
