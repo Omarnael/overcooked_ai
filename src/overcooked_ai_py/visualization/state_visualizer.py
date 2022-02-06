@@ -275,10 +275,12 @@ class StateVisualizer:
                 held_object_name = ""
             else:
                 if held_obj.name == "soup":
-                    if "onion" in held_obj.ingredients:
-                        held_object_name = "soup-onion"
+                    if "projector" in held_obj.ingredients:
+                        held_object_name = "soup-projector"
+                    elif "solar_cell" in held_obj.ingredients:
+                        held_object_name = "soup-solar-cell"
                     else:
-                        held_object_name = "soup-tomato"
+                        held_object_name = "soup-laptop"
                 else:
                     held_object_name = held_obj.name
 
@@ -287,9 +289,10 @@ class StateVisualizer:
 
     @staticmethod
     def _soup_frame_name(ingredients_names, status):
-            num_onions = ingredients_names.count("onion")
-            num_tomatoes = ingredients_names.count("tomato")
-            return "soup_%s_tomato_%i_onion_%i" %(status, num_tomatoes, num_onions)
+            num_projectors = ingredients_names.count("projector")
+            num_laptops = ingredients_names.count("laptop")
+            num_solar_cells = ingredients_names.count("solar_cell")
+            return "soup_%s_laptop_%i_projector_%i_solar_cell%i" %(status, num_laptops, num_projectors, num_solar_cells)
 
     def _render_objects(self, surface, objects, grid):
         def render_soup(surface, obj, grid):
