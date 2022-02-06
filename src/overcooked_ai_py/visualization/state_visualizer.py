@@ -50,8 +50,8 @@ class StateVisualizer:
     TILE_TO_FRAME_NAME = {
         EMPTY: "floor",
         COUNTER: "counter",
-        PROJECTOR_DISPENSER: "onions",
-        LAPTOP_DISPENSER: "tomatoes",
+        PROJECTOR_DISPENSER: "projectors",
+        LAPTOP_DISPENSER: "laptops",
         POT: "pot",
         SOLAR_CELL_DISPENSER: "solar_cells",
         DISH_DISPENSER: "dishes",
