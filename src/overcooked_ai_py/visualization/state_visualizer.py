@@ -240,9 +240,13 @@ class StateVisualizer:
     def _render_grid(self, surface, grid):
         for y_tile, row in enumerate(grid):
             for x_tile, tile in enumerate(row):
-                print(tile)
-                self.TERRAINS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels((x_tile, y_tile)), 
+                if tile == SOLAR_CELL_DISPENSER:
+                    self.TERRAINS_IMG_2.blit_on_surface(surface, self._position_in_unscaled_pixels((x_tile, y_tile)), 
                                              StateVisualizer.TILE_TO_FRAME_NAME[tile])
+                else:
+                    self.TERRAINS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels((x_tile, y_tile)), 
+                                             StateVisualizer.TILE_TO_FRAME_NAME[tile])
+                
 
     def _position_in_unscaled_pixels(self, position):
         """
