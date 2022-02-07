@@ -70,7 +70,6 @@ class MultiFramePygameImage:
         self.frames_rectangles = MultiFramePygameImage.load_frames_rectangles(frames_path)
     
     def blit_on_surface(self, surface, top_left_pixel_position, frame_name, **kwargs):
-        print(self.frames_rectangles)
         surface.blit(self.image, top_left_pixel_position, area=self.frames_rectangles[frame_name], **kwargs)
     
     @staticmethod
