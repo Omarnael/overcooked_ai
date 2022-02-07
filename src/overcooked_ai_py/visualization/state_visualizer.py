@@ -299,11 +299,11 @@ class StateVisualizer:
             num_laptops = ingredients_names.count("laptop")
             num_solar_cells = ingredients_names.count("solar_cell")
             if status == 'cooked':
-                return "soup_cooked_tomato_3_onion_0"
+                return "soup_cooked_laptop_3_projector_0"
             elif status == 'idle':
-                return "soup_idle_tomato_3_onion_0"
+                return "soup_idle_laptop_3_projector_0"
             else:
-                return "soup_done_tomato_3_onion_0"
+                return "soup_done_laptop_3_projector_0"
             #return "soup_%s_laptop_%i_projector_%i_solar_cell_%i" %(status, num_laptops, num_projectors, num_solar_cells)
 
     def _render_objects(self, surface, objects, grid):
