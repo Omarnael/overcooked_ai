@@ -78,22 +78,22 @@ if large_mdp_tests:
     # hlp = HighLevelPlanner(hlam)
 
 
-def done_soup_obj(soup_loc, num_onion_inside=3):
-    return soup_obj(soup_loc, num_onion_inside, 20)
+def done_soup_obj(soup_loc, num_projector_inside=3):
+    return soup_obj(soup_loc, num_projector_inside, 20)
 
 
-def idle_soup_obj(soup_loc, num_onion_inside):
-    return soup_obj(soup_loc, num_onion_inside, -1)
+def idle_soup_obj(soup_loc, num_projector_inside):
+    return soup_obj(soup_loc, num_projector_inside, -1)
 
 
-def cooking_soup_obj(soup_loc, num_onion_inside=3, cooking_tick=0):
+def cooking_soup_obj(soup_loc, num_projector_inside=3, cooking_tick=0):
     assert cooking_tick >= 0
-    assert num_onion_inside >= 0
-    return soup_obj(soup_loc, num_onion_inside, cooking_tick)
+    assert num_projector_inside >= 0
+    return soup_obj(soup_loc, num_projector_inside, cooking_tick)
 
 
-def soup_obj(soup_loc, num_onion_inside, cooking_tick):
-    ingredient_obj_lst = [Obj('onion', soup_loc)] * num_onion_inside
+def soup_obj(soup_loc, num_projector_inside, cooking_tick):
+    ingredient_obj_lst = [Obj('projector', soup_loc)] * num_projector_inside
     return SoupState(soup_loc, ingredient_obj_lst, cooking_tick)
 
 
@@ -352,17 +352,17 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         self.simple_mdp_deliver_soup(mlam)
         self.simple_mdp_pickup_counter_soup(mlam)
         self.simple_mdp_pickup_counter_dish(mlam)
-        self.simple_mdp_pickup_counter_onion(mlam)
+        self.simple_mdp_pickup_counter_projector(mlam)
         self.simple_mdp_drop_useless_dish_with_soup_idle(mlam)
         self.simple_mdp_pickup_soup(mlam)
         self.simple_mdp_pickup_dish(mlam)
         self.simple_mdp_start_good_soup_cooking(mlam)
         self.simple_mdp_start_bad_soup_cooking(mlam)
-        self.simple_mdp_start_1_onion_soup_cooking(mlam)
-        self.simple_mdp_drop_useless_onion_good_soup(mlam)
-        self.simple_mdp_drop_useless_onion_bad_soup(mlam)
-        self.simple_mdp_add_3rd_onion(mlam)
-        self.simple_mdp_add_2nd_onion(mlam)
+        self.simple_mdp_start_1_projector_soup_cooking(mlam)
+        self.simple_mdp_drop_useless_projector_good_soup(mlam)
+        self.simple_mdp_drop_useless_projector_bad_soup(mlam)
+        self.simple_mdp_add_3rd_projector(mlam)
+        self.simple_mdp_add_2nd_projector(mlam)
         self.simple_mdp_drop_useless_dish(mlam)
 
     def test_simple_mdp_with_start_orientations(self):
@@ -372,17 +372,17 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         self.simple_mdp_deliver_soup(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_counter_soup(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_counter_dish(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_pickup_counter_onion(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_pickup_counter_projector(mlam, counter_drop_forbidden=True)
         self.simple_mdp_drop_useless_dish_with_soup_idle(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_soup(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_dish(mlam, counter_drop_forbidden=True)
         self.simple_mdp_start_good_soup_cooking(mlam, counter_drop_forbidden=True)
         self.simple_mdp_start_bad_soup_cooking(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_start_1_onion_soup_cooking(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_drop_useless_onion_good_soup(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_drop_useless_onion_bad_soup(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_add_3rd_onion(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_add_2nd_onion(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_start_1_projector_soup_cooking(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_drop_useless_projector_good_soup(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_drop_useless_projector_bad_soup(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_add_3rd_projector(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_add_2nd_projector(mlam, counter_drop_forbidden=True)
         self.simple_mdp_drop_useless_dish(mlam, counter_drop_forbidden=True)
 
     ONION_PICKUP = ((3, 2), (1, 0))
@@ -443,11 +443,11 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      [self.ONION_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP]
                                      )
 
-    def simple_mdp_pickup_counter_onion(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_pickup_counter_projector(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
-            {(0, 2): Obj('onion', (0, 2))},
+            {(0, 2): Obj('projector', (0, 2))},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
                                      [self.ONION_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP],
@@ -521,7 +521,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      [self.ONION_PICKUP, self.DISH_PICKUP, self.POT_INTERACT]
                                      )
 
-    def simple_mdp_start_1_onion_soup_cooking(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_start_1_projector_soup_cooking(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
@@ -532,10 +532,10 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      [self.ONION_PICKUP, self.DISH_PICKUP, self.POT_INTERACT]
                                      )
 
-    def simple_mdp_drop_useless_onion_good_soup(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_drop_useless_projector_good_soup(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, Obj('onion', (2, 1)))],
+             P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): done_soup_obj((2, 0))},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
@@ -549,10 +549,10 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          [self.COUNTER_DROP]
                                          )
 
-    def simple_mdp_drop_useless_onion_bad_soup(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_drop_useless_projector_bad_soup(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, Obj('onion', (2, 1)))],
+             P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): done_soup_obj((2, 0), 2)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
@@ -566,10 +566,10 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          [self.COUNTER_DROP]
                                          )
 
-    def simple_mdp_add_3rd_onion(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_add_3rd_projector(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, Obj('onion', (2, 1)))],
+             P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): idle_soup_obj((2, 0), 2)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
@@ -583,10 +583,10 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          [self.COUNTER_DROP, self.POT_INTERACT]
                                          )
 
-    def simple_mdp_add_2nd_onion(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_add_2nd_projector(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, Obj('onion', (2, 1)))],
+             P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): idle_soup_obj((2, 0), 1)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:

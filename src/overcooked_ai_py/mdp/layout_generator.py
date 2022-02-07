@@ -36,7 +36,7 @@ DEFAULT_MDP_GEN_PARAMS = {
     "prop_empty": 0.95,
     "prop_feats": 0.1,
     "start_all_orders" : [
-        { "ingredients" : ["onion", "onion", "onion"]}
+        { "ingredients" : ["projector", "projector", "projector"]}
     ],
     "recipe_values" : [20],
     "recipe_times" : [20],
@@ -50,7 +50,7 @@ def DEFAILT_PARAMS_SCHEDULE_FN(outside_information):
         "prop_empty": 0.95,
         "prop_feats": 0.1,
         "start_all_orders" : [
-        { "ingredients" : ["onion", "onion", "onion"]}
+        { "ingredients" : ["projector", "projector", "projector"]}
         ],
         "recipe_values" : [20],
         "recipe_times" : [20],

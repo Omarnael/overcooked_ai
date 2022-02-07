@@ -6,7 +6,7 @@
                 XOXPX""",
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["onion", "onion", "onion"]}
+        { "ingredients" : ["projector", "projector", "projector"]}
     ],
     "rew_shaping_params": None
 }

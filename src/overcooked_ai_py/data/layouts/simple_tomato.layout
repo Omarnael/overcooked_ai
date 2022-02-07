@@ -5,7 +5,7 @@
                 XXDSX""",
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["tomato", "tomato", "tomato"]}
+        { "ingredients" : ["laptop", "laptop", "laptop"]}
     ],
     "rew_shaping_params": None
 }

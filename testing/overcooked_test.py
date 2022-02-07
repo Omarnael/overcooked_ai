@@ -110,20 +110,20 @@ class TestRecipe(unittest.TestCase):
         self.assertRaises(AssertionError, Recipe.generate_random_recipes, max_size=Recipe.MAX_NUM_INGREDIENTS+1)
         self.assertRaises(AssertionError, Recipe.generate_random_recipes, min_size=0)
         self.assertRaises(AssertionError, Recipe.generate_random_recipes, min_size=3, max_size=2)
-        self.assertRaises(AssertionError, Recipe.generate_random_recipes, ingredients=["onion", "tomato", "fake_ingredient"])
+        self.assertRaises(AssertionError, Recipe.generate_random_recipes, ingredients=["projector", "laptop", "fake_ingredient"])
         self.assertRaises(AssertionError, Recipe.generate_random_recipes, n=99999)
         self.assertEqual(len(Recipe.generate_random_recipes(n=3)), 3)
         self.assertEqual(len(Recipe.generate_random_recipes(n=99, unique=False)), 99)
 
-        two_sized_recipes = [Recipe(["onion", "onion"]), Recipe(["onion", "tomato"]), Recipe(["tomato", "tomato"])]
+        two_sized_recipes = [Recipe(["projector", "projector"]), Recipe(["projector", "laptop"]), Recipe(["laptop", "laptop"])]
         for _ in range(100):
-            self.assertCountEqual(two_sized_recipes, Recipe.generate_random_recipes(n=3, min_size=2, max_size=2, ingredients=["onion", "tomato"]))
+            self.assertCountEqual(two_sized_recipes, Recipe.generate_random_recipes(n=3, min_size=2, max_size=2, ingredients=["projector", "laptop"]))
 
-        only_onions_recipes = [Recipe(["onion", "onion"]), Recipe(["onion", "onion", "onion"])]
+        only_projectors_recipes = [Recipe(["projector", "projector"]), Recipe(["projector", "projector", "projector"])]
         for _ in range(100):
-            self.assertCountEqual(only_onions_recipes, Recipe.generate_random_recipes(n=2, min_size=2, max_size=3, ingredients=["onion"]))
+            self.assertCountEqual(only_projectors_recipes, Recipe.generate_random_recipes(n=2, min_size=2, max_size=3, ingredients=["projector"]))
         
-        self.assertCountEqual(only_onions_recipes, set([Recipe.generate_random_recipes(n=1, recipes=only_onions_recipes)[0] for _ in range(100)])) # false positives rate for this test is 1/10^99 
+        self.assertCountEqual(only_projectors_recipes, set([Recipe.generate_random_recipes(n=1, recipes=only_projectors_recipes)[0] for _ in range(100)])) # false positives rate for this test is 1/10^99 
 
     def _expected_num_recipes(self, num_ingredients, max_len):
         return comb(num_ingredients + max_len, num_ingredients) - 1
@@ -132,10 +132,10 @@ class TestSoupState(unittest.TestCase):
     
     def setUp(self):
         Recipe.configure({})
-        self.s1 = SoupState.get_soup((0, 0), num_onions=0, num_tomatoes=0)
-        self.s2 = SoupState.get_soup((0, 1), num_onions=2, num_tomatoes=1)
-        self.s3 = SoupState.get_soup((1, 1), num_onions=1, num_tomatoes=0, cooking_tick=1)
-        self.s4 = SoupState.get_soup((1, 0), num_onions=0, num_tomatoes=2, finished=True)
+        self.s1 = SoupState.get_soup((0, 0), num_projectors=0, num_laptops=0)
+        self.s2 = SoupState.get_soup((0, 1), num_projectors=2, num_laptops=1)
+        self.s3 = SoupState.get_soup((1, 1), num_projectors=1, num_laptops=0, cooking_tick=1)
+        self.s4 = SoupState.get_soup((1, 0), num_projectors=0, num_laptops=2, finished=True)
 
     def test_position(self):
         new_pos = (2, 0)
@@ -333,7 +333,7 @@ class TestGridworld(unittest.TestCase):
         mdp = OvercookedGridworld.from_layout_name('corridor')
         expected_start_state = OvercookedState(
             [PlayerState((3, 1), Direction.NORTH), PlayerState((10, 1), Direction.NORTH)], {},
-            all_orders=[{ "ingredients" : ["onion", "onion", "onion"]}])
+            all_orders=[{ "ingredients" : ["projector", "projector", "projector"]}])
         actual_start_state = mdp.get_standard_start_state()
         self.assertEqual(actual_start_state, expected_start_state, '\n' + str(actual_start_state) + '\n' + str(expected_start_state))
 
@@ -347,7 +347,7 @@ class TestGridworld(unittest.TestCase):
                          [Action.ALL_ACTIONS, Action.ALL_ACTIONS])
 
     def test_from_dict(self):
-        state_dict = {"players": [{"position": [2, 1], "orientation": [0, -1], "held_object": None }, {"position": [1, 1], "orientation": [0, -1], "held_object": None }], "objects": [{"name": "onion", "position": [1, 0], "state": None }], "order_list": None }
+        state_dict = {"players": [{"position": [2, 1], "orientation": [0, -1], "held_object": None }, {"position": [1, 1], "orientation": [0, -1], "held_object": None }], "objects": [{"name": "projector", "position": [1, 0], "state": None }], "order_list": None }
         state = OvercookedState.from_dict(state_dict)
 
 
@@ -433,9 +433,9 @@ class TestGridworld(unittest.TestCase):
         state = self.base_mdp.get_standard_start_state()
         val0 = self.base_mdp.potential_function(state, mp)
 
-        # Pick up onion
+        # Pick up projector
         if self.verbose:
-            print("pick up onion")
+            print("pick up projector")
             print(self.base_mdp.state_string(state))
             print("potential: ", self.base_mdp.potential_function(state, mp))
         actions = [Direction.EAST, Action.INTERACT]
@@ -447,7 +447,7 @@ class TestGridworld(unittest.TestCase):
         val1 = self.base_mdp.potential_function(state, mp)
         
 
-        # Pick up tomato
+        # Pick up laptop
         if self.verbose:
             print("pick up tomtato")
         actions = [Direction.WEST, Action.INTERACT]
@@ -458,12 +458,12 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val2 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val0, val1, "Picking up onion should increase potential")
-        self.assertLess(val1, val2, "Picking up tomato should increase potential")
+        self.assertLess(val0, val1, "Picking up projector should increase potential")
+        self.assertLess(val1, val2, "Picking up laptop should increase potential")
 
-        # Pot tomato
+        # Pot laptop
         if self.verbose:
-            print("pot tomato")
+            print("pot laptop")
         actions = [Direction.EAST, Direction.NORTH, Action.INTERACT, Direction.WEST]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -472,9 +472,9 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val3 = self.base_mdp.potential_function(state, mp)
         
-        # Pot onion
+        # Pot projector
         if self.verbose:
-            print("pot onion")
+            print("pot projector")
         actions = [Direction.WEST, Direction.NORTH, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
@@ -483,23 +483,23 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val4 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val2, val3, "Potting tomato should increase potential")
-        self.assertLess(val3, val4, "Potting onion should increase potential")
+        self.assertLess(val2, val3, "Potting laptop should increase potential")
+        self.assertLess(val3, val4, "Potting projector should increase potential")
 
         ## Repeat on second pot ##
 
-        # Pick up onion
+        # Pick up projector
         if self.verbose:
-            print("pick up onion")
+            print("pick up projector")
         state, _ = self.base_mdp.get_state_transition(state, [Action.INTERACT, Action.STAY])
         val5 = self.base_mdp.potential_function(state, mp)
         if self.verbose:
             print(self.base_mdp.state_string(state))
             print("potential: ", self.base_mdp.potential_function(state, mp))
 
-        # Pick up tomato
+        # Pick up laptop
         if self.verbose:
-            print("pick up tomato")
+            print("pick up laptop")
         actions = [Direction.SOUTH, Direction.EAST, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
@@ -508,12 +508,12 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val6 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val4, val5, "Picking up onion should increase potential")
-        self.assertLess(val5, val6, "Picking up tomato should increase potential")
+        self.assertLess(val4, val5, "Picking up projector should increase potential")
+        self.assertLess(val5, val6, "Picking up laptop should increase potential")
 
-        # Pot onion
+        # Pot projector
         if self.verbose:
-            print("pot onion")
+            print("pot projector")
         actions = [Direction.SOUTH, Direction.EAST, Direction.SOUTH, Action.INTERACT, Direction.WEST]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -522,9 +522,9 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val7 = self.base_mdp.potential_function(state, mp)
 
-        # Pot tomato
+        # Pot laptop
         if self.verbose:
-            print("pot tomato")
+            print("pot laptop")
         actions = [Direction.WEST, Direction.SOUTH, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
@@ -535,14 +535,14 @@ class TestGridworld(unittest.TestCase):
 
         
 
-        self.assertLess(val6, val7, "Potting onion should increase potential")
-        self.assertLess(val7, val8, "Potting tomato should increase potential")
+        self.assertLess(val6, val7, "Potting projector should increase potential")
+        self.assertLess(val7, val8, "Potting laptop should increase potential")
 
         ## Useless pickups ##
         
-        # pickup tomato
+        # pickup laptop
         if self.verbose:
-            print("pickup tomato")
+            print("pickup laptop")
         actions = [Action.INTERACT, Direction.NORTH]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -551,9 +551,9 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val9 = self.base_mdp.potential_function(state, mp)
 
-        # pickup tomato
+        # pickup laptop
         if self.verbose:
-            print("pickup tomato")
+            print("pickup laptop")
         actions = [Direction.EAST, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
@@ -567,9 +567,9 @@ class TestGridworld(unittest.TestCase):
 
         ## Catastrophic soup failure ##
         
-        # pot tomato
+        # pot laptop
         if self.verbose:
-            print("pot catastrophic tomato")
+            print("pot catastrophic laptop")
         actions = [Direction.WEST, Direction.SOUTH, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
@@ -582,9 +582,9 @@ class TestGridworld(unittest.TestCase):
 
         ## Bonus soup creation
 
-        # pick up onion
+        # pick up projector
         if self.verbose:
-            print("pick up onion")
+            print("pick up projector")
         actions = [Direction.NORTH, Action.INTERACT, Direction.WEST, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -593,9 +593,9 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val12 = self.base_mdp.potential_function(state, mp)
 
-        # pot onion
+        # pot projector
         if self.verbose:
-            print("pot onion")
+            print("pot projector")
         actions = [Direction.EAST, Direction.NORTH, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -615,8 +615,8 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val14 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val11, val12, "Useful onion pickup should increase potential")
-        self.assertLess(val12, val13, "Potting useful onion should increase potential")
+        self.assertLess(val11, val12, "Useful projector pickup should increase potential")
+        self.assertLess(val12, val13, "Potting useful projector should increase potential")
         self.assertLess(val13, val14, "Cooking optimal soup should increase potential")
 
         ## Soup pickup ##
@@ -968,7 +968,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
                             "prop_empty": 0.8,
                             "prop_feats": 0.2,
                             "start_all_orders" : [
-                                { "ingredients" : ["onion", "onion", "onion"]}
+                                { "ingredients" : ["projector", "projector", "projector"]}
                             ],
                             "recipe_values" : [20],
                             "recipe_times" : [20],
@@ -1019,7 +1019,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
                             "inner_shape": (6, 5),
                             "display": False,
                             "start_all_orders" : [
-                                { "ingredients" : ["onion", "onion", "onion"]}
+                                { "ingredients" : ["projector", "projector", "projector"]}
                             ]}
             mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params, outer_shape=(6, 5))
             env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
@@ -1032,11 +1032,11 @@ class TestOvercookedEnvironment(unittest.TestCase):
                     self.assertFalse(any(elem in terrain_features for elem in left_out_optional_features)) # all left_out optional_features are not used
 
     def test_random_layout_generated_recipes(self):
-        only_onions_recipes = [Recipe(["onion", "onion"]), Recipe(["onion", "onion", "onion"])]
-        only_onions_dict_recipes = [r.to_dict() for r in only_onions_recipes]
+        only_projectors_recipes = [Recipe(["projector", "projector"]), Recipe(["projector", "projector", "projector"])]
+        only_projectors_dict_recipes = [r.to_dict() for r in only_projectors_recipes]
 
         # checking if recipes are generated from mdp_params
-        mdp_gen_params = {"generate_all_orders": {"n":2, "ingredients": ["onion"], "min_size":2, "max_size":3},
+        mdp_gen_params = {"generate_all_orders": {"n":2, "ingredients": ["projector"], "min_size":2, "max_size":3},
                         "prop_feats": 0.9,
                         "prop_empty": 0.1,
                         "inner_shape": (6, 5),
@@ -1045,12 +1045,12 @@ class TestOvercookedEnvironment(unittest.TestCase):
         env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         for _ in range(10):
             env.reset()
-            self.assertCountEqual(env.mdp.start_all_orders, only_onions_dict_recipes)
+            self.assertCountEqual(env.mdp.start_all_orders, only_projectors_dict_recipes)
             self.assertEqual(len(env.mdp.start_bonus_orders), 0)
         
         # checking if bonus_orders is subset of all_orders even if not specified
 
-        mdp_gen_params = {"generate_all_orders": {"n":2, "ingredients": ["onion"], "min_size":2, "max_size":3},
+        mdp_gen_params = {"generate_all_orders": {"n":2, "ingredients": ["projector"], "min_size":2, "max_size":3},
                         "generate_bonus_orders": {"n":1, "min_size":2, "max_size":3},
                         "prop_feats": 0.9,
                         "prop_empty": 0.1,
@@ -1060,9 +1060,9 @@ class TestOvercookedEnvironment(unittest.TestCase):
         env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         for _ in range(10):
             env.reset()
-            self.assertCountEqual(env.mdp.start_all_orders, only_onions_dict_recipes)
+            self.assertCountEqual(env.mdp.start_all_orders, only_projectors_dict_recipes)
             self.assertEqual(len(env.mdp.start_bonus_orders), 1)
-            self.assertTrue(env.mdp.start_bonus_orders[0] in only_onions_dict_recipes)
+            self.assertTrue(env.mdp.start_bonus_orders[0] in only_projectors_dict_recipes)
 
         # checking if after reset there are new recipes generated
         mdp_gen_params = {"generate_all_orders": {"n":3, "min_size":2, "max_size":3},

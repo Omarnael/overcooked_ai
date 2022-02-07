@@ -5,15 +5,15 @@
                 X   1   X
                 XXXOSTXXX""",
     "start_bonus_orders": [
-        { "ingredients" : ["onion", "tomato"]},
+        { "ingredients" : ["projector", "laptop"]},
     ],
     "start_all_orders" : [
-        { "ingredients" : ["onion", "tomato", "tomato"]},
-        { "ingredients" : ["onion", "onion", "tomato"]},
-        { "ingredients" : ["onion", "tomato"]}
+        { "ingredients" : ["projector", "laptop", "laptop"]},
+        { "ingredients" : ["projector", "projector", "laptop"]},
+        { "ingredients" : ["projector", "laptop"]}
     ],
-    "onion_value" : 21,
-    "tomato_value" : 13,
-    "onion_time" : 15,
-    "tomato_time" : 7
+    "projector_value" : 21,
+    "laptop_value" : 13,
+    "projector_time" : 15,
+    "laptop_time" : 7
 }

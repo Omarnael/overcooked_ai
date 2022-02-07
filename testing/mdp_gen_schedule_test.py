@@ -29,7 +29,7 @@ def params_schedule_fn_constant_09_01(outside_information):
         "prop_empty": 0.9,
         "prop_feats": 0.1,
         "start_all_orders": [
-            {"ingredients": ["onion", "onion", "onion"]}
+            {"ingredients": ["projector", "projector", "projector"]}
         ],
         "display": False,
         "rew_shaping_params": None
@@ -46,7 +46,7 @@ def params_schedule_fn_constant_07_03(outside_info):
         "prop_empty": 0.7,
         "prop_feats": 0.3,
         "start_all_orders": [
-            {"ingredients": ["onion", "onion", "onion"]}
+            {"ingredients": ["projector", "projector", "projector"]}
         ],
         "display": False,
         "rew_shaping_params": None
@@ -63,7 +63,7 @@ def params_schedule_fn_constant_05_05(outside_info):
         "prop_empty": 0.5,
         "prop_feats": 0.5,
         "start_all_orders": [
-            {"ingredients": ["onion", "onion", "onion"]}
+            {"ingredients": ["projector", "projector", "projector"]}
         ],
         "display": False,
         "rew_shaping_params": None
@@ -86,7 +86,7 @@ def params_schedule_fn_interval(outside_info):
         "prop_empty": prop_empty,
         "prop_feats": prop_feats,
         "start_all_orders": [
-            {"ingredients": ["onion", "onion", "onion"]}
+            {"ingredients": ["projector", "projector", "projector"]}
         ],
         "display": False,
         "rew_shaping_params": None

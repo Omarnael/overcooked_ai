@@ -5,17 +5,17 @@
                 XXS 2 P 1 SXX
                 XXXXXTXTXXXXX""",
     "start_bonus_orders": [
-        { "ingredients" : ["onion", "onion", "onion"]}
+        { "ingredients" : ["projector", "projector", "projector"]}
     ],
     "start_all_orders" : [
-        { "ingredients" : ["onion"]},
-        { "ingredients" : ["tomato"]},
-        { "ingredients" : ["onion", "tomato", "onion"]},
-        { "ingredients" : ["onion", "onion", "onion"]},
-        { "ingredients" : ["tomato", "tomato", "tomato"]}
+        { "ingredients" : ["projector"]},
+        { "ingredients" : ["laptop"]},
+        { "ingredients" : ["projector", "laptop", "projector"]},
+        { "ingredients" : ["projector", "projector", "projector"]},
+        { "ingredients" : ["laptop", "laptop", "laptop"]}
     ],
-    "onion_value" : 21,
-    "tomato_value" : 13,
-    "onion_time" : 15,
-    "tomato_time" : 7
+    "projector_value" : 21,
+    "laptop_value" : 13,
+    "projector_time" : 15,
+    "laptop_time" : 7
 }

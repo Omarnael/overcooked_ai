@@ -866,14 +866,14 @@ class MediumLevelActionManager(object):
         player_actions = []
         counter_pickup_objects = self.mdp.get_counter_objects_dict(state, self.counter_pickup)
         if not player.has_object():
-            onion_pickup = self.pickup_onion_actions(counter_pickup_objects)
-            tomato_pickup = self.pickup_tomato_actions(counter_pickup_objects)
+            projector_pickup = self.pickup_projector_actions(counter_pickup_objects)
+            laptop_pickup = self.pickup_laptop_actions(counter_pickup_objects)
             dish_pickup = self.pickup_dish_actions(counter_pickup_objects)
             soup_pickup = self.pickup_counter_soup_actions(counter_pickup_objects)
 
             pot_states_dict = self.mdp.get_pot_states(state)
             start_cooking = self.start_cooking_actions(pot_states_dict)
-            player_actions.extend(onion_pickup + tomato_pickup + dish_pickup + soup_pickup + start_cooking)
+            player_actions.extend(projector_pickup + laptop_pickup + dish_pickup + soup_pickup + start_cooking)
 
         else:
             player_object = player.get_object()
@@ -885,10 +885,10 @@ class MediumLevelActionManager(object):
 
             if player_object.name == 'soup':
                 player_actions.extend(self.deliver_soup_actions())
-            elif player_object.name == 'onion':
-                player_actions.extend(self.put_onion_in_pot_actions(pot_states_dict))
-            elif player_object.name == 'tomato':
-                player_actions.extend(self.put_tomato_in_pot_actions(pot_states_dict))
+            elif player_object.name == 'projector':
+                player_actions.extend(self.put_projector_in_pot_actions(pot_states_dict))
+            elif player_object.name == 'laptop':
+                player_actions.extend(self.put_laptop_in_pot_actions(pot_states_dict))
             elif player_object.name == 'dish':
                 # Not considering all pots (only ones close to ready) to reduce computation
                 # NOTE: could try to calculate which pots are eligible, but would probably take
@@ -910,17 +910,17 @@ class MediumLevelActionManager(object):
         player_actions = list(filter(is_valid_goal_given_start, player_actions))
         return player_actions
 
-    def pickup_onion_actions(self, counter_objects, only_use_dispensers=False):
-        """If only_use_dispensers is True, then only take onions from the dispensers"""
-        onion_pickup_locations = self.mdp.get_onion_dispenser_locations()
+    def pickup_projector_actions(self, counter_objects, only_use_dispensers=False):
+        """If only_use_dispensers is True, then only take projectors from the dispensers"""
+        projector_pickup_locations = self.mdp.get_projector_dispenser_locations()
         if not only_use_dispensers:
-            onion_pickup_locations += counter_objects['onion']
-        return self._get_ml_actions_for_positions(onion_pickup_locations)
+            projector_pickup_locations += counter_objects['projector']
+        return self._get_ml_actions_for_positions(projector_pickup_locations)
 
-    def pickup_tomato_actions(self, counter_objects):
-        tomato_dispenser_locations = self.mdp.get_tomato_dispenser_locations()
-        tomato_pickup_locations = tomato_dispenser_locations + counter_objects['tomato']
-        return self._get_ml_actions_for_positions(tomato_pickup_locations)
+    def pickup_laptop_actions(self, counter_objects):
+        laptop_dispenser_locations = self.mdp.get_laptop_dispenser_locations()
+        laptop_pickup_locations = laptop_dispenser_locations + counter_objects['laptop']
+        return self._get_ml_actions_for_positions(laptop_pickup_locations)
 
     def pickup_dish_actions(self, counter_objects, only_use_dispensers=False):
         """If only_use_dispensers is True, then only take dishes from the dispensers"""
@@ -948,14 +948,14 @@ class MediumLevelActionManager(object):
         serving_locations = self.mdp.get_serving_locations()
         return self._get_ml_actions_for_positions(serving_locations)
 
-    def put_onion_in_pot_actions(self, pot_states_dict):
-        partially_full_onion_pots = self.mdp.get_partially_full_pots(pot_states_dict)
-        fillable_pots = partially_full_onion_pots + pot_states_dict['empty']
+    def put_projector_in_pot_actions(self, pot_states_dict):
+        partially_full_projector_pots = self.mdp.get_partially_full_pots(pot_states_dict)
+        fillable_pots = partially_full_projector_pots + pot_states_dict['empty']
         return self._get_ml_actions_for_positions(fillable_pots)
 
-    def put_tomato_in_pot_actions(self, pot_states_dict):
-        partially_full_onion_pots = self.mdp.get_partially_full_pots(pot_states_dict)
-        fillable_pots = partially_full_onion_pots + pot_states_dict['empty']
+    def put_laptop_in_pot_actions(self, pot_states_dict):
+        partially_full_projector_pots = self.mdp.get_partially_full_pots(pot_states_dict)
+        fillable_pots = partially_full_projector_pots + pot_states_dict['empty']
         return self._get_ml_actions_for_positions(fillable_pots)
 
     
@@ -968,15 +968,15 @@ class MediumLevelActionManager(object):
         return self._get_ml_actions_for_positions(ready_pot_locations + nearly_ready_pot_locations)
 
     def go_to_closest_feature_actions(self, player):
-        feature_locations = self.mdp.get_onion_dispenser_locations() + self.mdp.get_tomato_dispenser_locations() + \
+        feature_locations = self.mdp.get_projector_dispenser_locations() + self.mdp.get_laptop_dispenser_locations() + \
                             self.mdp.get_pot_locations() + self.mdp.get_dish_dispenser_locations()
         closest_feature_pos = self.motion_planner.min_cost_to_feature(player.pos_and_or, feature_locations, with_argmin=True)[1]
         return self._get_ml_actions_for_positions([closest_feature_pos])
 
     def go_to_closest_feature_or_counter_to_goal(self, goal_pos_and_or, goal_location):
         """Instead of going to goal_pos_and_or, go to the closest feature or counter to this goal, that ISN'T the goal itself"""
-        valid_locations = self.mdp.get_onion_dispenser_locations() + \
-                                    self.mdp.get_tomato_dispenser_locations() + self.mdp.get_pot_locations() + \
+        valid_locations = self.mdp.get_projector_dispenser_locations() + \
+                                    self.mdp.get_laptop_dispenser_locations() + self.mdp.get_pot_locations() + \
                                     self.mdp.get_dish_dispenser_locations() + self.counter_drop
         valid_locations.remove(goal_location)
         closest_non_goal_feature_pos = self.motion_planner.min_cost_to_feature(
@@ -1313,8 +1313,8 @@ class MediumLevelActionManager(object):
 #             player_hl_actions.extend(place_obj_hl_actions)
 #         else:
 #             pot_states_dict = self.mdp.get_pot_states(state)
-#             player_hl_actions.extend(self.get_onion_and_put_in_pot(state, counter_pickup_objects, pot_states_dict))
-#             player_hl_actions.extend(self.get_tomato_and_put_in_pot(state, counter_pickup_objects, pot_states_dict))
+#             player_hl_actions.extend(self.get_projector_and_put_in_pot(state, counter_pickup_objects, pot_states_dict))
+#             player_hl_actions.extend(self.get_laptop_and_put_in_pot(state, counter_pickup_objects, pot_states_dict))
 #             player_hl_actions.extend(self.get_dish_and_soup_and_serve(state, counter_pickup_objects, pot_states_dict))
 #             player_hl_actions.extend(self.start_cooking(state, pot_states_dict))
 #         return player_hl_actions
@@ -1328,20 +1328,20 @@ class MediumLevelActionManager(object):
 #         hl_level_actions = list(itertools.product(dish_pickup_actions, pickup_soup_actions, deliver_soup_actions))
 #         return [HighLevelAction(hl_action_list) for hl_action_list in hl_level_actions]
 #
-#     def get_onion_and_put_in_pot(self, state, counter_objects, pot_states_dict):
-#         """Get all sequences of medium-level actions (hl actions) that involve a player getting an onion
+#     def get_projector_and_put_in_pot(self, state, counter_objects, pot_states_dict):
+#         """Get all sequences of medium-level actions (hl actions) that involve a player getting an projector
 #         from a dispenser and placing it in a pot."""
-#         onion_pickup_actions = self.ml_action_manager.pickup_onion_actions(counter_objects)
-#         put_in_pot_actions = self.ml_action_manager.put_onion_in_pot_actions(pot_states_dict)
-#         hl_level_actions = list(itertools.product(onion_pickup_actions, put_in_pot_actions))
+#         projector_pickup_actions = self.ml_action_manager.pickup_projector_actions(counter_objects)
+#         put_in_pot_actions = self.ml_action_manager.put_projector_in_pot_actions(pot_states_dict)
+#         hl_level_actions = list(itertools.product(projector_pickup_actions, put_in_pot_actions))
 #         return [HighLevelAction(hl_action_list) for hl_action_list in hl_level_actions]
 #
-#     def get_tomato_and_put_in_pot(self, state, counter_objects, pot_states_dict):
-#         """Get all sequences of medium-level actions (hl actions) that involve a player getting an tomato
+#     def get_laptop_and_put_in_pot(self, state, counter_objects, pot_states_dict):
+#         """Get all sequences of medium-level actions (hl actions) that involve a player getting an laptop
 #         from a dispenser and placing it in a pot."""
-#         tomato_pickup_actions = self.ml_action_manager.pickup_tomato_actions(counter_objects)
-#         put_in_pot_actions = self.ml_action_manager.put_tomato_in_pot_actions(pot_states_dict)
-#         hl_level_actions = list(itertools.product(tomato_pickup_actions, put_in_pot_actions))
+#         laptop_pickup_actions = self.ml_action_manager.pickup_laptop_actions(counter_objects)
+#         put_in_pot_actions = self.ml_action_manager.put_laptop_in_pot_actions(pot_states_dict)
+#         hl_level_actions = list(itertools.product(laptop_pickup_actions, put_in_pot_actions))
 #         return [HighLevelAction(hl_action_list) for hl_action_list in hl_level_actions]
 #
 #     def start_cooking(self, state, pot_states_dict):
@@ -1463,16 +1463,16 @@ class MediumLevelActionManager(object):
 #         self.heuristic_cost_dict = self._calculate_heuristic_costs()
 #
 #     def hard_heuristic(self, state, goal_deliveries, time=0, debug=False):
-#         # NOTE: does not support tomatoes – currently deprecated as harder heuristic
+#         # NOTE: does not support laptops – currently deprecated as harder heuristic
 #         # does not seem worth the additional computational time
 #
 #         """
 #         From a state, we can calculate exactly how many:
 #         - soup deliveries we need
 #         - dishes to pots we need
-#         - onion to pots we need
+#         - projector to pots we need
 #
-#         We then determine if there are any soups/dishes/onions
+#         We then determine if there are any soups/dishes/projectors
 #         in transit (on counters or on players) than can be
 #         brought to their destinations faster than starting off from
 #         a dispenser of the same type. If so, we consider fulfilling
@@ -1483,7 +1483,7 @@ class MediumLevelActionManager(object):
 #         given by:
 #         - pot-delivery trips
 #         - dish-pot trips
-#         - onion-pot trips
+#         - projector-pot trips
 #
 #         The total cost is obtained by determining an optimistic time
 #         cost for each of these trip types
@@ -1496,12 +1496,12 @@ class MediumLevelActionManager(object):
 #         pot_states_dict = self.mdp.get_pot_states(state)
 #         min_pot_delivery_cost = self.heuristic_cost_dict['pot-delivery']
 #         min_dish_to_pot_cost = self.heuristic_cost_dict['dish-pot']
-#         min_onion_to_pot_cost = self.heuristic_cost_dict['onion-pot']
+#         min_projector_to_pot_cost = self.heuristic_cost_dict['projector-pot']
 #
 #         pot_locations = self.mdp.get_pot_locations()
 #         full_soups_in_pots = pot_states_dict['cooking'] + pot_states_dict['ready']
 #         partially_full_soups = self.mdp.get_partially_full_pots(pot_states_dict)
-#         num_onions_in_partially_full_pots = sum([state.get_object(loc).state[1] for loc in partially_full_soups])
+#         num_projectors_in_partially_full_pots = sum([state.get_object(loc).state[1] for loc in partially_full_soups])
 #
 #         # Calculating costs
 #         num_deliveries_to_go = goal_deliveries - state.num_delivered
@@ -1542,25 +1542,25 @@ class MediumLevelActionManager(object):
 #         forward_cost += num_pots_to_be_filled
 #
 #         # ONION COSTS
-#         total_num_onions_needed = num_pots_to_be_filled * 3 - num_onions_in_partially_full_pots
-#         onions_on_counters = objects_dict['onion']
-#         onions_in_transit = player_objects['onion'] + onions_on_counters
+#         total_num_projectors_needed = num_pots_to_be_filled * 3 - num_projectors_in_partially_full_pots
+#         projectors_on_counters = objects_dict['projector']
+#         projectors_in_transit = player_objects['projector'] + projectors_on_counters
 #
-#         num_onions_better_than_disp, total_better_than_disp_onion_cost = \
-#             self.get_costs_better_than_dispenser(onions_in_transit, pot_locations, min_onion_to_pot_cost, total_num_onions_needed, state)
+#         num_projectors_better_than_disp, total_better_than_disp_projector_cost = \
+#             self.get_costs_better_than_dispenser(projectors_in_transit, pot_locations, min_projector_to_pot_cost, total_num_projectors_needed, state)
 #
-#         min_onion_to_pot_trips = max([0, total_num_onions_needed - num_onions_better_than_disp])
-#         onion_to_pot_costs = min_onion_to_pot_cost * min_onion_to_pot_trips
+#         min_projector_to_pot_trips = max([0, total_num_projectors_needed - num_projectors_better_than_disp])
+#         projector_to_pot_costs = min_projector_to_pot_cost * min_projector_to_pot_trips
 #
-#         forward_cost += total_better_than_disp_onion_cost
-#         forward_cost += onion_to_pot_costs
+#         forward_cost += total_better_than_disp_projector_cost
+#         forward_cost += projector_to_pot_costs
 #
 #         # Going to closest feature costs
 #         # NOTE: as implemented makes heuristic inconsistent
 #         # for player in state.players:
 #         #     if not player.has_object():
-#         #         counter_objects = soups_on_counters + dishes_on_counters + onions_on_counters
-#         #         possible_features = counter_objects + pot_locations + self.mdp.get_dish_dispenser_locations() + self.mdp.get_onion_dispenser_locations()
+#         #         counter_objects = soups_on_counters + dishes_on_counters + projectors_on_counters
+#         #         possible_features = counter_objects + pot_locations + self.mdp.get_dish_dispenser_locations() + self.mdp.get_projector_dispenser_locations()
 #         #         forward_cost += self.action_manager.min_cost_to_feature(player.pos_and_or, possible_features)
 #
 #         heuristic_cost = forward_cost / 2
@@ -1572,21 +1572,21 @@ class MediumLevelActionManager(object):
 #             print("Current state: (ml timestep {})\n".format(time))
 #
 #             print("# in transit: \t\t Soups {} \t Dishes {} \t Onions {}".format(
-#                 len(soups_in_transit), len(dishes_in_transit), len(onions_in_transit)
+#                 len(soups_in_transit), len(dishes_in_transit), len(projectors_in_transit)
 #             ))
 #
 #             # NOTE Possible improvement: consider cost of dish delivery too when considering if a
 #             # transit soup is better than dispenser equivalent
 #             print("# better than disp: \t Soups {} \t Dishes {} \t Onions {}".format(
-#                 num_soups_better_than_pot, num_dishes_better_than_disp, num_onions_better_than_disp
+#                 num_soups_better_than_pot, num_dishes_better_than_disp, num_projectors_better_than_disp
 #             ))
 #
-#             print("# of trips: \t\t pot-del {} \t dish-pot {} \t onion-pot {}".format(
-#                 min_pot_to_delivery_trips, min_dish_to_pot_trips, min_onion_to_pot_trips
+#             print("# of trips: \t\t pot-del {} \t dish-pot {} \t projector-pot {}".format(
+#                 min_pot_to_delivery_trips, min_dish_to_pot_trips, min_projector_to_pot_trips
 #             ))
 #
-#             print("Trip costs: \t\t pot-del {} \t dish-pot {} \t onion-pot {}".format(
-#                 pot_to_delivery_costs, dish_to_pot_costs, onion_to_pot_costs
+#             print("Trip costs: \t\t pot-del {} \t dish-pot {} \t projector-pot {}".format(
+#                 pot_to_delivery_costs, dish_to_pot_costs, projector_to_pot_costs
 #             ))
 #
 #             print(str(env) + "HEURISTIC: {}".format(heuristic_cost))
@@ -1624,8 +1624,8 @@ class MediumLevelActionManager(object):
 #         pot_locations = self.mdp.get_pot_locations()
 #         delivery_locations = self.mdp.get_serving_locations()
 #         dish_locations = self.mdp.get_dish_dispenser_locations()
-#         onion_locations = self.mdp.get_onion_dispenser_locations()
-#         tomato_locations = self.mdp.get_tomato_dispenser_locations()
+#         projector_locations = self.mdp.get_projector_dispenser_locations()
+#         laptop_locations = self.mdp.get_laptop_dispenser_locations()
 #
 #         heuristic_cost_dict = {
 #             'pot-delivery': self.motion_planner.min_cost_between_features(pot_locations, delivery_locations, manhattan_if_fail=True),
@@ -1633,15 +1633,15 @@ class MediumLevelActionManager(object):
 #             'dish-pot': self.motion_planner.min_cost_between_features(dish_locations, pot_locations, manhattan_if_fail=True)
 #         }
 #
-#         onion_pot_cost = self.motion_planner.min_cost_between_features(onion_locations, pot_locations, manhattan_if_fail=True)
-#         tomato_pot_cost = self.motion_planner.min_cost_between_features(tomato_locations, pot_locations, manhattan_if_fail=True)
+#         projector_pot_cost = self.motion_planner.min_cost_between_features(projector_locations, pot_locations, manhattan_if_fail=True)
+#         laptop_pot_cost = self.motion_planner.min_cost_between_features(laptop_locations, pot_locations, manhattan_if_fail=True)
 #
 #         if debug: print("Heuristic cost dict", heuristic_cost_dict)
-#         assert onion_pot_cost != np.inf or tomato_pot_cost != np.inf
-#         if onion_pot_cost != np.inf:
-#             heuristic_cost_dict['onion-pot'] = onion_pot_cost
-#         if tomato_pot_cost != np.inf:
-#             heuristic_cost_dict['tomato-pot'] = tomato_pot_cost
+#         assert projector_pot_cost != np.inf or laptop_pot_cost != np.inf
+#         if projector_pot_cost != np.inf:
+#             heuristic_cost_dict['projector-pot'] = projector_pot_cost
+#         if laptop_pot_cost != np.inf:
+#             heuristic_cost_dict['laptop-pot'] = laptop_pot_cost
 #
 #         return heuristic_cost_dict
 #
@@ -1664,36 +1664,36 @@ class MediumLevelActionManager(object):
 #
 #         soups_in_transit = player_objects['soup']
 #         dishes_in_transit = objects_dict['dish'] + player_objects['dish']
-#         onions_in_transit = objects_dict['onion'] + player_objects['onion']
-#         tomatoes_in_transit = objects_dict['tomato'] + player_objects['tomato']
+#         projectors_in_transit = objects_dict['projector'] + player_objects['projector']
+#         laptops_in_transit = objects_dict['laptop'] + player_objects['laptop']
 #
 #         num_pot_to_delivery = max([0, num_deliveries_to_go - len(soups_in_transit)])
 #         num_dish_to_pot = max([0, num_pot_to_delivery - len(dishes_in_transit)])
 #
-#         # FIXME: the following logic might need to be discussed, when incoporating tomatoes
+#         # FIXME: the following logic might need to be discussed, when incoporating laptops
 #         num_pots_to_be_filled = num_pot_to_delivery - num_full_soups_in_pots
-#         num_onions_needed_for_pots = num_pots_to_be_filled * 3 - len(onions_in_transit) - num_items_in_partially_full_pots
-#         num_tomatoes_needed_for_pots = 0
-#         num_onion_to_pot = max([0, num_onions_needed_for_pots])
-#         num_tomato_to_pot = max([0, num_tomatoes_needed_for_pots])
+#         num_projectors_needed_for_pots = num_pots_to_be_filled * 3 - len(projectors_in_transit) - num_items_in_partially_full_pots
+#         num_laptops_needed_for_pots = 0
+#         num_projector_to_pot = max([0, num_projectors_needed_for_pots])
+#         num_laptop_to_pot = max([0, num_laptops_needed_for_pots])
 #
 #         pot_to_delivery_costs = (self.heuristic_cost_dict['pot-delivery'] + self.heuristic_cost_dict['pot-cooking']) \
 #                                 * num_pot_to_delivery
 #         dish_to_pot_costs = self.heuristic_cost_dict['dish-pot'] * num_dish_to_pot
 #
 #         items_to_pot_costs = []
-#         # FIXME: might want to change this for anything beyond 3-onion soup
-#         if 'onion-pot' in self.heuristic_cost_dict.keys():
-#             onion_to_pot_costs = self.heuristic_cost_dict['onion-pot'] * num_onion_to_pot
-#             items_to_pot_costs.append(onion_to_pot_costs)
-#         if 'tomato-pot' in self.heuristic_cost_dict.keys():
-#             tomato_to_pot_costs = self.heuristic_cost_dict['tomato-pot'] * num_tomato_to_pot
-#             items_to_pot_costs.append(tomato_to_pot_costs)
+#         # FIXME: might want to change this for anything beyond 3-projector soup
+#         if 'projector-pot' in self.heuristic_cost_dict.keys():
+#             projector_to_pot_costs = self.heuristic_cost_dict['projector-pot'] * num_projector_to_pot
+#             items_to_pot_costs.append(projector_to_pot_costs)
+#         if 'laptop-pot' in self.heuristic_cost_dict.keys():
+#             laptop_to_pot_costs = self.heuristic_cost_dict['laptop-pot'] * num_laptop_to_pot
+#             items_to_pot_costs.append(laptop_to_pot_costs)
 #
 #         # NOTE: doesn't take into account that a combination of the two might actually be more advantageous.
 #         # Might cause heuristic to be inadmissable in some edge cases.
-#         # FIXME: only onion for now
-#         items_to_pot_cost = onion_to_pot_costs
+#         # FIXME: only projector for now
+#         items_to_pot_cost = projector_to_pot_costs
 #
 #         # num_pot_to_delivery added to account for the additional "INTERACT" to start soup cooking
 #         heuristic_cost = (pot_to_delivery_costs + dish_to_pot_costs + num_pot_to_delivery + items_to_pot_cost) / 2
@@ -1705,11 +1705,11 @@ class MediumLevelActionManager(object):
 #             print("Current state: (ml timestep {})\n".format(time))
 #
 #             print("# in transit: \t\t Soups {} \t Dishes {} \t Onions {}".format(
-#                 len(soups_in_transit), len(dishes_in_transit), len(onions_in_transit)
+#                 len(soups_in_transit), len(dishes_in_transit), len(projectors_in_transit)
 #             ))
 #
-#             print("Trip costs: \t\t pot-del {} \t dish-pot {} \t onion-pot {}".format(
-#                 pot_to_delivery_costs, dish_to_pot_costs, onion_to_pot_costs
+#             print("Trip costs: \t\t pot-del {} \t dish-pot {} \t projector-pot {}".format(
+#                 pot_to_delivery_costs, dish_to_pot_costs, projector_to_pot_costs
 #             ))
 #
 #             print(str(env) + "HEURISTIC: {}".format(heuristic_cost))

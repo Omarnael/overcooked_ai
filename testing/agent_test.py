@@ -88,8 +88,8 @@ class TestBasicAgents(unittest.TestCase):
 
 class TestAgentEvaluatorStatic(unittest.TestCase):
 
-    layout_name_lst = ["asymmetric_advantages", "asymmetric_advantages_tomato", "bonus_order_test", "bottleneck",
-                       "centre_objects", "centre_pots", "corridor", "forced_coordination_tomato", "unident",
+    layout_name_lst = ["asymmetric_advantages", "asymmetric_advantages_laptop", "bonus_order_test", "bottleneck",
+                       "centre_objects", "centre_pots", "corridor", "forced_coordination_laptop", "unident",
                        "marshmallow_experiment", "marshmallow_experiment_coordination", "you_shall_not_pass"]
 
     def test_from_mdp(self):
@@ -111,7 +111,7 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
         "prop_empty": 0.95,
         "prop_feats": 0.1,
         "start_all_orders": [
-            {"ingredients": ["onion", "onion", "onion"]}
+            {"ingredients": ["projector", "projector", "projector"]}
         ],
         "display": False,
     }
@@ -121,7 +121,7 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
         "prop_empty": 0.7,
         "prop_feats": 0.5,
         "start_all_orders": [
-            {"ingredients": ["onion", "onion", "onion"]}
+            {"ingredients": ["projector", "projector", "projector"]}
         ],
         "display": False,
     }
@@ -131,7 +131,7 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
         "prop_empty": 0.5,
         "prop_feats": 0.4,
         "start_all_orders": [
-            {"ingredients": ["onion", "onion", "onion"]}
+            {"ingredients": ["projector", "projector", "projector"]}
         ],
         "display": False,
     }
@@ -207,7 +207,7 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
                 else:
                     self.assertTrue(False, "theoretically unreachable statement")
 
-    layout_name_short_lst = ["cramped_room", "cramped_room_tomato", "simple_o", "simple_tomato", "simple_o_t"]
+    layout_name_short_lst = ["cramped_room", "cramped_room_laptop", "simple_o", "simple_laptop", "simple_o_t"]
     biased = [0.1, 0.15, 0.2, 0.25, 0.3]
     num_reset = 200000
 
