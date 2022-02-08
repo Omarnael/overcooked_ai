@@ -1,7 +1,8 @@
 {
-    "grid":  """XXXXXXX
-                O     X
-                P  X  P
+    "grid":  """XSXXXDX
+                X     X
+                O XXX X
+                P XXX P
                 X  1  T
                 XDXCXSX""",
                 
