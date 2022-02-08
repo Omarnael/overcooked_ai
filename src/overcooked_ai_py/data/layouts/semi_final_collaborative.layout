@@ -3,7 +3,8 @@
                 X  2  X
                 O XXX X
                 P XXX P
-                X  1  T
+                X XXX T
+                X  1  X
                 XDXCXSX""",
                 
     "start_bonus_orders": [],
