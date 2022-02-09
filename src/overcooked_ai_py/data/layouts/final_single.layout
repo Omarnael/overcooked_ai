@@ -1,9 +1,9 @@
 {
     "grid":  """XXXPXXX
-                X     C
+                X     T
                 O XXX X
                 X XXX X
-                X XXX T
+                X XXX C
                 X  1  X
                 XDXSXXX""",
                 
