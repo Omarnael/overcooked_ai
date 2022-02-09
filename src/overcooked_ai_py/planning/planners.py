@@ -457,8 +457,6 @@ class JointMotionPlanner(object):
         if not self.is_valid_joint_motion_goal(joint_goal_state):
             return False
         check_valid_fn = self.motion_planner.is_valid_motion_start_goal_pair
-        print(joint_start_state)
-        print(joint_goal_state)
         return all([check_valid_fn(joint_start_state[i], joint_goal_state[i]) for i in range(2)])
 
     def _obtain_plan(self, joint_start_state, joint_goal_state):
