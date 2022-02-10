@@ -868,12 +868,13 @@ class MediumLevelActionManager(object):
         if not player.has_object():
             projector_pickup = self.pickup_projector_actions(counter_pickup_objects)
             laptop_pickup = self.pickup_laptop_actions(counter_pickup_objects)
+            solar_cell_pickup = self.pickup_solar_cell_actions(counter_pickup_objects)
             dish_pickup = self.pickup_dish_actions(counter_pickup_objects)
             soup_pickup = self.pickup_counter_soup_actions(counter_pickup_objects)
 
             pot_states_dict = self.mdp.get_pot_states(state)
             start_cooking = self.start_cooking_actions(pot_states_dict)
-            player_actions.extend(projector_pickup + laptop_pickup + dish_pickup + soup_pickup + start_cooking)
+            player_actions.extend(projector_pickup + laptop_pickup + solar_cell_pickup + dish_pickup + soup_pickup + start_cooking)
 
         else:
             player_object = player.get_object()
@@ -889,6 +890,8 @@ class MediumLevelActionManager(object):
                 player_actions.extend(self.put_projector_in_pot_actions(pot_states_dict))
             elif player_object.name == 'laptop':
                 player_actions.extend(self.put_laptop_in_pot_actions(pot_states_dict))
+            elif player_object.name == 'solar_cell':
+                player_actions.extend(self.put_solar_cell_in_pot_actions(pot_states_dict))
             elif player_object.name == 'dish':
                 # Not considering all pots (only ones close to ready) to reduce computation
                 # NOTE: could try to calculate which pots are eligible, but would probably take
@@ -921,6 +924,11 @@ class MediumLevelActionManager(object):
         laptop_dispenser_locations = self.mdp.get_laptop_dispenser_locations()
         laptop_pickup_locations = laptop_dispenser_locations + counter_objects['laptop']
         return self._get_ml_actions_for_positions(laptop_pickup_locations)
+
+    def pickup_solar_cell_actions(self, counter_objects):
+        solar_cell_dispenser_locations = self.mdp.get_solar_cell_dispenser_locations()
+        solar_cell_pickup_locations = solar_cell_dispenser_locations + counter_objects['solar_cell']
+        return self._get_ml_actions_for_positions(solar_cell_pickup_locations)
 
     def pickup_dish_actions(self, counter_objects, only_use_dispensers=False):
         """If only_use_dispensers is True, then only take dishes from the dispensers"""
@@ -958,6 +966,10 @@ class MediumLevelActionManager(object):
         fillable_pots = partially_full_projector_pots + pot_states_dict['empty']
         return self._get_ml_actions_for_positions(fillable_pots)
 
+    def put_solar_cell_in_pot_actions(self, pot_states_dict):
+        partially_full_projector_pots = self.mdp.get_partially_full_pots(pot_states_dict)
+        fillable_pots = partially_full_projector_pots + pot_states_dict['empty']
+        return self._get_ml_actions_for_positions(fillable_pots)
     
     def pickup_soup_with_dish_actions(self, pot_states_dict, only_nearly_ready=False):
         ready_pot_locations = pot_states_dict['ready']
@@ -968,14 +980,14 @@ class MediumLevelActionManager(object):
         return self._get_ml_actions_for_positions(ready_pot_locations + nearly_ready_pot_locations)
 
     def go_to_closest_feature_actions(self, player):
-        feature_locations = self.mdp.get_projector_dispenser_locations() + self.mdp.get_laptop_dispenser_locations() + \
+        feature_locations = self.mdp.get_solar_cell_dispenser_locations() + self.mdp.get_projector_dispenser_locations() + self.mdp.get_laptop_dispenser_locations() + \
                             self.mdp.get_pot_locations() + self.mdp.get_dish_dispenser_locations()
         closest_feature_pos = self.motion_planner.min_cost_to_feature(player.pos_and_or, feature_locations, with_argmin=True)[1]
         return self._get_ml_actions_for_positions([closest_feature_pos])
 
     def go_to_closest_feature_or_counter_to_goal(self, goal_pos_and_or, goal_location):
         """Instead of going to goal_pos_and_or, go to the closest feature or counter to this goal, that ISN'T the goal itself"""
-        valid_locations = self.mdp.get_projector_dispenser_locations() + \
+        valid_locations = self.mdp.get_solar_cell_dispenser_locations() + self.mdp.get_projector_dispenser_locations() + \
                                     self.mdp.get_laptop_dispenser_locations() + self.mdp.get_pot_locations() + \
                                     self.mdp.get_dish_dispenser_locations() + self.counter_drop
         valid_locations.remove(goal_location)
