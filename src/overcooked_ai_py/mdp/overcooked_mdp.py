@@ -1409,7 +1409,7 @@ class OvercookedGridworld(object):
     def get_laptop_dispenser_locations(self):
         return list(self.terrain_pos_dict['T'])
 
-    def get_solar_cell_locations(self):
+    def get_solar_cell_dispenser_locations(self):
         return list(self.terrain_pos_dict['C'])
 
     def get_serving_locations(self):
