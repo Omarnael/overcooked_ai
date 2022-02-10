@@ -422,10 +422,10 @@ class GreedyHumanModel(Agent):
                     # we want to cook only soups that has same len as order
                     motion_goals = am.start_cooking_actions(only_pot_states_ready_to_cook)
                 elif 'solar_cell' in next_order:
-                    print('laptop')
+                    print('solar_cell')
                     motion_goals = am.pickup_laptop_actions(counter_objects)
                 elif 'laptop' in next_order:
-                    print('solar')
+                    print('laptop')
                     motion_goals = am.pickup_solar_cell_actions(counter_objects)
                 else:
                     print('all')
