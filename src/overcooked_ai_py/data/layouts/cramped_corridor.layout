@@ -5,19 +5,19 @@
                 D      1X
                 XOPXXXXSX""",
     "start_bonus_orders": [
-        { "ingredients" : ["tomato", "onion"]},
-        { "ingredients" : ["tomato"]},
-        { "ingredients" : ["tomato", "tomato"]}
+        { "ingredients" : ["solar_cell", "laptop"]},
+        { "ingredients" : ["solar_cell"]},
+        { "ingredients" : ["solar_cell", "solar_cell"]}
     ],
     "start_all_orders" : [
-        { "ingredients" : ["tomato"]},
-        { "ingredients" : ["onion", "onion", "onion"]},
-        { "ingredients" : ["tomato", "tomato", "tomato"]},
-        { "ingredients" : ["tomato", "onion"] },
-        { "ingredients" : ["tomato", "tomato"]}
+        { "ingredients" : ["solar_cell"]},
+        { "ingredients" : ["laptop", "laptop", "laptop"]},
+        { "ingredients" : ["solar_cell", "solar_cell", "solar_cell"]},
+        { "ingredients" : ["solar_cell", "laptop"] },
+        { "ingredients" : ["solar_cell", "solar_cell"]}
     ],
-    "onion_value" : 21,
-    "tomato_value" : 13,
-    "onion_time" : 15,
-    "tomato_time" : 7
+    "laptop_value" : 21,
+    "solar_cell_value" : 13,
+    "laptop_time" : 15,
+    "solar_cell_time" : 7
 }

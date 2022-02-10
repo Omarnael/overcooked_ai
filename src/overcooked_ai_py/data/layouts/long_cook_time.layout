@@ -7,9 +7,9 @@
                 X DXXXXXXXXXX
                 XSXXXXXXXXXXX""",
     "start_all_orders": [
-        { "ingredients" : ["onion", "onion", "onion"]},
-        { "ingredients" : ["onion", "onion"]},
-        { "ingredients" : ["onion"]}
+        { "ingredients" : ["laptop", "laptop", "laptop"]},
+        { "ingredients" : ["laptop", "laptop"]},
+        { "ingredients" : ["laptop"]}
     ],
     "start_bonus_orders" : [
     ],

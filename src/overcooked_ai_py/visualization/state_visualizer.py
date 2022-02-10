@@ -2,7 +2,7 @@ import pygame
 import os, copy, math
 from overcooked_ai_py.utils import generate_temporary_file_path, classproperty, cumulative_rewards_from_rew_list
 from overcooked_ai_py.static import GRAPHICS_DIR, FONTS_DIR
-from overcooked_ai_py.mdp.layout_generator import EMPTY, COUNTER, ONION_DISPENSER, TOMATO_DISPENSER, POT, DISH_DISPENSER, SERVING_LOC
+from overcooked_ai_py.mdp.layout_generator import EMPTY, COUNTER, laptop_DISPENSER, solar_cell_DISPENSER, POT, DISH_DISPENSER, SERVING_LOC
 from overcooked_ai_py.visualization.visualization_utils import show_image_in_ipython, show_ipython_images_slider
 from overcooked_ai_py.visualization.pygame_utils import MultiFramePygameImage, run_static_resizeable_window, vstack_surfaces, scale_surface_by_factor, blit_on_new_surface_of_size
 from overcooked_ai_py.mdp.actions import Direction, Action
@@ -50,8 +50,8 @@ class StateVisualizer:
     TILE_TO_FRAME_NAME = {
         EMPTY: "floor",
         COUNTER: "counter",
-        ONION_DISPENSER: "onions",
-        TOMATO_DISPENSER: "tomatoes",
+        laptop_DISPENSER: "laptops",
+        solar_cell_DISPENSER: "solar_cells",
         POT: "pot",
         DISH_DISPENSER: "dishes",
         SERVING_LOC: "serve"
@@ -274,10 +274,10 @@ class StateVisualizer:
                 held_object_name = ""
             else:
                 if held_obj.name == "soup":
-                    if "onion" in held_obj.ingredients:
-                        held_object_name = "soup-onion"
+                    if "laptop" in held_obj.ingredients:
+                        held_object_name = "soup-laptop"
                     else:
-                        held_object_name = "soup-tomato"
+                        held_object_name = "soup-solar_cell"
                 else:
                     held_object_name = held_obj.name
 
@@ -286,9 +286,9 @@ class StateVisualizer:
 
     @staticmethod
     def _soup_frame_name(ingredients_names, status):
-            num_onions = ingredients_names.count("onion")
-            num_tomatoes = ingredients_names.count("tomato")
-            return "soup_%s_tomato_%i_onion_%i" %(status, num_tomatoes, num_onions)
+            num_laptops = ingredients_names.count("laptop")
+            num_solar_cells = ingredients_names.count("solar_cell")
+            return "soup_%s_solar_cell_%i_laptop_%i" %(status, num_solar_cells, num_laptops)
 
     def _render_objects(self, surface, objects, grid):
         def render_soup(surface, obj, grid):

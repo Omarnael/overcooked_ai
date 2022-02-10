@@ -5,7 +5,7 @@
                 XXDSX""",
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["tomato", "tomato", "tomato"]}
+        { "ingredients" : ["solar_cell", "solar_cell", "solar_cell"]}
     ],
     "rew_shaping_params": None
 }

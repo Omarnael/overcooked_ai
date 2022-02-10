@@ -4,15 +4,15 @@
                 T1  T
                 XDPSX""",
     "start_all_orders": [ 
-        { "ingredients" : ["onion"]},
-        { "ingredients" : ["onion", "onion", "onion"]},
-        { "ingredients" : ["onion", "tomato", "onion"]}
+        { "ingredients" : ["laptop"]},
+        { "ingredients" : ["laptop", "laptop", "laptop"]},
+        { "ingredients" : ["laptop", "solar_cell", "laptop"]}
     ],
     "start_bonus_orders" : [
-        { "ingredients" : ["onion", "tomato", "onion"]}
+        { "ingredients" : ["laptop", "solar_cell", "laptop"]}
     ],
-    "tomato_value" : 5,
-    "onion_value" : 10,
-    "tomato_time" : 2,
-    "onion_time" : 2
+    "solar_cell_value" : 5,
+    "laptop_value" : 10,
+    "solar_cell_time" : 2,
+    "laptop_time" : 2
 }

@@ -5,10 +5,10 @@
                 S X X
                 XXXDX""",
     "start_all_orders": [
-        { "ingredients" : ["onion", "onion", "onion"]},
-        { "ingredients" : ["onion", "tomato", "tomato"]},
-        { "ingredients" : ["onion", "onion", "tomato"]},
-        { "ingredients" : ["tomato", "tomato", "tomato"]}
+        { "ingredients" : ["laptop", "laptop", "laptop"]},
+        { "ingredients" : ["laptop", "solar_cell", "solar_cell"]},
+        { "ingredients" : ["laptop", "laptop", "solar_cell"]},
+        { "ingredients" : ["solar_cell", "solar_cell", "solar_cell"]}
     ],
     "start_bonus_orders" : [],
     "recipe_values" : [10, 10, 10, 15],

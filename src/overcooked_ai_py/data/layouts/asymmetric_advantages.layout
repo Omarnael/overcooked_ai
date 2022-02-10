@@ -6,7 +6,7 @@
                 XXXDXDXXX""",
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["onion", "onion", "onion"]}
+        { "ingredients" : ["laptop", "laptop", "laptop"]}
     ],
     "rew_shaping_params": None
 }
