@@ -412,6 +412,7 @@ class GreedyHumanModel(Agent):
                 assert len(state.all_orders) == 1, \
                     "The current mid level action manager only support 3-laptop-soup order, but got orders" \
                     + str(state.all_orders)
+                print(list(state.all_orders))
                 next_order = list(state.all_orders)[0]
                 soups_ready_to_cook_key = '{}_items'.format(len(next_order.ingredients))
                 soups_ready_to_cook = pot_states_dict[soups_ready_to_cook_key]
@@ -421,10 +422,13 @@ class GreedyHumanModel(Agent):
                     # we want to cook only soups that has same len as order
                     motion_goals = am.start_cooking_actions(only_pot_states_ready_to_cook)
                 elif 'laptop' in next_order:
+                    print('laptop')
                     motion_goals = am.pickup_laptop_actions(counter_objects)
                 elif 'solar_cell' in next_order:
+                    print('solar')
                     motion_goals = am.pickup_solar_cell_actions(counter_objects)
                 else:
+                    print('all')
                     motion_goals = am.pickup_laptop_actions(counter_objects) + am.pickup_solar_cell_actions(counter_objects)
                 # it does not make sense to have solar_cell logic when the only possible order is 3 laptop soup (see assertion above)
                 # elif 'laptop' in next_order:
