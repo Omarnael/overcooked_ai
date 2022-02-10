@@ -8,7 +8,7 @@
                 XDXXXSX""",
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["laptop", "laptop", "solar_cell"]}
+        { "ingredients" : ["solar_cell", "laptop", "laptop"]}
     ],
     "recipe_values": [20],
     "recipe_times": [20],
