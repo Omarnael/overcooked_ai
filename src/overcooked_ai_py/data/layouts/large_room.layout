@@ -8,7 +8,7 @@
                 XDXXXSX""",
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["laptop", "laptop", "laptop"]}
+        { "ingredients" : ["laptop", "laptop", "solar_cell"]}
     ],
     "rew_shaping_params": None
 }
