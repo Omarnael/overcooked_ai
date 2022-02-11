@@ -9,7 +9,7 @@
                 
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["projector", "projector", "projector"]},
+        { "ingredients" : ["laptop", "laptop", "laptop"]},
 
 
     ],
