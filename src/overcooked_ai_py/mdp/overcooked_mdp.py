@@ -51,7 +51,7 @@ class Recipe:
 
         mixed_mask = int(bool(num_laptops * num_projectors * num_solar_cells))
         mixed_shift = (Recipe.MAX_NUM_INGREDIENTS + 1)**len(Recipe.ALL_INGREDIENTS)
-        encoding = num_projectors + num_solar_cells + (Recipe.MAX_NUM_INGREDIENTS + 1) * num_laptops
+        encoding = num_projectors + num_laptops + (Recipe.MAX_NUM_INGREDIENTS + 1) * num_solar_cells
 
         return mixed_mask * encoding * mixed_shift + encoding
 
