@@ -12,7 +12,7 @@
         { "ingredients" : ["laptop"]},
         { "ingredients" : ["laptop", "laptop"]},
         { "ingredients" : ["laptop", "laptop", "laptop"]},
-        { "ingredients" : ["laptop", "laptop", "laptop", "laptop]},
+        { "ingredients" : ["laptop", "laptop", "laptop", "laptop"]},
         { "ingredients" : ["laptop", "laptop", "laptop", "laptop", "laptop"]},
 
 
