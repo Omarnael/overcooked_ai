@@ -1,19 +1,19 @@
 {
     "grid":  """XXXPXXX
-                X     T
+                X     C
                 O XXX X
                 X X2X X
                 X XXX C
-                X  1  X
+                X  1  T
                 XDXSXXX""",
                 
     "start_bonus_orders": [],
-   "start_all_orders" : [
+    "start_all_orders" : [
         { "ingredients" : ["solar_cell", "solar_cell", "solar_cell"]},
 
 
     ],
-    "recipe_values" : [1, 3, 5, 6, 7],
-    "recipe_times" : [30, 40, 50, 50, 70],
+    "recipe_values" : [5],
+    "recipe_times" : [20],
     "rew_shaping_params": None
 }

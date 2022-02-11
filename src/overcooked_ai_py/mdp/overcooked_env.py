@@ -156,12 +156,12 @@ class OvercookedEnv(object):
         action_probs = [ None if player_action_probs is None else [round(p, 2) for p in player_action_probs[0]] for player_action_probs in action_probs ]
 
         if display_phi:
-            state_potential_str = "\nState potential = " + str(env_info["phi_s_prime"]) + "\t"
-            potential_diff_str = "Δ potential = " + str(
+            state_construction_siteential_str = "\nState construction_siteential = " + str(env_info["phi_s_prime"]) + "\t"
+            construction_siteential_diff_str = "Δ construction_siteential = " + str(
                 0.99 * env_info["phi_s_prime"] - env_info["phi_s"]) + "\n"  # Assuming gamma 0.99
         else:
-            state_potential_str = ""
-            potential_diff_str = ""
+            state_construction_siteential_str = ""
+            construction_siteential_diff_str = ""
 
         output_string = "Timestep: {}\nJoint action taken: {} \t Reward: {} + shaping_factor * {}\nAction probs by index: {} {} {}\n{}\n".format(
                     self.state.timestep,
@@ -169,8 +169,8 @@ class OvercookedEnv(object):
                     r_t,
                     env_info["shaped_r_by_agent"],
                     action_probs,
-                    state_potential_str,
-                    potential_diff_str,
+                    state_construction_siteential_str,
+                    construction_siteential_diff_str,
                     self)
 
         if fname is None:
@@ -216,11 +216,11 @@ class OvercookedEnv(object):
         """
         return self.mdp.lossless_state_encoding(state, self.horizon)
 
-    def featurize_state_mdp(self, state, num_pots=2):
+    def featurize_state_mdp(self, state, num_construction_sites=2):
         """
         Wrapper of the mdp's featurize_state
         """
-        return self.mdp.featurize_state(state, self.mlam, num_pots=num_pots)
+        return self.mdp.featurize_state(state, self.mlam, num_construction_sites=num_construction_sites)
 
     def reset(self, regen_mdp=True, outside_info={}):
         """
@@ -253,17 +253,17 @@ class OvercookedEnv(object):
         """Whether the episode is over."""
         return self.state.timestep >= self.horizon or self.mdp.is_terminal(self.state)
 
-    def potential(self, mlam, state=None, gamma=0.99):
+    def construction_siteential(self, mlam, state=None, gamma=0.99):
         """
-        Return the potential of the environment's current state, if no state is provided
-        Otherwise return the potential of `state`
+        Return the construction_siteential of the environment's current state, if no state is provided
+        Otherwise return the construction_siteential of `state`
         args:
             mlam (MediumLevelActionManager): the mlam of self.mdp
-            state (OvercookedState): the current state we are evaluating the potential on
+            state (OvercookedState): the current state we are evaluating the construction_siteential on
             gamma (float): discount rate
         """
         state = state if state else self.state
-        return self.mdp.potential_function(state, mp=mlam.motion_planner ,gamma=gamma)
+        return self.mdp.construction_siteential_function(state, mp=mlam.motion_planner ,gamma=gamma)
 
     def _prepare_info_dict(self, joint_agent_action_info, mdp_infos):
         """

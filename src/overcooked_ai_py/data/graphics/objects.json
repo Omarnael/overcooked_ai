@@ -1,6 +1,6 @@
 {
 	"frames": {
-		"dish.png": {
+		"container.png": {
 			"frame": {
 				"x": 1,
 				"y": 1,
@@ -40,7 +40,7 @@
 				"h": 15
 			}
 		},
-		"pot-explosion.png": {
+		"construction_site-explosion.png": {
 			"frame": {
 				"x": 35,
 				"y": 1,
@@ -140,7 +140,7 @@
 				"h": 15
 			}
 		},
-		"soup-projector-dish.png": {
+		"soup-projector-container.png": {
 			"frame": {
 				"x": 120,
 				"y": 1,

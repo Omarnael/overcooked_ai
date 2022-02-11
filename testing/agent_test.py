@@ -89,7 +89,7 @@ class TestBasicAgents(unittest.TestCase):
 class TestAgentEvaluatorStatic(unittest.TestCase):
 
     layout_name_lst = ["asymmetric_advantages", "asymmetric_advantages_laptop", "bonus_order_test", "bottleneck",
-                       "centre_objects", "centre_pots", "corridor", "forced_coordination_laptop", "unident",
+                       "centre_objects", "centre_construction_sites", "corridor", "forced_coordination_laptop", "unident",
                        "marshmallow_experiment", "marshmallow_experiment_coordination", "you_shall_not_pass"]
 
     def test_from_mdp(self):
