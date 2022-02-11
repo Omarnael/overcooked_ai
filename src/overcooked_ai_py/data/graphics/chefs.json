@@ -40,7 +40,7 @@
 				"h": 15
 			}
 		},
-		"EAST-dish.png": {
+		"EAST-container.png": {
 			"frame": {
 				"x": 35,
 				"y": 1,
@@ -260,7 +260,7 @@
 				"h": 15
 			}
 		},
-		"NORTH-dish.png": {
+		"NORTH-container.png": {
 			"frame": {
 				"x": 18,
 				"y": 35,
@@ -480,7 +480,7 @@
 				"h": 15
 			}
 		},
-		"SOUTH-dish.png": {
+		"SOUTH-container.png": {
 			"frame": {
 				"x": 1,
 				"y": 69,
@@ -700,7 +700,7 @@
 				"h": 15
 			}
 		},
-		"WEST-dish.png": {
+		"WEST-container.png": {
 			"frame": {
 				"x": 86,
 				"y": 86,

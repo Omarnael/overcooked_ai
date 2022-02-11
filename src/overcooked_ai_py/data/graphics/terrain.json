@@ -20,7 +20,7 @@
 				"h": 15
 			}
 		},
-		"dishes.png": {
+		"containeres.png": {
 			"frame": {
 				"x": 18,
 				"y": 1,
@@ -80,7 +80,7 @@
 				"h": 15
 			}
 		},
-		"pot.png": {
+		"construction_site.png": {
 			"frame": {
 				"x": 69,
 				"y": 1,

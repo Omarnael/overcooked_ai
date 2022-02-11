@@ -47,12 +47,12 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
-.hypothesis/
+.hyconstruction_sitehesis/
 .pytest_cache/
 
 # Translations
 *.mo
-*.pot
+*.construction_site
 
 # Django stuff:
 *.log

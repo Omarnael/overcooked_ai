@@ -2,7 +2,7 @@ import pygame
 import os, copy, math
 from overcooked_ai_py.utils import generate_temporary_file_path, classproperty, cumulative_rewards_from_rew_list
 from overcooked_ai_py.static import GRAPHICS_DIR, FONTS_DIR
-from overcooked_ai_py.mdp.layout_generator import EMPTY, COUNTER, laptop_DISPENSER, solar_cell_DISPENSER, POT, DISH_DISPENSER, SERVING_LOC
+from overcooked_ai_py.mdp.layout_generator import EMPTY, COUNTER, LAPTOP_DISPENSER, SOLAR_CELL_DISPENSER, CONSTRUCTION_SITE, CONTAINER_DISPENSER, SERVING_LOC
 from overcooked_ai_py.visualization.visualization_utils import show_image_in_ipython, show_ipython_images_slider
 from overcooked_ai_py.visualization.pygame_utils import MultiFramePygameImage, run_static_resizeable_window, vstack_surfaces, scale_surface_by_factor, blit_on_new_surface_of_size
 from overcooked_ai_py.mdp.actions import Direction, Action
@@ -30,7 +30,7 @@ class StateVisualizer:
         "hud_font_path": roboto_path, 
         "hud_system_font_name": None, # if set to None use hud_font_path
         "hud_font_color": (255,255,255), # white
-        "hud_data_default_key_order" : ["all_orders", "bonus_orders", "time_left", "score", "potential"],
+        "hud_data_default_key_order" : ["all_orders", "bonus_orders", "time_left", "score", "construction_siteential"],
         "hud_interline_size": 10,
         "hud_margin_bottom": 10,
         "hud_margin_top": 10,
@@ -50,10 +50,10 @@ class StateVisualizer:
     TILE_TO_FRAME_NAME = {
         EMPTY: "floor",
         COUNTER: "counter",
-        laptop_DISPENSER: "laptops",
-        solar_cell_DISPENSER: "solar_cells",
-        POT: "pot",
-        DISH_DISPENSER: "dishes",
+        LAPTOP_DISPENSER: "laptops",
+        SOLAR_CELL_DISPENSER: "solar_cells",
+        CONSTRUCTION_SITE: "construction_site",
+        CONTAINER_DISPENSER: "containeres",
         SERVING_LOC: "serve"
     }
 
@@ -293,12 +293,12 @@ class StateVisualizer:
     def _render_objects(self, surface, objects, grid):
         def render_soup(surface, obj, grid):
             (x_pos, y_pos) = obj.position
-            if grid[y_pos][x_pos] == POT:
+            if grid[y_pos][x_pos] == CONSTRUCTION_SITE:
                 if obj.is_ready:
                     soup_status = "cooked"
                 else:
                     soup_status = "idle"
-            else: # grid[x][y] != POT
+            else: # grid[x][y] != CONSTRUCTION_SITE
                 soup_status = "done"
             frame_name = StateVisualizer._soup_frame_name(obj.ingredients, soup_status)
             self.SOUPS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(obj.position), frame_name)
@@ -312,7 +312,7 @@ class StateVisualizer:
     def _render_cooking_timers(self, surface, objects, grid):
         for key, obj in objects.items():
             (x_pos, y_pos) = obj.position
-            if obj.name == "soup" and grid[y_pos][x_pos] == POT:
+            if obj.name == "soup" and grid[y_pos][x_pos] == CONSTRUCTION_SITE:
                 if obj._cooking_tick != -1 and (obj._cooking_tick <= obj.cook_time or self.show_timer_when_cooked):
                     text_surface = self.cooking_timer_font.render(str(obj._cooking_tick), True, self.cooking_timer_font_color)
                     (tile_pos_x, tile_pos_y) = self._position_in_scaled_pixels(obj.position)

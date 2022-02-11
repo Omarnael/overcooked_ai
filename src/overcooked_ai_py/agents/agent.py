@@ -23,7 +23,7 @@ class Agent(object):
     def actions(self, states, agent_indices):
         """
         A multi-state version of the action method. This enables for parallized
-        implementations that can potentially give speedups in action prediction. 
+        implementations that can construction_siteentially give speedups in action prediction. 
 
         Args:
             states (list): list of OvercookedStates for which we want actions for
@@ -396,18 +396,18 @@ class GreedyHumanModel(Agent):
         am = self.mlam
 
         counter_objects = self.mlam.mdp.get_counter_objects_dict(state, list(self.mlam.mdp.terrain_pos_dict['X']))
-        pot_states_dict = self.mlam.mdp.get_pot_states(state)
+        construction_site_states_dict = self.mlam.mdp.get_construction_site_states(state)
 
 
         if not player.has_object():
-            ready_soups = pot_states_dict['ready']
-            cooking_soups = pot_states_dict['cooking']
+            ready_soups = construction_site_states_dict['ready']
+            cooking_soups = construction_site_states_dict['cooking']
 
             soup_nearly_ready = len(ready_soups) > 0 or len(cooking_soups) > 0
-            other_has_dish = other_player.has_object() and other_player.get_object().name == 'dish'
+            other_has_container = other_player.has_object() and other_player.get_object().name == 'container'
 
-            if soup_nearly_ready and not other_has_dish:
-                motion_goals = am.pickup_dish_actions(counter_objects)
+            if soup_nearly_ready and not other_has_container:
+                motion_goals = am.pickup_container_actions(counter_objects)
             else:
                 assert len(state.all_orders) == 1, \
                     "The current mid level action manager only support 3-laptop-soup order, but got orders" \
@@ -415,12 +415,12 @@ class GreedyHumanModel(Agent):
                 print(list(state.all_orders))
                 next_order = list(state.all_orders)[0]
                 soups_ready_to_cook_key = '{}_items'.format(len(next_order.ingredients))
-                soups_ready_to_cook = pot_states_dict[soups_ready_to_cook_key]
+                soups_ready_to_cook = construction_site_states_dict[soups_ready_to_cook_key]
                 if soups_ready_to_cook:
-                    only_pot_states_ready_to_cook = defaultdict(list)
-                    only_pot_states_ready_to_cook[soups_ready_to_cook_key] = soups_ready_to_cook
+                    only_construction_site_states_ready_to_cook = defaultdict(list)
+                    only_construction_site_states_ready_to_cook[soups_ready_to_cook_key] = soups_ready_to_cook
                     # we want to cook only soups that has same len as order
-                    motion_goals = am.start_cooking_actions(only_pot_states_ready_to_cook)
+                    motion_goals = am.start_cooking_actions(only_construction_site_states_ready_to_cook)
                 elif 'solar_cell' in next_order:
                     print('solar_cell')
                     motion_goals = am.pickup_laptop_actions(counter_objects)
@@ -443,13 +443,13 @@ class GreedyHumanModel(Agent):
             player_obj = player.get_object()
 
             if player_obj.name == 'laptop':
-                motion_goals = am.put_laptop_in_pot_actions(pot_states_dict)
+                motion_goals = am.put_laptop_in_construction_site_actions(construction_site_states_dict)
 
             elif player_obj.name == 'solar_cell':
-                motion_goals = am.put_solar_cell_in_pot_actions(pot_states_dict)
+                motion_goals = am.put_solar_cell_in_construction_site_actions(construction_site_states_dict)
 
-            elif player_obj.name == 'dish':
-                motion_goals = am.pickup_soup_with_dish_actions(pot_states_dict, only_nearly_ready=True)
+            elif player_obj.name == 'container':
+                motion_goals = am.pickup_soup_with_container_actions(construction_site_states_dict, only_nearly_ready=True)
 
             elif player_obj.name == 'soup':
                 motion_goals = am.deliver_soup_actions()

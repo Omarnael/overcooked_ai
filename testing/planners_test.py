@@ -351,11 +351,11 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         self.simple_mpd_empty_hands(mlam)
         self.simple_mdp_deliver_soup(mlam)
         self.simple_mdp_pickup_counter_soup(mlam)
-        self.simple_mdp_pickup_counter_dish(mlam)
+        self.simple_mdp_pickup_counter_container(mlam)
         self.simple_mdp_pickup_counter_laptop(mlam)
-        self.simple_mdp_drop_useless_dish_with_soup_idle(mlam)
+        self.simple_mdp_drop_useless_container_with_soup_idle(mlam)
         self.simple_mdp_pickup_soup(mlam)
-        self.simple_mdp_pickup_dish(mlam)
+        self.simple_mdp_pickup_container(mlam)
         self.simple_mdp_start_good_soup_cooking(mlam)
         self.simple_mdp_start_bad_soup_cooking(mlam)
         self.simple_mdp_start_1_laptop_soup_cooking(mlam)
@@ -363,7 +363,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         self.simple_mdp_drop_useless_laptop_bad_soup(mlam)
         self.simple_mdp_add_3rd_laptop(mlam)
         self.simple_mdp_add_2nd_laptop(mlam)
-        self.simple_mdp_drop_useless_dish(mlam)
+        self.simple_mdp_drop_useless_container(mlam)
 
     def test_simple_mdp_with_start_orientations(self):
         print("Simple - with start orientations (no shared motion goals)")
@@ -371,11 +371,11 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         self.simple_mpd_empty_hands(mlam, counter_drop_forbidden=True)
         self.simple_mdp_deliver_soup(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_counter_soup(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_pickup_counter_dish(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_pickup_counter_container(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_counter_laptop(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_drop_useless_dish_with_soup_idle(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_drop_useless_container_with_soup_idle(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_soup(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_pickup_dish(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_pickup_container(mlam, counter_drop_forbidden=True)
         self.simple_mdp_start_good_soup_cooking(mlam, counter_drop_forbidden=True)
         self.simple_mdp_start_bad_soup_cooking(mlam, counter_drop_forbidden=True)
         self.simple_mdp_start_1_laptop_soup_cooking(mlam, counter_drop_forbidden=True)
@@ -383,13 +383,13 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         self.simple_mdp_drop_useless_laptop_bad_soup(mlam, counter_drop_forbidden=True)
         self.simple_mdp_add_3rd_laptop(mlam, counter_drop_forbidden=True)
         self.simple_mdp_add_2nd_laptop(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_drop_useless_dish(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_drop_useless_container(mlam, counter_drop_forbidden=True)
 
     laptop_PICKUP = ((3, 2), (1, 0))
-    DISH_PICKUP = ((2, 2), (0, 1))
+    CONTAINER_PICKUP = ((2, 2), (0, 1))
     COUNTER_DROP = ((1, 1), (0, -1))
     COUNTER_PICKUP = ((1, 2), (-1, 0))
-    POT_INTERACT = ((2, 1), (00, -1))
+    CONSTRUCTION_SITE_INTERACT = ((2, 1), (00, -1))
     SOUP_DELIVER = ((3, 2), (0, 1))
 
     def simple_mpd_empty_hands(self, planner, counter_drop_forbidden=False):
@@ -399,8 +399,8 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             {},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP]
                                      )
 
     def simple_mdp_deliver_soup(self, planner, counter_drop_forbidden=False):
@@ -412,12 +412,12 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
 
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
                                          [self.SOUP_DELIVER]
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
                                          [self.COUNTER_DROP, self.SOUP_DELIVER]
                                          )
 
@@ -428,19 +428,19 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             {(0, 2): done_soup_obj((0, 2))},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP]
                                      )
 
-    def simple_mdp_pickup_counter_dish(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_pickup_counter_container(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
-            {(0, 2): Obj('dish', (0, 2))},
+            {(0, 2): Obj('container', (0, 2))},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP]
                                      )
 
     def simple_mdp_pickup_counter_laptop(self, planner, counter_drop_forbidden=False):
@@ -450,53 +450,53 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             {(0, 2): Obj('laptop', (0, 2))},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.COUNTER_PICKUP]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP]
                                      )
 
-    def simple_mdp_drop_useless_dish_with_soup_idle(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_drop_useless_container_with_soup_idle(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, Obj('dish', (2, 1)))],
+             P((2, 1), n, Obj('container', (2, 1)))],
             {(2, 0): idle_soup_obj((2, 0), 3)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
                                          []
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
                                          [self.COUNTER_DROP]
                                          )
 
     def simple_mdp_pickup_soup(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, Obj('dish', (2, 1)))],
+             P((2, 1), n, Obj('container', (2, 1)))],
             {(2, 0): done_soup_obj((2, 0))},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
-                                         [self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
+                                         [self.CONSTRUCTION_SITE_INTERACT]
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
-                                         [self.COUNTER_DROP, self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
+                                         [self.COUNTER_DROP, self.CONSTRUCTION_SITE_INTERACT]
                                          )
 
-    def simple_mdp_pickup_dish(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_pickup_container(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(2, 0): done_soup_obj((2, 0))},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP]
                                      )
 
     def simple_mdp_start_good_soup_cooking(self, planner, counter_drop_forbidden=False):
@@ -506,8 +506,8 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             {(2, 0): idle_soup_obj((2, 0), 3)},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT]
                                      )
 
     def simple_mdp_start_bad_soup_cooking(self, planner, counter_drop_forbidden=False):
@@ -517,8 +517,8 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             {(2, 0): idle_soup_obj((2, 0), 2)},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT]
                                      )
 
     def simple_mdp_start_1_laptop_soup_cooking(self, planner, counter_drop_forbidden=False):
@@ -528,8 +528,8 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             {(2, 0): idle_soup_obj((2, 0), 1)},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                     [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT]
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                     [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT]
                                      )
 
     def simple_mdp_drop_useless_laptop_good_soup(self, planner, counter_drop_forbidden=False):
@@ -540,12 +540,12 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
                                          []
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
                                          [self.COUNTER_DROP]
                                          )
 
@@ -557,12 +557,12 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
                                          []
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP],
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP],
                                          [self.COUNTER_DROP]
                                          )
 
@@ -574,13 +574,13 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                         [self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                         [self.CONSTRUCTION_SITE_INTERACT]
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                         [self.COUNTER_DROP, self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                         [self.COUNTER_DROP, self.CONSTRUCTION_SITE_INTERACT]
                                          )
 
     def simple_mdp_add_2nd_laptop(self, planner, counter_drop_forbidden=False):
@@ -591,30 +591,30 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                         [self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                         [self.CONSTRUCTION_SITE_INTERACT]
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                         [self.COUNTER_DROP, self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                         [self.COUNTER_DROP, self.CONSTRUCTION_SITE_INTERACT]
                                          )
 
-    def simple_mdp_drop_useless_dish(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_drop_useless_container(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, Obj('dish', (2, 1)))],
+             P((2, 1), n, Obj('container', (2, 1)))],
             {(2, 0): idle_soup_obj((2, 0), 1)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                         [self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                         [self.CONSTRUCTION_SITE_INTERACT]
                                          )
         else:
             self.check_ml_action_manager(s, planner,
-                                         [self.laptop_PICKUP, self.DISH_PICKUP, self.POT_INTERACT],
-                                         [self.COUNTER_DROP, self.POT_INTERACT]
+                                         [self.laptop_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
+                                         [self.COUNTER_DROP, self.CONSTRUCTION_SITE_INTERACT]
                                          )
 
     def check_ml_action_manager(self, state, am, expected_mla_0, expected_mla_1, debug=False):

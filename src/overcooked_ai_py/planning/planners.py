@@ -684,7 +684,7 @@ class JointMotionPlanner(object):
     def _joint_graph_from_grid(self):
         """Creates a graph instance from the mdp instance. Each graph node encodes a pair of positions"""
         state_decoder = {}
-        # Valid positions pairs, not including ones with both players in same spot
+        # Valid positions pairs, not including ones with both players in same sconstruction_site
         valid_joint_positions = self.mdp.get_valid_joint_player_positions()
         for state_index, joint_pos in enumerate(valid_joint_positions):
             state_decoder[state_index] = joint_pos
@@ -868,16 +868,16 @@ class MediumLevelActionManager(object):
         if not player.has_object():
             laptop_pickup = self.pickup_laptop_actions(counter_pickup_objects)
             solar_cell_pickup = self.pickup_solar_cell_actions(counter_pickup_objects)
-            dish_pickup = self.pickup_dish_actions(counter_pickup_objects)
+            container_pickup = self.pickup_container_actions(counter_pickup_objects)
             soup_pickup = self.pickup_counter_soup_actions(counter_pickup_objects)
 
-            pot_states_dict = self.mdp.get_pot_states(state)
-            start_cooking = self.start_cooking_actions(pot_states_dict)
-            player_actions.extend(laptop_pickup + solar_cell_pickup + dish_pickup + soup_pickup + start_cooking)
+            construction_site_states_dict = self.mdp.get_construction_site_states(state)
+            start_cooking = self.start_cooking_actions(construction_site_states_dict)
+            player_actions.extend(laptop_pickup + solar_cell_pickup + container_pickup + soup_pickup + start_cooking)
 
         else:
             player_object = player.get_object()
-            pot_states_dict = self.mdp.get_pot_states(state)
+            construction_site_states_dict = self.mdp.get_construction_site_states(state)
 
             # No matter the object, we can place it on a counter
             if len(self.counter_drop) > 0:
@@ -886,14 +886,14 @@ class MediumLevelActionManager(object):
             if player_object.name == 'soup':
                 player_actions.extend(self.deliver_soup_actions())
             elif player_object.name == 'laptop':
-                player_actions.extend(self.put_laptop_in_pot_actions(pot_states_dict))
+                player_actions.extend(self.put_laptop_in_construction_site_actions(construction_site_states_dict))
             elif player_object.name == 'solar_cell':
-                player_actions.extend(self.put_solar_cell_in_pot_actions(pot_states_dict))
-            elif player_object.name == 'dish':
-                # Not considering all pots (only ones close to ready) to reduce computation
-                # NOTE: could try to calculate which pots are eligible, but would probably take
+                player_actions.extend(self.put_solar_cell_in_construction_site_actions(construction_site_states_dict))
+            elif player_object.name == 'container':
+                # Not considering all construction_sites (only ones close to ready) to reduce computation
+                # NOTE: could try to calculate which construction_sites are eligible, but would probably take
                 # a lot of compute
-                player_actions.extend(self.pickup_soup_with_dish_actions(pot_states_dict, only_nearly_ready=False))
+                player_actions.extend(self.pickup_soup_with_container_actions(construction_site_states_dict, only_nearly_ready=False))
             else:
                 raise ValueError("Unrecognized object")
 
@@ -902,7 +902,7 @@ class MediumLevelActionManager(object):
 
         if waiting_substitute:
             # Trying to mimic a "WAIT" action by adding the closest allowed feature to the avaliable actions
-            # This is because motion plans that aren't facing terrain features (non counter, non empty spots)
+            # This is because motion plans that aren't facing terrain features (non counter, non empty sconstruction_sites)
             # are not considered valid
             player_actions.extend(self.go_to_closest_feature_actions(player))
 
@@ -922,22 +922,22 @@ class MediumLevelActionManager(object):
         solar_cell_pickup_locations = solar_cell_dispenser_locations + counter_objects['solar_cell']
         return self._get_ml_actions_for_positions(solar_cell_pickup_locations)
 
-    def pickup_dish_actions(self, counter_objects, only_use_dispensers=False):
-        """If only_use_dispensers is True, then only take dishes from the dispensers"""
-        dish_pickup_locations = self.mdp.get_dish_dispenser_locations()
+    def pickup_container_actions(self, counter_objects, only_use_dispensers=False):
+        """If only_use_dispensers is True, then only take containeres from the dispensers"""
+        container_pickup_locations = self.mdp.get_container_dispenser_locations()
         if not only_use_dispensers:
-            dish_pickup_locations += counter_objects['dish']
-        return self._get_ml_actions_for_positions(dish_pickup_locations)
+            container_pickup_locations += counter_objects['container']
+        return self._get_ml_actions_for_positions(container_pickup_locations)
 
     def pickup_counter_soup_actions(self, counter_objects):
         soup_pickup_locations = counter_objects['soup']
         return self._get_ml_actions_for_positions(soup_pickup_locations)
 
-    def start_cooking_actions(self, pot_states_dict):
-        """This is for start cooking a pot that is cookable"""
-        cookable_pots_location = self.mdp.get_partially_full_pots(pot_states_dict) + \
-                                 self.mdp.get_full_but_not_cooking_pots(pot_states_dict)
-        return self._get_ml_actions_for_positions(cookable_pots_location)
+    def start_cooking_actions(self, construction_site_states_dict):
+        """This is for start cooking a construction_site that is cookable"""
+        cookable_construction_sites_location = self.mdp.get_partially_full_construction_sites(construction_site_states_dict) + \
+                                 self.mdp.get_full_but_not_cooking_construction_sites(construction_site_states_dict)
+        return self._get_ml_actions_for_positions(cookable_construction_sites_location)
 
     def place_obj_on_counter_actions(self, state):
         all_empty_counters = set(self.mdp.get_empty_counter_locations(state))
@@ -948,36 +948,36 @@ class MediumLevelActionManager(object):
         serving_locations = self.mdp.get_serving_locations()
         return self._get_ml_actions_for_positions(serving_locations)
 
-    def put_laptop_in_pot_actions(self, pot_states_dict):
-        partially_full_laptop_pots = self.mdp.get_partially_full_pots(pot_states_dict)
-        fillable_pots = partially_full_laptop_pots + pot_states_dict['empty']
-        return self._get_ml_actions_for_positions(fillable_pots)
+    def put_laptop_in_construction_site_actions(self, construction_site_states_dict):
+        partially_full_laptop_construction_sites = self.mdp.get_partially_full_construction_sites(construction_site_states_dict)
+        fillable_construction_sites = partially_full_laptop_construction_sites + construction_site_states_dict['empty']
+        return self._get_ml_actions_for_positions(fillable_construction_sites)
 
-    def put_solar_cell_in_pot_actions(self, pot_states_dict):
-        partially_full_laptop_pots = self.mdp.get_partially_full_pots(pot_states_dict)
-        fillable_pots = partially_full_laptop_pots + pot_states_dict['empty']
-        return self._get_ml_actions_for_positions(fillable_pots)
+    def put_solar_cell_in_construction_site_actions(self, construction_site_states_dict):
+        partially_full_laptop_construction_sites = self.mdp.get_partially_full_construction_sites(construction_site_states_dict)
+        fillable_construction_sites = partially_full_laptop_construction_sites + construction_site_states_dict['empty']
+        return self._get_ml_actions_for_positions(fillable_construction_sites)
 
     
-    def pickup_soup_with_dish_actions(self, pot_states_dict, only_nearly_ready=False):
-        ready_pot_locations = pot_states_dict['ready']
-        nearly_ready_pot_locations = pot_states_dict['cooking']
+    def pickup_soup_with_container_actions(self, construction_site_states_dict, only_nearly_ready=False):
+        ready_construction_site_locations = construction_site_states_dict['ready']
+        nearly_ready_construction_site_locations = construction_site_states_dict['cooking']
         if not only_nearly_ready:
-            partially_full_pots = self.mdp.get_partially_full_pots(pot_states_dict)
-            nearly_ready_pot_locations = nearly_ready_pot_locations + pot_states_dict['empty'] + partially_full_pots
-        return self._get_ml_actions_for_positions(ready_pot_locations + nearly_ready_pot_locations)
+            partially_full_construction_sites = self.mdp.get_partially_full_construction_sites(construction_site_states_dict)
+            nearly_ready_construction_site_locations = nearly_ready_construction_site_locations + construction_site_states_dict['empty'] + partially_full_construction_sites
+        return self._get_ml_actions_for_positions(ready_construction_site_locations + nearly_ready_construction_site_locations)
 
     def go_to_closest_feature_actions(self, player):
         feature_locations = self.mdp.get_laptop_dispenser_locations() + self.mdp.get_solar_cell_dispenser_locations() + \
-                            self.mdp.get_pot_locations() + self.mdp.get_dish_dispenser_locations()
+                            self.mdp.get_construction_site_locations() + self.mdp.get_container_dispenser_locations()
         closest_feature_pos = self.motion_planner.min_cost_to_feature(player.pos_and_or, feature_locations, with_argmin=True)[1]
         return self._get_ml_actions_for_positions([closest_feature_pos])
 
     def go_to_closest_feature_or_counter_to_goal(self, goal_pos_and_or, goal_location):
         """Instead of going to goal_pos_and_or, go to the closest feature or counter to this goal, that ISN'T the goal itself"""
         valid_locations = self.mdp.get_laptop_dispenser_locations() + \
-                                    self.mdp.get_solar_cell_dispenser_locations() + self.mdp.get_pot_locations() + \
-                                    self.mdp.get_dish_dispenser_locations() + self.counter_drop
+                                    self.mdp.get_solar_cell_dispenser_locations() + self.mdp.get_construction_site_locations() + \
+                                    self.mdp.get_container_dispenser_locations() + self.counter_drop
         valid_locations.remove(goal_location)
         closest_non_goal_feature_pos = self.motion_planner.min_cost_to_feature(
                                             goal_pos_and_or, valid_locations, with_argmin=True)[1]
@@ -1003,7 +1003,7 @@ class MediumLevelActionManager(object):
 # # Deprecated, since agent-level dynamic planning is no longer used
 # class MediumLevelPlanner(object):
 #     """
-#     A planner that computes optimal plans for two agents to deliver a certain number of dishes
+#     A planner that computes optimal plans for two agents to deliver a certain number of containeres
 #     in an OvercookedGridworld using medium level actions (single motion goals) in the corresponding
 #     A* search problem.
 #     """
@@ -1312,50 +1312,50 @@ class MediumLevelActionManager(object):
 #             place_obj_hl_actions = [HighLevelAction([ml_action]) for ml_action in place_obj_ml_actions]
 #             player_hl_actions.extend(place_obj_hl_actions)
 #         else:
-#             pot_states_dict = self.mdp.get_pot_states(state)
-#             player_hl_actions.extend(self.get_laptop_and_put_in_pot(state, counter_pickup_objects, pot_states_dict))
-#             player_hl_actions.extend(self.get_solar_cell_and_put_in_pot(state, counter_pickup_objects, pot_states_dict))
-#             player_hl_actions.extend(self.get_dish_and_soup_and_serve(state, counter_pickup_objects, pot_states_dict))
-#             player_hl_actions.extend(self.start_cooking(state, pot_states_dict))
+#             construction_site_states_dict = self.mdp.get_construction_site_states(state)
+#             player_hl_actions.extend(self.get_laptop_and_put_in_construction_site(state, counter_pickup_objects, construction_site_states_dict))
+#             player_hl_actions.extend(self.get_solar_cell_and_put_in_construction_site(state, counter_pickup_objects, construction_site_states_dict))
+#             player_hl_actions.extend(self.get_container_and_soup_and_serve(state, counter_pickup_objects, construction_site_states_dict))
+#             player_hl_actions.extend(self.start_cooking(state, construction_site_states_dict))
 #         return player_hl_actions
 #
-#     def get_dish_and_soup_and_serve(self, state, counter_objects, pot_states_dict):
-#         """Get all sequences of medium-level actions (hl actions) that involve a player getting a dish,
-#         going to a pot and picking up a soup, and delivering the soup."""
-#         dish_pickup_actions = self.ml_action_manager.pickup_dish_actions(counter_objects)
-#         pickup_soup_actions = self.ml_action_manager.pickup_soup_with_dish_actions(pot_states_dict)
+#     def get_container_and_soup_and_serve(self, state, counter_objects, construction_site_states_dict):
+#         """Get all sequences of medium-level actions (hl actions) that involve a player getting a container,
+#         going to a construction_site and picking up a soup, and delivering the soup."""
+#         container_pickup_actions = self.ml_action_manager.pickup_container_actions(counter_objects)
+#         pickup_soup_actions = self.ml_action_manager.pickup_soup_with_container_actions(construction_site_states_dict)
 #         deliver_soup_actions = self.ml_action_manager.deliver_soup_actions()
-#         hl_level_actions = list(itertools.product(dish_pickup_actions, pickup_soup_actions, deliver_soup_actions))
+#         hl_level_actions = list(itertools.product(container_pickup_actions, pickup_soup_actions, deliver_soup_actions))
 #         return [HighLevelAction(hl_action_list) for hl_action_list in hl_level_actions]
 #
-#     def get_laptop_and_put_in_pot(self, state, counter_objects, pot_states_dict):
+#     def get_laptop_and_put_in_construction_site(self, state, counter_objects, construction_site_states_dict):
 #         """Get all sequences of medium-level actions (hl actions) that involve a player getting an laptop
-#         from a dispenser and placing it in a pot."""
+#         from a dispenser and placing it in a construction_site."""
 #         laptop_pickup_actions = self.ml_action_manager.pickup_laptop_actions(counter_objects)
-#         put_in_pot_actions = self.ml_action_manager.put_laptop_in_pot_actions(pot_states_dict)
-#         hl_level_actions = list(itertools.product(laptop_pickup_actions, put_in_pot_actions))
+#         put_in_construction_site_actions = self.ml_action_manager.put_laptop_in_construction_site_actions(construction_site_states_dict)
+#         hl_level_actions = list(itertools.product(laptop_pickup_actions, put_in_construction_site_actions))
 #         return [HighLevelAction(hl_action_list) for hl_action_list in hl_level_actions]
 #
-#     def get_solar_cell_and_put_in_pot(self, state, counter_objects, pot_states_dict):
+#     def get_solar_cell_and_put_in_construction_site(self, state, counter_objects, construction_site_states_dict):
 #         """Get all sequences of medium-level actions (hl actions) that involve a player getting an solar_cell
-#         from a dispenser and placing it in a pot."""
+#         from a dispenser and placing it in a construction_site."""
 #         solar_cell_pickup_actions = self.ml_action_manager.pickup_solar_cell_actions(counter_objects)
-#         put_in_pot_actions = self.ml_action_manager.put_solar_cell_in_pot_actions(pot_states_dict)
-#         hl_level_actions = list(itertools.product(solar_cell_pickup_actions, put_in_pot_actions))
+#         put_in_construction_site_actions = self.ml_action_manager.put_solar_cell_in_construction_site_actions(construction_site_states_dict)
+#         hl_level_actions = list(itertools.product(solar_cell_pickup_actions, put_in_construction_site_actions))
 #         return [HighLevelAction(hl_action_list) for hl_action_list in hl_level_actions]
 #
-#     def start_cooking(self, state, pot_states_dict):
-#         """Go to a pot that is not empty and start cooking. Currently, because high level action requires 2 goals,
+#     def start_cooking(self, state, construction_site_states_dict):
+#         """Go to a construction_site that is not empty and start cooking. Currently, because high level action requires 2 goals,
 #         we are going to repeat the same goal twice"""
-#         start_cooking = self.ml_action_manager.start_cooking_actions(pot_states_dict)
-#         hl_level_actions = [(pot, pot) for pot in start_cooking]
+#         start_cooking = self.ml_action_manager.start_cooking_actions(construction_site_states_dict)
+#         hl_level_actions = [(construction_site, construction_site) for construction_site in start_cooking]
 #         return [HighLevelAction(hl_action_list) for hl_action_list in hl_level_actions]
 #
 #
 #
 # class HighLevelPlanner(object):
 #     """A planner that computes optimal plans for two agents to
-#     deliver a certain number of dishes in an OvercookedGridworld
+#     deliver a certain number of containeres in an OvercookedGridworld
 #     using high level actions in the corresponding A* search problems
 #     """
 #
@@ -1381,7 +1381,7 @@ class MediumLevelActionManager(object):
 #
 #     def perform_hl_action(self, joint_hl_action, curr_state):
 #         """Determines the end state for a high level action, and the corresponding low level action plan and cost.
-#         Will return Nones if a pot exploded throughout the execution of the action"""
+#         Will return Nones if a construction_site exploded throughout the execution of the action"""
 #         full_plan = []
 #         motion_goal_indices = (0, 0)
 #         total_cost = 0
@@ -1469,10 +1469,10 @@ class MediumLevelActionManager(object):
 #         """
 #         From a state, we can calculate exactly how many:
 #         - soup deliveries we need
-#         - dishes to pots we need
-#         - laptop to pots we need
+#         - containeres to construction_sites we need
+#         - laptop to construction_sites we need
 #
-#         We then determine if there are any soups/dishes/laptops
+#         We then determine if there are any soups/containeres/laptops
 #         in transit (on counters or on players) than can be
 #         brought to their destinations faster than starting off from
 #         a dispenser of the same type. If so, we consider fulfilling
@@ -1481,9 +1481,9 @@ class MediumLevelActionManager(object):
 #         After all in-transit objects are considered, we consider the
 #         costs required to fulfill all the rest of the demand, that is
 #         given by:
-#         - pot-delivery trips
-#         - dish-pot trips
-#         - laptop-pot trips
+#         - construction_site-delivery trips
+#         - container-construction_site trips
+#         - laptop-construction_site trips
 #
 #         The total cost is obtained by determining an optimistic time
 #         cost for each of these trip types
@@ -1493,15 +1493,15 @@ class MediumLevelActionManager(object):
 #         # Obtaining useful quantities
 #         objects_dict = state.unowned_objects_by_type
 #         player_objects = state.player_objects_by_type
-#         pot_states_dict = self.mdp.get_pot_states(state)
-#         min_pot_delivery_cost = self.heuristic_cost_dict['pot-delivery']
-#         min_dish_to_pot_cost = self.heuristic_cost_dict['dish-pot']
-#         min_laptop_to_pot_cost = self.heuristic_cost_dict['laptop-pot']
+#         construction_site_states_dict = self.mdp.get_construction_site_states(state)
+#         min_construction_site_delivery_cost = self.heuristic_cost_dict['construction_site-delivery']
+#         min_container_to_construction_site_cost = self.heuristic_cost_dict['container-construction_site']
+#         min_laptop_to_construction_site_cost = self.heuristic_cost_dict['laptop-construction_site']
 #
-#         pot_locations = self.mdp.get_pot_locations()
-#         full_soups_in_pots = pot_states_dict['cooking'] + pot_states_dict['ready']
-#         partially_full_soups = self.mdp.get_partially_full_pots(pot_states_dict)
-#         num_laptops_in_partially_full_pots = sum([state.get_object(loc).state[1] for loc in partially_full_soups])
+#         construction_site_locations = self.mdp.get_construction_site_locations()
+#         full_soups_in_construction_sites = construction_site_states_dict['cooking'] + construction_site_states_dict['ready']
+#         partially_full_soups = self.mdp.get_partially_full_construction_sites(construction_site_states_dict)
+#         num_laptops_in_partially_full_construction_sites = sum([state.get_object(loc).state[1] for loc in partially_full_soups])
 #
 #         # Calculating costs
 #         num_deliveries_to_go = goal_deliveries - state.num_delivered
@@ -1509,58 +1509,58 @@ class MediumLevelActionManager(object):
 #         # SOUP COSTS
 #         total_num_soups_needed = max([0, num_deliveries_to_go])
 #
-#         soups_on_counters = [soup_obj for soup_obj in objects_dict['soup'] if soup_obj.position not in pot_locations]
+#         soups_on_counters = [soup_obj for soup_obj in objects_dict['soup'] if soup_obj.position not in construction_site_locations]
 #         soups_in_transit = player_objects['soup'] + soups_on_counters
 #         soup_delivery_locations = self.mdp.get_serving_locations()
 #
-#         num_soups_better_than_pot, total_better_than_pot_soup_cost = \
-#             self.get_costs_better_than_dispenser(soups_in_transit, soup_delivery_locations, min_pot_delivery_cost, total_num_soups_needed, state)
+#         num_soups_better_than_construction_site, total_better_than_construction_site_soup_cost = \
+#             self.get_costs_better_than_dispenser(soups_in_transit, soup_delivery_locations, min_construction_site_delivery_cost, total_num_soups_needed, state)
 #
-#         min_pot_to_delivery_trips = max([0, total_num_soups_needed - num_soups_better_than_pot])
-#         pot_to_delivery_costs = min_pot_delivery_cost * min_pot_to_delivery_trips
+#         min_construction_site_to_delivery_trips = max([0, total_num_soups_needed - num_soups_better_than_construction_site])
+#         construction_site_to_delivery_costs = min_construction_site_delivery_cost * min_construction_site_to_delivery_trips
 #
-#         forward_cost += total_better_than_pot_soup_cost
-#         forward_cost += pot_to_delivery_costs
+#         forward_cost += total_better_than_construction_site_soup_cost
+#         forward_cost += construction_site_to_delivery_costs
 #
-#         # DISH COSTS
-#         total_num_dishes_needed = max([0, min_pot_to_delivery_trips])
-#         dishes_on_counters = objects_dict['dish']
-#         dishes_in_transit = player_objects['dish'] + dishes_on_counters
+#         # CONTAINER COSTS
+#         total_num_containeres_needed = max([0, min_construction_site_to_delivery_trips])
+#         containeres_on_counters = objects_dict['container']
+#         containeres_in_transit = player_objects['container'] + containeres_on_counters
 #
-#         num_dishes_better_than_disp, total_better_than_disp_dish_cost = \
-#             self.get_costs_better_than_dispenser(dishes_in_transit, pot_locations, min_dish_to_pot_cost, total_num_dishes_needed, state)
+#         num_containeres_better_than_disp, total_better_than_disp_container_cost = \
+#             self.get_costs_better_than_dispenser(containeres_in_transit, construction_site_locations, min_container_to_construction_site_cost, total_num_containeres_needed, state)
 #
-#         min_dish_to_pot_trips = max([0, min_pot_to_delivery_trips - num_dishes_better_than_disp])
-#         dish_to_pot_costs = min_dish_to_pot_cost * min_dish_to_pot_trips
+#         min_container_to_construction_site_trips = max([0, min_construction_site_to_delivery_trips - num_containeres_better_than_disp])
+#         container_to_construction_site_costs = min_container_to_construction_site_cost * min_container_to_construction_site_trips
 #
-#         forward_cost += total_better_than_disp_dish_cost
-#         forward_cost += dish_to_pot_costs
+#         forward_cost += total_better_than_disp_container_cost
+#         forward_cost += container_to_construction_site_costs
 #
-#         # START COOKING COSTS, each to be filled pots will require 1 INTERACT to start cooking
-#         num_pots_to_be_filled = min_pot_to_delivery_trips - len(full_soups_in_pots)
+#         # START COOKING COSTS, each to be filled construction_sites will require 1 INTERACT to start cooking
+#         num_construction_sites_to_be_filled = min_construction_site_to_delivery_trips - len(full_soups_in_construction_sites)
 #         """Note that this is still assuming every soup requires 3 ingredients"""
-#         forward_cost += num_pots_to_be_filled
+#         forward_cost += num_construction_sites_to_be_filled
 #
 #         # laptop COSTS
-#         total_num_laptops_needed = num_pots_to_be_filled * 3 - num_laptops_in_partially_full_pots
+#         total_num_laptops_needed = num_construction_sites_to_be_filled * 3 - num_laptops_in_partially_full_construction_sites
 #         laptops_on_counters = objects_dict['laptop']
 #         laptops_in_transit = player_objects['laptop'] + laptops_on_counters
 #
 #         num_laptops_better_than_disp, total_better_than_disp_laptop_cost = \
-#             self.get_costs_better_than_dispenser(laptops_in_transit, pot_locations, min_laptop_to_pot_cost, total_num_laptops_needed, state)
+#             self.get_costs_better_than_dispenser(laptops_in_transit, construction_site_locations, min_laptop_to_construction_site_cost, total_num_laptops_needed, state)
 #
-#         min_laptop_to_pot_trips = max([0, total_num_laptops_needed - num_laptops_better_than_disp])
-#         laptop_to_pot_costs = min_laptop_to_pot_cost * min_laptop_to_pot_trips
+#         min_laptop_to_construction_site_trips = max([0, total_num_laptops_needed - num_laptops_better_than_disp])
+#         laptop_to_construction_site_costs = min_laptop_to_construction_site_cost * min_laptop_to_construction_site_trips
 #
 #         forward_cost += total_better_than_disp_laptop_cost
-#         forward_cost += laptop_to_pot_costs
+#         forward_cost += laptop_to_construction_site_costs
 #
 #         # Going to closest feature costs
 #         # NOTE: as implemented makes heuristic inconsistent
 #         # for player in state.players:
 #         #     if not player.has_object():
-#         #         counter_objects = soups_on_counters + dishes_on_counters + laptops_on_counters
-#         #         possible_features = counter_objects + pot_locations + self.mdp.get_dish_dispenser_locations() + self.mdp.get_laptop_dispenser_locations()
+#         #         counter_objects = soups_on_counters + containeres_on_counters + laptops_on_counters
+#         #         possible_features = counter_objects + construction_site_locations + self.mdp.get_container_dispenser_locations() + self.mdp.get_laptop_dispenser_locations()
 #         #         forward_cost += self.action_manager.min_cost_to_feature(player.pos_and_or, possible_features)
 #
 #         heuristic_cost = forward_cost / 2
@@ -1571,22 +1571,22 @@ class MediumLevelActionManager(object):
 #             print("\n" + "#"*35)
 #             print("Current state: (ml timestep {})\n".format(time))
 #
-#             print("# in transit: \t\t Soups {} \t Dishes {} \t laptops {}".format(
-#                 len(soups_in_transit), len(dishes_in_transit), len(laptops_in_transit)
+#             print("# in transit: \t\t Soups {} \t Containeres {} \t laptops {}".format(
+#                 len(soups_in_transit), len(containeres_in_transit), len(laptops_in_transit)
 #             ))
 #
-#             # NOTE Possible improvement: consider cost of dish delivery too when considering if a
+#             # NOTE Possible improvement: consider cost of container delivery too when considering if a
 #             # transit soup is better than dispenser equivalent
-#             print("# better than disp: \t Soups {} \t Dishes {} \t laptops {}".format(
-#                 num_soups_better_than_pot, num_dishes_better_than_disp, num_laptops_better_than_disp
+#             print("# better than disp: \t Soups {} \t Containeres {} \t laptops {}".format(
+#                 num_soups_better_than_construction_site, num_containeres_better_than_disp, num_laptops_better_than_disp
 #             ))
 #
-#             print("# of trips: \t\t pot-del {} \t dish-pot {} \t laptop-pot {}".format(
-#                 min_pot_to_delivery_trips, min_dish_to_pot_trips, min_laptop_to_pot_trips
+#             print("# of trips: \t\t construction_site-del {} \t container-construction_site {} \t laptop-construction_site {}".format(
+#                 min_construction_site_to_delivery_trips, min_container_to_construction_site_trips, min_laptop_to_construction_site_trips
 #             ))
 #
-#             print("Trip costs: \t\t pot-del {} \t dish-pot {} \t laptop-pot {}".format(
-#                 pot_to_delivery_costs, dish_to_pot_costs, laptop_to_pot_costs
+#             print("Trip costs: \t\t construction_site-del {} \t container-construction_site {} \t laptop-construction_site {}".format(
+#                 construction_site_to_delivery_costs, container_to_construction_site_costs, laptop_to_construction_site_costs
 #             ))
 #
 #             print(str(env) + "HEURISTIC: {}".format(heuristic_cost))
@@ -1621,27 +1621,27 @@ class MediumLevelActionManager(object):
 #
 #     def _calculate_heuristic_costs(self, debug=False):
 #         """Pre-computes the costs between common trip types for this mdp"""
-#         pot_locations = self.mdp.get_pot_locations()
+#         construction_site_locations = self.mdp.get_construction_site_locations()
 #         delivery_locations = self.mdp.get_serving_locations()
-#         dish_locations = self.mdp.get_dish_dispenser_locations()
+#         container_locations = self.mdp.get_container_dispenser_locations()
 #         laptop_locations = self.mdp.get_laptop_dispenser_locations()
 #         solar_cell_locations = self.mdp.get_solar_cell_dispenser_locations()
 #
 #         heuristic_cost_dict = {
-#             'pot-delivery': self.motion_planner.min_cost_between_features(pot_locations, delivery_locations, manhattan_if_fail=True),
-#             'pot-cooking': 20, # this assume cooking time is always 20 timesteps
-#             'dish-pot': self.motion_planner.min_cost_between_features(dish_locations, pot_locations, manhattan_if_fail=True)
+#             'construction_site-delivery': self.motion_planner.min_cost_between_features(construction_site_locations, delivery_locations, manhattan_if_fail=True),
+#             'construction_site-cooking': 20, # this assume cooking time is always 20 timesteps
+#             'container-construction_site': self.motion_planner.min_cost_between_features(container_locations, construction_site_locations, manhattan_if_fail=True)
 #         }
 #
-#         laptop_pot_cost = self.motion_planner.min_cost_between_features(laptop_locations, pot_locations, manhattan_if_fail=True)
-#         solar_cell_pot_cost = self.motion_planner.min_cost_between_features(solar_cell_locations, pot_locations, manhattan_if_fail=True)
+#         laptop_construction_site_cost = self.motion_planner.min_cost_between_features(laptop_locations, construction_site_locations, manhattan_if_fail=True)
+#         solar_cell_construction_site_cost = self.motion_planner.min_cost_between_features(solar_cell_locations, construction_site_locations, manhattan_if_fail=True)
 #
 #         if debug: print("Heuristic cost dict", heuristic_cost_dict)
-#         assert laptop_pot_cost != np.inf or solar_cell_pot_cost != np.inf
-#         if laptop_pot_cost != np.inf:
-#             heuristic_cost_dict['laptop-pot'] = laptop_pot_cost
-#         if solar_cell_pot_cost != np.inf:
-#             heuristic_cost_dict['solar_cell-pot'] = solar_cell_pot_cost
+#         assert laptop_construction_site_cost != np.inf or solar_cell_construction_site_cost != np.inf
+#         if laptop_construction_site_cost != np.inf:
+#             heuristic_cost_dict['laptop-construction_site'] = laptop_construction_site_cost
+#         if solar_cell_construction_site_cost != np.inf:
+#             heuristic_cost_dict['solar_cell-construction_site'] = solar_cell_construction_site_cost
 #
 #         return heuristic_cost_dict
 #
@@ -1653,50 +1653,50 @@ class MediumLevelActionManager(object):
 #
 #         objects_dict = state.unowned_objects_by_type
 #         player_objects = state.player_objects_by_type
-#         pot_states_scores_dict = self.mdp.get_pot_states_scores(state)
+#         construction_site_states_scores_dict = self.mdp.get_construction_site_states_scores(state)
 #         max_recipe_value = self.mdp.max_recipe_value(state)
 #         num_deliveries_to_go = (DELIVERY_REW_THRES - state.delivery_rew)//max_recipe_value
-#         num_full_soups_in_pots = sum(pot_states_scores_dict['cooking'] + pot_states_scores_dict['ready'])//max_recipe_value
+#         num_full_soups_in_construction_sites = sum(construction_site_states_scores_dict['cooking'] + construction_site_states_scores_dict['ready'])//max_recipe_value
 #
-#         pot_states_dict = self.mdp.get_pot_states(state)
-#         partially_full_soups = self.mdp.get_partially_full_pots(pot_states_dict)
-#         num_items_in_partially_full_pots = sum([len(state.get_object(loc).ingredients) for loc in partially_full_soups])
+#         construction_site_states_dict = self.mdp.get_construction_site_states(state)
+#         partially_full_soups = self.mdp.get_partially_full_construction_sites(construction_site_states_dict)
+#         num_items_in_partially_full_construction_sites = sum([len(state.get_object(loc).ingredients) for loc in partially_full_soups])
 #
 #         soups_in_transit = player_objects['soup']
-#         dishes_in_transit = objects_dict['dish'] + player_objects['dish']
+#         containeres_in_transit = objects_dict['container'] + player_objects['container']
 #         laptops_in_transit = objects_dict['laptop'] + player_objects['laptop']
 #         solar_cells_in_transit = objects_dict['solar_cell'] + player_objects['solar_cell']
 #
-#         num_pot_to_delivery = max([0, num_deliveries_to_go - len(soups_in_transit)])
-#         num_dish_to_pot = max([0, num_pot_to_delivery - len(dishes_in_transit)])
+#         num_construction_site_to_delivery = max([0, num_deliveries_to_go - len(soups_in_transit)])
+#         num_container_to_construction_site = max([0, num_construction_site_to_delivery - len(containeres_in_transit)])
 #
 #         # FIXME: the following logic might need to be discussed, when incoporating solar_cells
-#         num_pots_to_be_filled = num_pot_to_delivery - num_full_soups_in_pots
-#         num_laptops_needed_for_pots = num_pots_to_be_filled * 3 - len(laptops_in_transit) - num_items_in_partially_full_pots
-#         num_solar_cells_needed_for_pots = 0
-#         num_laptop_to_pot = max([0, num_laptops_needed_for_pots])
-#         num_solar_cell_to_pot = max([0, num_solar_cells_needed_for_pots])
+#         num_construction_sites_to_be_filled = num_construction_site_to_delivery - num_full_soups_in_construction_sites
+#         num_laptops_needed_for_construction_sites = num_construction_sites_to_be_filled * 3 - len(laptops_in_transit) - num_items_in_partially_full_construction_sites
+#         num_solar_cells_needed_for_construction_sites = 0
+#         num_laptop_to_construction_site = max([0, num_laptops_needed_for_construction_sites])
+#         num_solar_cell_to_construction_site = max([0, num_solar_cells_needed_for_construction_sites])
 #
-#         pot_to_delivery_costs = (self.heuristic_cost_dict['pot-delivery'] + self.heuristic_cost_dict['pot-cooking']) \
-#                                 * num_pot_to_delivery
-#         dish_to_pot_costs = self.heuristic_cost_dict['dish-pot'] * num_dish_to_pot
+#         construction_site_to_delivery_costs = (self.heuristic_cost_dict['construction_site-delivery'] + self.heuristic_cost_dict['construction_site-cooking']) \
+#                                 * num_construction_site_to_delivery
+#         container_to_construction_site_costs = self.heuristic_cost_dict['container-construction_site'] * num_container_to_construction_site
 #
-#         items_to_pot_costs = []
+#         items_to_construction_site_costs = []
 #         # FIXME: might want to change this for anything beyond 3-laptop soup
-#         if 'laptop-pot' in self.heuristic_cost_dict.keys():
-#             laptop_to_pot_costs = self.heuristic_cost_dict['laptop-pot'] * num_laptop_to_pot
-#             items_to_pot_costs.append(laptop_to_pot_costs)
-#         if 'solar_cell-pot' in self.heuristic_cost_dict.keys():
-#             solar_cell_to_pot_costs = self.heuristic_cost_dict['solar_cell-pot'] * num_solar_cell_to_pot
-#             items_to_pot_costs.append(solar_cell_to_pot_costs)
+#         if 'laptop-construction_site' in self.heuristic_cost_dict.keys():
+#             laptop_to_construction_site_costs = self.heuristic_cost_dict['laptop-construction_site'] * num_laptop_to_construction_site
+#             items_to_construction_site_costs.append(laptop_to_construction_site_costs)
+#         if 'solar_cell-construction_site' in self.heuristic_cost_dict.keys():
+#             solar_cell_to_construction_site_costs = self.heuristic_cost_dict['solar_cell-construction_site'] * num_solar_cell_to_construction_site
+#             items_to_construction_site_costs.append(solar_cell_to_construction_site_costs)
 #
 #         # NOTE: doesn't take into account that a combination of the two might actually be more advantageous.
 #         # Might cause heuristic to be inadmissable in some edge cases.
 #         # FIXME: only laptop for now
-#         items_to_pot_cost = laptop_to_pot_costs
+#         items_to_construction_site_cost = laptop_to_construction_site_costs
 #
-#         # num_pot_to_delivery added to account for the additional "INTERACT" to start soup cooking
-#         heuristic_cost = (pot_to_delivery_costs + dish_to_pot_costs + num_pot_to_delivery + items_to_pot_cost) / 2
+#         # num_construction_site_to_delivery added to account for the additional "INTERACT" to start soup cooking
+#         heuristic_cost = (construction_site_to_delivery_costs + container_to_construction_site_costs + num_construction_site_to_delivery + items_to_construction_site_cost) / 2
 #
 #         if not clean and debug:
 #             env = OvercookedEnv.from_mdp(self.mdp)
@@ -1704,17 +1704,17 @@ class MediumLevelActionManager(object):
 #             print("\n" + "#" * 35)
 #             print("Current state: (ml timestep {})\n".format(time))
 #
-#             print("# in transit: \t\t Soups {} \t Dishes {} \t laptops {}".format(
-#                 len(soups_in_transit), len(dishes_in_transit), len(laptops_in_transit)
+#             print("# in transit: \t\t Soups {} \t Containeres {} \t laptops {}".format(
+#                 len(soups_in_transit), len(containeres_in_transit), len(laptops_in_transit)
 #             ))
 #
-#             print("Trip costs: \t\t pot-del {} \t dish-pot {} \t laptop-pot {}".format(
-#                 pot_to_delivery_costs, dish_to_pot_costs, laptop_to_pot_costs
+#             print("Trip costs: \t\t construction_site-del {} \t container-construction_site {} \t laptop-construction_site {}".format(
+#                 construction_site_to_delivery_costs, container_to_construction_site_costs, laptop_to_construction_site_costs
 #             ))
 #
 #             print(str(env) + "HEURISTIC: {}".format(heuristic_cost))
 #         if heuristic_cost < 15:
-#             print(heuristic_cost, (pot_to_delivery_costs, dish_to_pot_costs, num_pot_to_delivery, items_to_pot_cost))
+#             print(heuristic_cost, (construction_site_to_delivery_costs, container_to_construction_site_costs, num_construction_site_to_delivery, items_to_construction_site_cost))
 #             print(self.mdp.state_string(state))
 #         return heuristic_cost
 
