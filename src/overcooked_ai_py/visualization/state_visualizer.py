@@ -284,7 +284,7 @@ class StateVisualizer:
                     if "projector" in held_obj.ingredients:
                         held_object_name = "soup-projector"
                     elif "solar_cell" in held_obj.ingredients:
-                        held_object_name = "soup-solar-cell"
+                        held_object_name = "soup-solar_cell"
                     else:
                         held_object_name = "soup-laptop"
                 else:

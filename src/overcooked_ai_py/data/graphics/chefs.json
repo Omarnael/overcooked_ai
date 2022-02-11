@@ -240,6 +240,26 @@
 				"h": 15
 			}
 		},
+		"EAST-soup-solar_cell.png": {
+			"frame": {
+				"x": 52,
+				"y": 18,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
 		"NORTH.png": {
 			"frame": {
 				"x": 86,
@@ -463,6 +483,26 @@
 		"NORTH-solar_cell.png": {
 			"frame": {
 				"x": 52,
+				"y": 52,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"NORTH-soup-solar_cell.png": {
+			"frame": {
+				"x": 35,
 				"y": 52,
 				"w": 15,
 				"h": 15
@@ -720,6 +760,26 @@
 				"h": 15
 			}
 		},
+		"SOUTH-soup-solar_cell.png": {
+			"frame": {
+				"x": 18,
+				"y": 86,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
 		"WEST.png": {
 			"frame": {
 				"x": 52,
@@ -959,7 +1019,27 @@
 				"w": 15,
 				"h": 15
 			}
-		}
+		},
+		"WEST-soup-solar_cell.png": {
+			"frame": {
+				"x": 1,
+				"y": 103,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
 	},
 	"meta": {
 		"app": "http://www.codeandweb.com/texturepacker",
