@@ -8,12 +8,8 @@
                 XDXCXSX""",
                 
     "start_bonus_orders": [],
-    "start_all_orders" : [
-        { "ingredients" : ["laptop"]},
-        { "ingredients" : ["laptop", "laptop"]},
-        { "ingredients" : ["laptop", "laptop", "laptop"]},
-        { "ingredients" : ["laptop", "laptop", "laptop", "laptop"]},
-        { "ingredients" : ["laptop", "laptop", "laptop", "laptop", "laptop"]},
+   "start_all_orders" : [
+        { "ingredients" : ["solar_cell", "solar_cell", "solar_cell"]},
 
 
     ],
