@@ -13,7 +13,6 @@
 
 
     ],
-    "recipe_values" : [5],
-    "recipe_times" : [20],
+    
     "rew_shaping_params": None
 }
