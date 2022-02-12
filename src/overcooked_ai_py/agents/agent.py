@@ -23,7 +23,7 @@ class Agent(object):
     def actions(self, states, agent_indices):
         """
         A multi-state version of the action method. This enables for parallized
-        implementations that can construction_siteentially give speedups in action prediction. 
+        implementations that can potentially give speedups in action prediction. 
 
         Args:
             states (list): list of OvercookedStates for which we want actions for

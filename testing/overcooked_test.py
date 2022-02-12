@@ -428,23 +428,23 @@ class TestGridworld(unittest.TestCase):
         except AssertionError as e:
             print("Loading > 2 player map failed with error:", e)
 
-    def test_construction_siteential_function(self):
+    def test_potential_function(self):
         mp = MotionPlanner(self.base_mdp)
         state = self.base_mdp.get_standard_start_state()
-        val0 = self.base_mdp.construction_siteential_function(state, mp)
+        val0 = self.base_mdp.potential_function(state, mp)
 
         # Pick up projector
         if self.verbose:
             print("pick up projector")
             print(self.base_mdp.state_string(state))
-            print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
+            print("potential: ", self.base_mdp.potential_function(state, mp))
         actions = [Direction.EAST, Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val1 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val1 = self.base_mdp.potential_function(state, mp)
         
 
         # Pick up laptop
@@ -455,11 +455,11 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val2 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val2 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val0, val1, "Picking up projector should increase construction_siteential")
-        self.assertLess(val1, val2, "Picking up laptop should increase construction_siteential")
+        self.assertLess(val0, val1, "Picking up projector should increase potential")
+        self.assertLess(val1, val2, "Picking up laptop should increase potential")
 
         # Pot laptop
         if self.verbose:
@@ -469,8 +469,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val3 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val3 = self.base_mdp.potential_function(state, mp)
         
         # Pot projector
         if self.verbose:
@@ -480,11 +480,11 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val4 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val4 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val2, val3, "Potting laptop should increase construction_siteential")
-        self.assertLess(val3, val4, "Potting projector should increase construction_siteential")
+        self.assertLess(val2, val3, "Potting laptop should increase potential")
+        self.assertLess(val3, val4, "Potting projector should increase potential")
 
         ## Repeat on second construction_site ##
 
@@ -492,10 +492,10 @@ class TestGridworld(unittest.TestCase):
         if self.verbose:
             print("pick up projector")
         state, _ = self.base_mdp.get_state_transition(state, [Action.INTERACT, Action.STAY])
-        val5 = self.base_mdp.construction_siteential_function(state, mp)
+        val5 = self.base_mdp.potential_function(state, mp)
         if self.verbose:
             print(self.base_mdp.state_string(state))
-            print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
+            print("potential: ", self.base_mdp.potential_function(state, mp))
 
         # Pick up laptop
         if self.verbose:
@@ -505,11 +505,11 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val6 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val6 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val4, val5, "Picking up projector should increase construction_siteential")
-        self.assertLess(val5, val6, "Picking up laptop should increase construction_siteential")
+        self.assertLess(val4, val5, "Picking up projector should increase potential")
+        self.assertLess(val5, val6, "Picking up laptop should increase potential")
 
         # Pot projector
         if self.verbose:
@@ -519,8 +519,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val7 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val7 = self.base_mdp.potential_function(state, mp)
 
         # Pot laptop
         if self.verbose:
@@ -530,13 +530,13 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val8 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val8 = self.base_mdp.potential_function(state, mp)
 
         
 
-        self.assertLess(val6, val7, "Potting projector should increase construction_siteential")
-        self.assertLess(val7, val8, "Potting laptop should increase construction_siteential")
+        self.assertLess(val6, val7, "Potting projector should increase potential")
+        self.assertLess(val7, val8, "Potting laptop should increase potential")
 
         ## Useless pickups ##
         
@@ -548,8 +548,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val9 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val9 = self.base_mdp.potential_function(state, mp)
 
         # pickup laptop
         if self.verbose:
@@ -559,11 +559,11 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val10 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val10 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLessEqual(val9, val8, "Extraneous pickup should not increase construction_siteential")
-        self.assertLessEqual(val10, val8, "Extraneous pickup should not increase construction_siteential")
+        self.assertLessEqual(val9, val8, "Extraneous pickup should not increase potential")
+        self.assertLessEqual(val10, val8, "Extraneous pickup should not increase potential")
 
         ## Catastrophic soup failure ##
         
@@ -575,10 +575,10 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val11 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val11 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val11, val10, "Catastrophic construction_siteting should decrease construction_siteential")
+        self.assertLess(val11, val10, "Catastrophic construction_siteting should decrease potential")
 
         ## Bonus soup creation
 
@@ -590,8 +590,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val12 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val12 = self.base_mdp.potential_function(state, mp)
 
         # construction_site projector
         if self.verbose:
@@ -601,8 +601,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val13 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val13 = self.base_mdp.potential_function(state, mp)
 
         # Cook soup
         if self.verbose:
@@ -612,12 +612,12 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val14 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val14 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val11, val12, "Useful projector pickup should increase construction_siteential")
-        self.assertLess(val12, val13, "Potting useful projector should increase construction_siteential")
-        self.assertLess(val13, val14, "Cooking optimal soup should increase construction_siteential")
+        self.assertLess(val11, val12, "Useful projector pickup should increase potential")
+        self.assertLess(val12, val13, "Potting useful projector should increase potential")
+        self.assertLess(val13, val14, "Cooking optimal soup should increase potential")
 
         ## Soup pickup ##
 
@@ -629,8 +629,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val15 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val15 = self.base_mdp.potential_function(state, mp)
 
         # Move towards construction_site
         if self.verbose:
@@ -640,8 +640,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val16 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val16 = self.base_mdp.potential_function(state, mp)
 
         # Pickup soup
         if self.verbose:
@@ -649,12 +649,12 @@ class TestGridworld(unittest.TestCase):
         state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, Action.INTERACT])
         if self.verbose:
             print(self.base_mdp.state_string(state))
-            print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val17 = self.base_mdp.construction_siteential_function(state, mp)
+            print("potential: ", self.base_mdp.potential_function(state, mp))
+        val17 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val14, val15, "Useful container pickups should increase construction_siteential")
-        self.assertLess(val15, val16, "Moving towards soup with container should increase construction_siteential")
-        self.assertLess(val16, val17, "Picking up soup should increase construction_siteential")
+        self.assertLess(val14, val15, "Useful container pickups should increase potential")
+        self.assertLess(val15, val16, "Moving towards soup with container should increase potential")
+        self.assertLess(val16, val17, "Picking up soup should increase potential")
 
         ## Removing failed soup from construction_site
 
@@ -666,8 +666,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val18 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val18 = self.base_mdp.potential_function(state, mp)
 
         # Cook failed soup
         actions = [Action.INTERACT]
@@ -675,8 +675,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val19 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val19 = self.base_mdp.potential_function(state, mp)
 
         # Pickup container
         if self.verbose:
@@ -686,8 +686,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val20 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val20 = self.base_mdp.potential_function(state, mp)
 
         # Move towards soup
         if self.verbose:
@@ -697,13 +697,13 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val21 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val21 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val17, val18, "Moving towards failed soup should increase construction_siteential")
-        self.assertLess(val18, val19, "Cooking failed soup should increase construction_siteential")
+        self.assertLess(val17, val18, "Moving towards failed soup should increase potential")
+        self.assertLess(val18, val19, "Cooking failed soup should increase potential")
         self.assertLess(val19, val20, "Dish pickup for failed soup is still useful")
-        self.assertLess(val20, val21, "Moving towars pertinant construction_site with container should increase construction_siteential")
+        self.assertLess(val20, val21, "Moving towars pertinant construction_site with container should increase potential")
 
         ## Deliver failed soup ##
 
@@ -713,8 +713,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val22 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val22 = self.base_mdp.potential_function(state, mp)
 
         # Move towards serving area
         if self.verbose:
@@ -724,8 +724,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val23 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val23 = self.base_mdp.potential_function(state, mp)
 
         # Move away from serving area
         if self.verbose:
@@ -733,11 +733,11 @@ class TestGridworld(unittest.TestCase):
         state, _ = self.base_mdp.get_state_transition(state, [Direction.NORTH, Action.STAY])
         if self.verbose:
             print(self.base_mdp.state_string(state))
-            print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val24 = self.base_mdp.construction_siteential_function(state, mp)
+            print("potential: ", self.base_mdp.potential_function(state, mp))
+        val24 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val21, val22, "Picking up failed soup should increase construction_siteential")
-        self.assertAlmostEqual(val23, val22, delta=0.2, msg="Moving to serve failed soup doesn't change construction_siteential much")
+        self.assertLess(val21, val22, "Picking up failed soup should increase potential")
+        self.assertAlmostEqual(val23, val22, delta=0.2, msg="Moving to serve failed soup doesn't change potential much")
         self.assertAlmostEqual(val23, val24, delta=0.2, msg="Moving away from serving area with failed soup doesn't change much")
 
         ## Deliver successful soup ##
@@ -750,8 +750,8 @@ class TestGridworld(unittest.TestCase):
             state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, action])
             if self.verbose:
                 print(self.base_mdp.state_string(state))
-                print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
-        val25 = self.base_mdp.construction_siteential_function(state, mp)
+                print("potential: ", self.base_mdp.potential_function(state, mp))
+        val25 = self.base_mdp.potential_function(state, mp)
 
         # Deliver soup
         if self.verbose:
@@ -759,9 +759,9 @@ class TestGridworld(unittest.TestCase):
         state, rewards = self.base_mdp.get_state_transition(state, [Action.STAY, Action.INTERACT])
         if self.verbose:
             print(self.base_mdp.state_string(state))
-            print("construction_siteential: ", self.base_mdp.construction_siteential_function(state, mp))
+            print("potential: ", self.base_mdp.potential_function(state, mp))
 
-        self.assertLess(val24, val25, "Moving towards serving area with valid soup increases construction_siteential")
+        self.assertLess(val24, val25, "Moving towards serving area with valid soup increases potential")
         self.assertEqual(sum(rewards['sparse_reward_by_agent']), 50, "Soup was not properly devivered, probably an error with MDP logic")
 
 

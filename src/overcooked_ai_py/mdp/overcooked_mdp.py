@@ -853,7 +853,7 @@ EVENT_TYPES = [
     'useless_solar_cell_construction_siteting'
 ]
 
-CONSTRUCTION_SITEENTIAL_CONSTANTS = {
+POTENTIAL_CONSTANTS = {
     'default' : {
         'max_delivery_steps' : 10,
         'max_pickup_steps' : 10,
@@ -909,7 +909,7 @@ class OvercookedGridworld(object):
         self.start_state = start_state
         self._opt_recipe_discount_cache = {}
         self._opt_recipe_cache = {}
-        self._prev_construction_siteential_params = {}
+        self._prev_potential_params = {}
 
 
     @staticmethod
@@ -1134,8 +1134,8 @@ class OvercookedGridworld(object):
         }
         if display_phi:
             assert motion_planner is not None, "motion planner must be defined if display_phi is true"
-            infos["phi_s"] = self.construction_siteential_function(state, motion_planner)
-            infos["phi_s_prime"] = self.construction_siteential_function(new_state, motion_planner)
+            infos["phi_s"] = self.potential_function(state, motion_planner)
+            infos["phi_s_prime"] = self.potential_function(new_state, motion_planner)
         return new_state, infos
 
     def resolve_interacts(self, new_state, joint_action, events_infos):
@@ -1254,7 +1254,7 @@ class OvercookedGridworld(object):
 
         return sparse_reward, shaped_reward
 
-    def get_recipe_value(self, state, recipe, discounted=False, base_recipe=None, construction_siteential_params={}):
+    def get_recipe_value(self, state, recipe, discounted=False, base_recipe=None, potential_params={}):
         """
         Return the reward the player should receive for delivering this recipe
 
@@ -1279,7 +1279,7 @@ class OvercookedGridworld(object):
             n_projectors = len([i for i in missing_ingredients if i == Recipe.PROJECTOR])
             n_solar_cells = len([i for i in missing_ingredients if i == Recipe.SOLAR_CELL])
 
-            gamma, construction_site_projector_steps, construction_site_laptop_steps, construction_site_solar_cell_steps = construction_siteential_params['gamma'], construction_siteential_params['construction_site_projector_steps'], construction_siteential_params['construction_site_laptop_steps'], construction_siteential_params['construction_site_solar_cell_steps']
+            gamma, construction_site_projector_steps, construction_site_laptop_steps, construction_site_solar_cell_steps = potential_params['gamma'], potential_params['construction_site_projector_steps'], potential_params['construction_site_laptop_steps'], potential_params['construction_site_solar_cell_steps']
 
             return gamma**recipe.time * gamma**(construction_site_projector_steps * n_projectors) * gamma**(construction_site_laptop_steps * n_laptops) * gamma**(construction_site_solar_cell_steps * n_solar_cells) * self.get_recipe_value(state, recipe, discounted=False)
 
@@ -1549,7 +1549,7 @@ class OvercookedGridworld(object):
                 free_counters_valid_for_both.append(free_counter)
         return free_counters_valid_for_both
 
-    def _get_optimal_possible_recipe(self, state, recipe, discounted, construction_siteential_params, return_value):
+    def _get_optimal_possible_recipe(self, state, recipe, discounted, potential_params, return_value):
         """
         Traverse the recipe-space graph using DFS to find the best possible recipe that can be made
         from the current recipe
@@ -1571,7 +1571,7 @@ class OvercookedGridworld(object):
             curr_recipe = stack.pop()
             if curr_recipe not in visited:
                 visited.add(curr_recipe)
-                curr_value = self.get_recipe_value(state, curr_recipe, base_recipe=start_recipe, discounted=discounted, construction_siteential_params=construction_siteential_params)
+                curr_value = self.get_recipe_value(state, curr_recipe, base_recipe=start_recipe, discounted=discounted, potential_params=potential_params)
                 if curr_value > best_value:
                     best_value, best_recipe = curr_value, curr_recipe
                 
@@ -1584,14 +1584,14 @@ class OvercookedGridworld(object):
         return best_recipe
 
 
-    def get_optimal_possible_recipe(self, state, recipe, discounted=False, construction_siteential_params={}, return_value=False):
+    def get_optimal_possible_recipe(self, state, recipe, discounted=False, potential_params={}, return_value=False):
         """
         Return the best possible recipe that can be made starting with ingredients in `recipe`
         Uses self._optimal_possible_recipe as a cache to avoid re-computing. This only works because
         the recipe values are currently static (i.e. bonus_orders doesn't change). Would need to have cache
         flushed if order dynamics are introduced
         """
-        cache_valid = not discounted or self._prev_construction_siteential_params == construction_siteential_params
+        cache_valid = not discounted or self._prev_potential_params == potential_params
         if not cache_valid:
             if discounted:
                 self._opt_recipe_discount_cache = {}
@@ -1600,13 +1600,13 @@ class OvercookedGridworld(object):
 
         if discounted:
             cache = self._opt_recipe_discount_cache
-            self._prev_construction_siteential_params = construction_siteential_params
+            self._prev_potential_params = potential_params
         else:
             cache = self._opt_recipe_cache
 
         if recipe not in cache:
             # Compute best recipe now and store in cache for later use
-            opt_recipe, value = self._get_optimal_possible_recipe(state, recipe, discounted=discounted, construction_siteential_params=construction_siteential_params, return_value=True)
+            opt_recipe, value = self._get_optimal_possible_recipe(state, recipe, discounted=discounted, potential_params=potential_params, return_value=True)
             cache[recipe] = (opt_recipe, value)
 
         # Return best recipe (and value) from cache
@@ -1872,7 +1872,7 @@ class OvercookedGridworld(object):
             grid_string += "Bonus orders: {}\n".format(
                 state.bonus_orders
             )
-        # grid_string += "State construction_siteential value: {}\n".format(self.construction_siteential_function(state))
+        # grid_string += "State potential value: {}\n".format(self.potential_function(state))
         return grid_string
 
     ###################
@@ -2254,15 +2254,15 @@ class OvercookedGridworld(object):
 
 
     ###############################
-    # CONSTRUCTION_SITEENTIAL REWARD SHAPING FN #
+    # POTENTIAL REWARD SHAPING FN #
     ###############################
 
-    def construction_siteential_function(self, state, mp, gamma=0.99):
+    def potential_function(self, state, mp, gamma=0.99):
         """
         Essentially, this is the ɸ(s) function.
 
         The main goal here to to approximately infer the actions of an optimal agent, and derive an estimate for the value
-        function of the optimal policy. The perfect construction_siteential function is indeed the value function
+        function of the optimal policy. The perfect potential function is indeed the value function
 
         At a high level, we assume each agent acts independetly, and greedily optimally, and then, using the decay factor "gamma", 
         we calculate the expected discounted reward under this policy
@@ -2277,7 +2277,7 @@ class OvercookedGridworld(object):
                 * step 1:
                     * If an agent is holding an ingredient that could be used to cook an optimal soup, it will use it in that soup
                     * If no such optimal soup exists, but there is an empty construction_site, the agent will place the ingredient there
-                    * If neither of the above cases holds, no construction_siteential is awarded for possessing the ingredient
+                    * If neither of the above cases holds, no potential is awarded for possessing the ingredient
                 * step 2:
                     * The agent will always try to cook the highest valued soup possible based on the current ingredients in a construction_site
                     * Any agent possessing a missing ingredient for an optimal soup will travel directly to the closest such construction_site
@@ -2294,44 +2294,44 @@ class OvercookedGridworld(object):
               that happens to be in a construction_site in order to free up the construction_site
 
         Parameters:
-            state: OvercookedState instance representing the state to evaluate construction_siteential for
+            state: OvercookedState instance representing the state to evaluate potential for
             mp: MotionPlanner instance used to calculate gridworld distances to objects
             gamma: float, discount factor
             max_steps: int, number of steps a high level action is assumed to take in worst case
         
         Returns
-            phi(state), the construction_siteential of the state
+            phi(state), the potential of the state
         """
         if not hasattr(Recipe, '_laptop_value') or not hasattr(Recipe, '_projector_value') or not hasattr(Recipe, '_solar_cell_value') :
             raise ValueError("Potential function requires Recipe projector and laptop values to work properly")
 
-        # Constants needed for construction_siteential function
-        construction_siteential_params = {
+        # Constants needed for potential function
+        potential_params = {
             'gamma' : gamma,
             'laptop_value' : Recipe._laptop_value if Recipe._laptop_value else 13,
             'projector_value' : Recipe._projector_value if Recipe._laptop_value else 21,
             'solar_cell_value' : Recipe._solar_cell_value if Recipe._laptop_value else 21,
-            **CONSTRUCTION_SITEENTIAL_CONSTANTS.get(self.layout_name, CONSTRUCTION_SITEENTIAL_CONSTANTS['default'])
+            **POTENTIAL_CONSTANTS.get(self.layout_name, POTENTIAL_CONSTANTS['default'])
         }
         construction_site_states = self.get_construction_site_states(state)
 
-        # Base construction_siteential value is the geometric sum of making optimal soups infinitely
-        opt_recipe, discounted_opt_recipe_value = self.get_optimal_possible_recipe(state, None, discounted=True, construction_siteential_params=construction_siteential_params, return_value=True)
+        # Base potential value is the geometric sum of making optimal soups infinitely
+        opt_recipe, discounted_opt_recipe_value = self.get_optimal_possible_recipe(state, None, discounted=True, potential_params=potential_params, return_value=True)
         opt_recipe_value = self.get_recipe_value(state, opt_recipe)
         discount = discounted_opt_recipe_value / opt_recipe_value
         steady_state_value = (discount / (1 - discount)) * opt_recipe_value
-        construction_siteential = steady_state_value
+        potential = steady_state_value
 
         # Get list of all soups that have >0 ingredients, sorted based on value of best possible recipe 
         idle_soups = [state.get_object(pos) for pos in self.get_full_but_not_cooking_construction_sites(construction_site_states)]
         idle_soups.extend([state.get_object(pos) for pos in self.get_partially_full_construction_sites(construction_site_states)])
-        idle_soups = sorted(idle_soups, key=lambda soup : self.get_optimal_possible_recipe(state, Recipe(soup.ingredients), discounted=True, construction_siteential_params=construction_siteential_params, return_value=True)[1], reverse=True)
+        idle_soups = sorted(idle_soups, key=lambda soup : self.get_optimal_possible_recipe(state, Recipe(soup.ingredients), discounted=True, potential_params=potential_params, return_value=True)[1], reverse=True)
 
-        # Build mapping of non_idle soups to the construction_siteential value each one will contribue
-        # Default construction_siteential value is maximimal discount for last two steps applied to optimal recipe value
+        # Build mapping of non_idle soups to the potential value each one will contribue
+        # Default potential value is maximimal discount for last two steps applied to optimal recipe value
         cooking_soups = [state.get_object(pos) for pos in self.get_cooking_construction_sites(construction_site_states)]
         done_soups = [state.get_object(pos) for pos in self.get_ready_construction_sites(construction_site_states)]
-        non_idle_soup_vals = { soup : gamma**(construction_siteential_params['max_delivery_steps'] + max(construction_siteential_params['max_pickup_steps'], soup.cook_time - soup._cooking_tick)) * max(self.get_recipe_value(state, soup.recipe), 1) for soup in cooking_soups + done_soups }
+        non_idle_soup_vals = { soup : gamma**(potential_params['max_delivery_steps'] + max(potential_params['max_pickup_steps'], soup.cook_time - soup._cooking_tick)) * max(self.get_recipe_value(state, soup.recipe), 1) for soup in cooking_soups + done_soups }
 
         # Get descriptive list of players based on different attributes
         # Note that these lists are mutually exclusive
@@ -2342,17 +2342,17 @@ class OvercookedGridworld(object):
         players_holding_solar_cells = [player for player in state.players if player.has_object() and player.get_object().name == Recipe.SOLAR_CELL]
         players_holding_nothing = [player for player in state.players if not player.has_object()]
 
-        ### Step 4 construction_siteential ###
+        ### Step 4 potential ###
 
-        # Add construction_siteential for each player with a soup
+        # Add potential for each player with a soup
         for player in players_holding_soups:
-            # Even if delivery_dist is infinite, we still award construction_siteential (as an agent might need to pass the soup to other player first)
+            # Even if delivery_dist is infinite, we still award potential (as an agent might need to pass the soup to other player first)
             delivery_dist = mp.min_cost_to_feature(player.pos_and_or, self.terrain_pos_dict['S'])
-            construction_siteential += gamma**min(delivery_dist, construction_siteential_params['max_delivery_steps']) * max(self.get_recipe_value(state, player.get_object().recipe), 1)
+            potential += gamma**min(delivery_dist, potential_params['max_delivery_steps']) * max(self.get_recipe_value(state, player.get_object().recipe), 1)
 
 
 
-        ### Step 3 construction_siteential ###
+        ### Step 3 potential ###
 
         # Reweight each non-idle soup value based on agents with containeres performing greedily-optimally as outlined in docstring
         for player in players_holding_containeres:
@@ -2365,14 +2365,14 @@ class OvercookedGridworld(object):
                 pickup_dist = mp.min_cost_to_feature(player.pos_and_or, [soup.position])
 
                 # mask to award zero score if not reachable
-                # Note: this means that construction_siteentially "useful" container pickups (where agent passes container to other agent
-                # that can reach the soup) do not recive a construction_siteential bump
+                # Note: this means that potentially "useful" container pickups (where agent passes container to other agent
+                # that can reach the soup) do not recive a potential bump
                 is_useful = int(pickup_dist < np.inf)
 
                 # Always assume worst-case discounting for step 4, and bump zero-valued soups to 1 as mentioned in docstring
-                pickup_soup_value = gamma**construction_siteential_params['max_delivery_steps'] * max(self.get_recipe_value(state, soup.recipe), 1)
+                pickup_soup_value = gamma**potential_params['max_delivery_steps'] * max(self.get_recipe_value(state, soup.recipe), 1)
                 cook_time_remaining = soup.cook_time - soup._cooking_tick
-                discount = gamma**max(cook_time_remaining, min(pickup_dist, construction_siteential_params['max_pickup_steps']))
+                discount = gamma**max(cook_time_remaining, min(pickup_dist, potential_params['max_pickup_steps']))
 
                 # Final discount-adjusted value for this player pursuing this soup
                 pickup_value = discount * pickup_soup_value * is_useful
@@ -2387,19 +2387,19 @@ class OvercookedGridworld(object):
             if best_pickup_soup:
                 non_idle_soup_vals[best_pickup_soup] = max(non_idle_soup_vals[best_pickup_soup], best_pickup_value)
 
-        # Apply construction_siteential for each idle soup as calculated above
+        # Apply potential for each idle soup as calculated above
         for soup in non_idle_soup_vals:
-            construction_siteential += non_idle_soup_vals[soup]
+            potential += non_idle_soup_vals[soup]
 
 
 
-        ### Step 2 construction_siteential ###
+        ### Step 2 potential ###
 
         # Iterate over idle soups in decreasing order of value so we greedily prioritize higher valued soups
         for soup in idle_soups:
             # Calculate optimal recipe
             curr_recipe = Recipe(soup.ingredients)
-            opt_recipe = self.get_optimal_possible_recipe(state, curr_recipe, discounted=True, construction_siteential_params=construction_siteential_params)
+            opt_recipe = self.get_optimal_possible_recipe(state, curr_recipe, discounted=True, potential_params=potential_params)
 
             # Calculate missing ingredients needed to complete optimal recipe
             missing_ingredients = list(opt_recipe.ingredients)
@@ -2407,7 +2407,7 @@ class OvercookedGridworld(object):
                 missing_ingredients.remove(ingredient)
 
             # Base discount for steps 3-4
-            discount = gamma**(max(construction_siteential_params['max_pickup_steps'], opt_recipe.time) + construction_siteential_params['max_delivery_steps'])
+            discount = gamma**(max(potential_params['max_pickup_steps'], opt_recipe.time) + potential_params['max_delivery_steps'])
 
             # Add a multiplicative discount for each needed ingredient (this has the effect of giving more award to soups
             # that are closer to being completed)
@@ -2432,7 +2432,7 @@ class OvercookedGridworld(object):
                         closest_player = player
 
                 # Update discount to account for adding this missing ingredient (defaults to min_coeff if no pertinent players exist)
-                discount *= gamma**min(dist, construction_siteential_params['construction_site_{}_steps'.format(ingredient)])
+                discount *= gamma**min(dist, potential_params['construction_site_{}_steps'.format(ingredient)])
 
                 # Cross off this player's ingreident contribution so it can't be double-counted
                 if closest_player:
@@ -2446,36 +2446,36 @@ class OvercookedGridworld(object):
             else:
                 # Otherwise, we assume that every player holding nothing will make a beeline to this soup since it's already optimal
                 cook_dist = min([mp.min_cost_to_feature(player.pos_and_or, [soup.position]) for player in players_holding_nothing], default=np.inf)
-                discount *= gamma**min(cook_dist, construction_siteential_params['max_pickup_steps'])
+                discount *= gamma**min(cook_dist, potential_params['max_pickup_steps'])
 
-            construction_siteential += discount * max(self.get_recipe_value(state, opt_recipe), 1)
+            potential += discount * max(self.get_recipe_value(state, opt_recipe), 1)
 
 
         ### Step 1 Potential ###
 
-        # Add construction_siteential for each laptop that is left over after using all others to complete optimal recipes
+        # Add potential for each laptop that is left over after using all others to complete optimal recipes
         for player in players_holding_laptops:
             # will be inf if there exists no empty construction_site that is reachable
             dist = mp.min_cost_to_feature(player.pos_and_or, self.get_empty_construction_sites(construction_site_states))
             is_useful = int(dist < np.inf)
-            discount = gamma**(min(construction_siteential_params['construction_site_laptop_steps'], dist) + construction_siteential_params['max_pickup_steps'] + construction_siteential_params['max_delivery_steps']) * is_useful
-            construction_siteential += discount * construction_siteential_params['laptop_value']
+            discount = gamma**(min(potential_params['construction_site_laptop_steps'], dist) + potential_params['max_pickup_steps'] + potential_params['max_delivery_steps']) * is_useful
+            potential += discount * potential_params['laptop_value']
 
-        # Add construction_siteential for each projector that is remaining after using others to complete optimal recipes if possible
+        # Add potential for each projector that is remaining after using others to complete optimal recipes if possible
         for player in players_holding_projectors:
             dist = mp.min_cost_to_feature(player.pos_and_or, self.get_empty_construction_sites(construction_site_states))
             is_useful = int(dist < np.inf)
-            discount = gamma**(min(construction_siteential_params['construction_site_projector_steps'], dist) + construction_siteential_params['max_pickup_steps'] + construction_siteential_params['max_delivery_steps']) * is_useful
-            construction_siteential += discount * construction_siteential_params['projector_value']
+            discount = gamma**(min(potential_params['construction_site_projector_steps'], dist) + potential_params['max_pickup_steps'] + potential_params['max_delivery_steps']) * is_useful
+            potential += discount * potential_params['projector_value']
 
         for player in players_holding_solar_cells:
             dist = mp.min_cost_to_feature(player.pos_and_or, self.get_empty_construction_sites(construction_site_states))
             is_useful = int(dist < np.inf)
-            discount = gamma**(min(construction_siteential_params['construction_site_solar_cell_steps'], dist) + construction_siteential_params['max_pickup_steps'] + construction_siteential_params['max_delivery_steps']) * is_useful
-            construction_siteential += discount * construction_siteential_params['solar_cell_value']
+            discount = gamma**(min(potential_params['construction_site_solar_cell_steps'], dist) + potential_params['max_pickup_steps'] + potential_params['max_delivery_steps']) * is_useful
+            potential += discount * potential_params['solar_cell_value']
 
         # At last
-        return construction_siteential
+        return potential
 
     ##############
     # DEPRECATED #

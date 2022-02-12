@@ -10,7 +10,7 @@ X       D       X       S       X
 Timestep: 1
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -25,7 +25,7 @@ X       D       X       S       X
 Timestep: 2
 Joint action taken: ('←', '→') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -40,7 +40,7 @@ X       D       X       S       X
 Timestep: 3
 Joint action taken: ('←', '→') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -55,7 +55,7 @@ X       D       X       S       X
 Timestep: 4
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -70,7 +70,7 @@ X       D       X       S       X
 Timestep: 5
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -85,7 +85,7 @@ X       D       X       S       X
 Timestep: 6
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -100,7 +100,7 @@ X       D       X       S       X
 Timestep: 7
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -115,7 +115,7 @@ X       D       X       S       X
 Timestep: 8
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -130,7 +130,7 @@ X       D       X       S       X
 Timestep: 9
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -145,7 +145,7 @@ X       D       X       S       X
 Timestep: 10
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -160,7 +160,7 @@ X       D       X       S       X
 Timestep: 11
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -175,7 +175,7 @@ X       D       X       S       X
 Timestep: 12
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -190,7 +190,7 @@ X       D       X       S       X
 Timestep: 13
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -205,7 +205,7 @@ X       D       X       S       X
 Timestep: 14
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -220,7 +220,7 @@ X       D       X       S       X
 Timestep: 15
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -235,7 +235,7 @@ X       D       X       S       X
 Timestep: 16
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -250,7 +250,7 @@ X       D       X       S       X
 Timestep: 17
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -265,7 +265,7 @@ X       D       X       S       X
 Timestep: 18
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -280,7 +280,7 @@ X       D       X       S       X
 Timestep: 19
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 
@@ -295,7 +295,7 @@ X       D       X       S       X
 Timestep: 20
 Joint action taken: ('stay', 'stay') 	 Reward: 0 + shaping_factor * [0, 0]
 Action probs by index: [None, None] 
-State construction_siteential = 30.633689117862914	 Δ construction_siteential = -0.3063368911786277
+State potential = 30.633689117862914	 Δ potential = -0.3063368911786277
 
 X       X       P       X       X       
 

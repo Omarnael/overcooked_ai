@@ -31,7 +31,7 @@ class StateVisualizer:
         "hud_font_path": roboto_path, 
         "hud_system_font_name": None, # if set to None use hud_font_path
         "hud_font_color": (255,255,255), # white
-        "hud_data_default_key_order" : ["all_orders", "bonus_orders", "time_left", "score", "construction_siteential"],
+        "hud_data_default_key_order" : ["all_orders", "bonus_orders", "time_left", "score", "potential"],
         "hud_interline_size": 10,
         "hud_margin_bottom": 10,
         "hud_margin_top": 10,
