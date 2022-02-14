@@ -18,5 +18,6 @@
     "laptop_value" : 13,
     "projector_time" : 15,
     "laptop_time" : 7
-    "solar_cell_time": 5
+    "solar_cell_time": 5,
+    "solar_cell_value": 5
 }
