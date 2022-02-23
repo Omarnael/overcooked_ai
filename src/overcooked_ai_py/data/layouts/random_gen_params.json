@@ -4,20 +4,20 @@
         "y": 7
     },
     "leaderboard": {
-        "empty": 0.88,
-        "features": 0.12
+        "empty": 0.99,
+        "features": 0.1
     },
     "quarter_final": {
-        "empty": 0.88,
-        "features": 0.12
+        "empty": 0.80,
+        "features": 0.1
     },
     "semi_final": {
-        "empty": 0.82,
-        "features": 0.18
+        "empty": 0.60,
+        "features": 0.30
     },
     "final": {
-        "empty": 0.88,
-        "features": 0.12
+        "empty": 0.60,
+        "features": 0.1
     },
     "recipes": [
         { "ingredients" : ["projector", "solar_cell"]},
