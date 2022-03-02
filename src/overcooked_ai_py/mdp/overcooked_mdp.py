@@ -1893,9 +1893,8 @@ class OvercookedGridworld(object):
 
     def lossless_state_encoding(self, overcooked_state, horizon=400, debug=False):
         """Featurizes a OvercookedState object into a stack of boolean masks that are easily readable by a CNN"""
-        assert self.num_players == 2, "Functionality has to be added to support encondings for > 2 players"
         assert type(debug) is bool
-        base_map_features = ["construction_site_loc", "counter_loc", "projector_disp_loc", "laptop_disp_loc", "solar_cell_disp_loc"
+        base_map_features = ["construction_site_loc", "counter_loc", "projector_disp_loc", "laptop_disp_loc", "solar_cell_disp_loc",
                              "container_disp_loc", "serve_loc"]
         variable_map_features = ["projectors_in_construction_site", "laptops_in_construction_site", "projectors_in_soup", "laptops_in_soup", "solar_cells_in_construction_site", "solar_cells_in_soup",
                                  "soup_cook_time_remaining", "soup_done", "containeres", "projectors", "laptops", "solar_cells"]
