@@ -1725,21 +1725,21 @@ class OvercookedGridworld(object):
         NOTE: this only works if self.num_players == 2
         Useful if:
         - Pot is ready/cooking and there is no player with a container               \ 
-        - 2 construction_sites are ready/cooking and there is one player with a container          | -> number of containeres in players hands < number of ready/cooking/partially full soups 
+        - 2 construction_sites are ready/cooking and there is one player with a container          | -> number of containers in players hands < number of ready/cooking/partially full soups 
         - Partially full construction_site is ok if the other player is on course to fill it  /
 
-        We also want to prevent picking up and dropping containeres, so add the condition
-        that there must be no containeres on counters
+        We also want to prevent picking up and dropping containers, so add the condition
+        that there must be no containers on counters
         """
         if self.num_players != 2: return False
 
         # This next line is to prevent reward hacking (this logic is also used by reward shaping)
-        containeres_on_counters = self.get_counter_objects_dict(state)["container"]
-        no_containeres_on_counters = len(containeres_on_counters) == 0
+        containers_on_counters = self.get_counter_objects_dict(state)["container"]
+        no_containers_on_counters = len(containers_on_counters) == 0
 
-        num_player_containeres = len(state.player_objects_by_type['container'])
+        num_player_containers = len(state.player_objects_by_type['container'])
         non_empty_construction_sites = len(self.get_ready_construction_sites(construction_site_states) + self.get_cooking_construction_sites(construction_site_states) + self.get_partially_full_construction_sites(construction_site_states))
-        return no_containeres_on_counters and num_player_containeres < non_empty_construction_sites
+        return no_containers_on_counters and num_player_containers < non_empty_construction_sites
 
     def is_container_drop_useful(self, state, construction_site_states, player_index):
         """
@@ -1898,7 +1898,7 @@ class OvercookedGridworld(object):
         base_map_features = ["construction_site_loc", "counter_loc", "projector_disp_loc", "laptop_disp_loc", "solar_cell_disp_loc"
                              "container_disp_loc", "serve_loc"]
         variable_map_features = ["projectors_in_construction_site", "laptops_in_construction_site", "projectors_in_soup", "laptops_in_soup", "solar_cells_in_construction_site", "solar_cells_in_soup",
-                                 "soup_cook_time_remaining", "soup_done", "containeres", "projectors", "laptops", "solar_cells"]
+                                 "soup_cook_time_remaining", "soup_done", "containers", "projectors", "laptops", "solar_cells"]
         urgency_features = ["urgency"]
         all_objects = overcooked_state.all_objects_list
 
@@ -1979,7 +1979,7 @@ class OvercookedGridworld(object):
                         state_mask_dict["soup_done"] += make_layer(obj.position, 1)
 
                 elif obj.name == "container":
-                    state_mask_dict["containeres"] += make_layer(obj.position, 1)
+                    state_mask_dict["containers"] += make_layer(obj.position, 1)
                 elif obj.name == "projector":
                     state_mask_dict["projectors"] += make_layer(obj.position, 1)
                 elif obj.name == "laptop":
@@ -2336,7 +2336,7 @@ class OvercookedGridworld(object):
         # Get descriptive list of players based on different attributes
         # Note that these lists are mutually exclusive
         players_holding_soups = [player for player in state.players if player.has_object() and player.get_object().name == 'soup']
-        players_holding_containeres = [player for player in state.players if player.has_object() and player.get_object().name == 'container']
+        players_holding_containers = [player for player in state.players if player.has_object() and player.get_object().name == 'container']
         players_holding_laptops = [player for player in state.players if player.has_object() and player.get_object().name == Recipe.LAPTOP]
         players_holding_projectors = [player for player in state.players if player.has_object() and player.get_object().name == Recipe.PROJECTOR]
         players_holding_solar_cells = [player for player in state.players if player.has_object() and player.get_object().name == Recipe.SOLAR_CELL]
@@ -2354,8 +2354,8 @@ class OvercookedGridworld(object):
 
         ### Step 3 potential ###
 
-        # Reweight each non-idle soup value based on agents with containeres performing greedily-optimally as outlined in docstring
-        for player in players_holding_containeres:
+        # Reweight each non-idle soup value based on agents with containers performing greedily-optimally as outlined in docstring
+        for player in players_holding_containers:
             best_pickup_soup = None
             best_pickup_value = 0
 
@@ -2491,12 +2491,12 @@ class OvercookedGridworld(object):
     #     ready_construction_sites = construction_site_states["laptop"]["ready"] + construction_site_states["projector"]["ready"]
     #     cooking_construction_sites = ready_construction_sites + construction_site_states["laptop"]["cooking"] + construction_site_states["projector"]["cooking"]
     #     nearly_ready_construction_sites = cooking_construction_sites + construction_site_states["laptop"]["partially_full"] + construction_site_states["projector"]["partially_full"]
-    #     containeres_in_play = len(new_state.player_objects_by_type['container'])
+    #     containers_in_play = len(new_state.player_objects_by_type['container'])
     #     for player_old, player_new in zip(state.players, new_state.players):
     #         # Linearly increase reward depending on vicinity to certain features, where distance of 10 achieves 0 reward
     #         max_dist = 8
     #
-    #         if player_new.held_object is not None and player_new.held_object.name == 'container' and len(nearly_ready_construction_sites) >= containeres_in_play:
+    #         if player_new.held_object is not None and player_new.held_object.name == 'container' and len(nearly_ready_construction_sites) >= containers_in_play:
     #             min_dist_to_construction_site_new = np.inf
     #             min_dist_to_construction_site_old = np.inf
     #             for construction_site in nearly_ready_construction_sites:
@@ -2509,7 +2509,7 @@ class OvercookedGridworld(object):
     #             if min_dist_to_construction_site_old > min_dist_to_construction_site_new:
     #                 distance_based_shaped_reward += self.reward_shaping_params["CONSTRUCTION_SITE_DISTANCE_REW"] * (1 - min(min_dist_to_construction_site_new / max_dist, 1))
     #
-    #         if player_new.held_object is None and len(cooking_construction_sites) > 0 and containeres_in_play == 0:
+    #         if player_new.held_object is None and len(cooking_construction_sites) > 0 and containers_in_play == 0:
     #             min_dist_to_d_new = np.inf
     #             min_dist_to_d_old = np.inf
     #             for serving_loc in self.terrain_pos_dict['D']:
