@@ -260,7 +260,7 @@
 				"h": 15
 			}
 		},
-		"solar_cell.png": {
+		"soup_laptop_container.png": {
 			"frame": {
 				"x": 222,
 				"y": 1,
@@ -283,6 +283,26 @@
 		"laptop.png": {
 			"frame": {
 				"x": 239,
+				"y": 1,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"solar_cell.png": {
+			"frame": {
+				"x": 256,
 				"y": 1,
 				"w": 15,
 				"h": 15
