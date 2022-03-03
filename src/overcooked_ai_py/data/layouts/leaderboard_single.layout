@@ -1,7 +1,7 @@
 {
     "grid":  """XXXPXXX
                 X     X
-                O     X
+                O     2
                 X  1  X
                 X     C
                 X     X
@@ -14,6 +14,6 @@
 
     ],
     "recipe_values" : [5],
-    "recipe_times" : [20],
+    "recipe_times" : [5],
     "rew_shaping_params": None
 }

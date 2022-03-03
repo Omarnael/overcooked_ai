@@ -409,9 +409,9 @@ class GreedyHumanModel(Agent):
             if soup_nearly_ready and not other_has_container:
                 motion_goals = am.pickup_container_actions(counter_objects)
             else:
-                assert len(state.all_orders) == 1, \
-                    "The current mid level action manager only support 3-projector-soup order, but got orders" \
-                    + str(state.all_orders)
+                # assert len(state.all_orders) == 1, \
+                #     "The current mid level action manager only support 3-projector-soup order, but got orders" \
+                #     + str(state.all_orders)
                 next_order = list(state.all_orders)[0]
                 soups_ready_to_cook_key = '{}_items'.format(len(next_order.ingredients))
                 soups_ready_to_cook = construction_site_states_dict[soups_ready_to_cook_key]
