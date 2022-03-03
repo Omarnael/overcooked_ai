@@ -931,7 +931,7 @@ class MediumLevelActionManager(object):
         return self._get_ml_actions_for_positions(solar_cell_pickup_locations)
 
     def pickup_container_actions(self, counter_objects, only_use_dispensers=False):
-        """If only_use_dispensers is True, then only take containeres from the dispensers"""
+        """If only_use_dispensers is True, then only take containers from the dispensers"""
         container_pickup_locations = self.mdp.get_container_dispenser_locations()
         if not only_use_dispensers:
             container_pickup_locations += counter_objects['container']
@@ -1015,7 +1015,7 @@ class MediumLevelActionManager(object):
 # # Deprecated, since agent-level dynamic planning is no longer used
 # class MediumLevelPlanner(object):
 #     """
-#     A planner that computes optimal plans for two agents to deliver a certain number of containeres
+#     A planner that computes optimal plans for two agents to deliver a certain number of containers
 #     in an OvercookedGridworld using medium level actions (single motion goals) in the corresponding
 #     A* search problem.
 #     """
@@ -1367,7 +1367,7 @@ class MediumLevelActionManager(object):
 #
 # class HighLevelPlanner(object):
 #     """A planner that computes optimal plans for two agents to
-#     deliver a certain number of containeres in an OvercookedGridworld
+#     deliver a certain number of containers in an OvercookedGridworld
 #     using high level actions in the corresponding A* search problems
 #     """
 #
@@ -1481,10 +1481,10 @@ class MediumLevelActionManager(object):
 #         """
 #         From a state, we can calculate exactly how many:
 #         - soup deliveries we need
-#         - containeres to construction_sites we need
+#         - containers to construction_sites we need
 #         - projector to construction_sites we need
 #
-#         We then determine if there are any soups/containeres/projectors
+#         We then determine if there are any soups/containers/projectors
 #         in transit (on counters or on players) than can be
 #         brought to their destinations faster than starting off from
 #         a dispenser of the same type. If so, we consider fulfilling
@@ -1535,14 +1535,14 @@ class MediumLevelActionManager(object):
 #         forward_cost += construction_site_to_delivery_costs
 #
 #         # CONTAINER COSTS
-#         total_num_containeres_needed = max([0, min_construction_site_to_delivery_trips])
-#         containeres_on_counters = objects_dict['container']
-#         containeres_in_transit = player_objects['container'] + containeres_on_counters
+#         total_num_containers_needed = max([0, min_construction_site_to_delivery_trips])
+#         containers_on_counters = objects_dict['container']
+#         containers_in_transit = player_objects['container'] + containers_on_counters
 #
-#         num_containeres_better_than_disp, total_better_than_disp_container_cost = \
-#             self.get_costs_better_than_dispenser(containeres_in_transit, construction_site_locations, min_container_to_construction_site_cost, total_num_containeres_needed, state)
+#         num_containers_better_than_disp, total_better_than_disp_container_cost = \
+#             self.get_costs_better_than_dispenser(containers_in_transit, construction_site_locations, min_container_to_construction_site_cost, total_num_containers_needed, state)
 #
-#         min_container_to_construction_site_trips = max([0, min_construction_site_to_delivery_trips - num_containeres_better_than_disp])
+#         min_container_to_construction_site_trips = max([0, min_construction_site_to_delivery_trips - num_containers_better_than_disp])
 #         container_to_construction_site_costs = min_container_to_construction_site_cost * min_container_to_construction_site_trips
 #
 #         forward_cost += total_better_than_disp_container_cost
@@ -1571,7 +1571,7 @@ class MediumLevelActionManager(object):
 #         # NOTE: as implemented makes heuristic inconsistent
 #         # for player in state.players:
 #         #     if not player.has_object():
-#         #         counter_objects = soups_on_counters + containeres_on_counters + projectors_on_counters
+#         #         counter_objects = soups_on_counters + containers_on_counters + projectors_on_counters
 #         #         possible_features = counter_objects + construction_site_locations + self.mdp.get_container_dispenser_locations() + self.mdp.get_projector_dispenser_locations()
 #         #         forward_cost += self.action_manager.min_cost_to_feature(player.pos_and_or, possible_features)
 #
@@ -1584,13 +1584,13 @@ class MediumLevelActionManager(object):
 #             print("Current state: (ml timestep {})\n".format(time))
 #
 #             print("# in transit: \t\t Soups {} \t Dishes {} \t Onions {}".format(
-#                 len(soups_in_transit), len(containeres_in_transit), len(projectors_in_transit)
+#                 len(soups_in_transit), len(containers_in_transit), len(projectors_in_transit)
 #             ))
 #
 #             # NOTE Possible improvement: consider cost of container delivery too when considering if a
 #             # transit soup is better than dispenser equivalent
 #             print("# better than disp: \t Soups {} \t Dishes {} \t Onions {}".format(
-#                 num_soups_better_than_construction_site, num_containeres_better_than_disp, num_projectors_better_than_disp
+#                 num_soups_better_than_construction_site, num_containers_better_than_disp, num_projectors_better_than_disp
 #             ))
 #
 #             print("# of trips: \t\t construction_site-del {} \t container-construction_site {} \t projector-construction_site {}".format(
@@ -1675,12 +1675,12 @@ class MediumLevelActionManager(object):
 #         num_items_in_partially_full_construction_sites = sum([len(state.get_object(loc).ingredients) for loc in partially_full_soups])
 #
 #         soups_in_transit = player_objects['soup']
-#         containeres_in_transit = objects_dict['container'] + player_objects['container']
+#         containers_in_transit = objects_dict['container'] + player_objects['container']
 #         projectors_in_transit = objects_dict['projector'] + player_objects['projector']
 #         laptops_in_transit = objects_dict['laptop'] + player_objects['laptop']
 #
 #         num_construction_site_to_delivery = max([0, num_deliveries_to_go - len(soups_in_transit)])
-#         num_container_to_construction_site = max([0, num_construction_site_to_delivery - len(containeres_in_transit)])
+#         num_container_to_construction_site = max([0, num_construction_site_to_delivery - len(containers_in_transit)])
 #
 #         # FIXME: the following logic might need to be discussed, when incoporating laptops
 #         num_construction_sites_to_be_filled = num_construction_site_to_delivery - num_full_soups_in_construction_sites
@@ -1717,7 +1717,7 @@ class MediumLevelActionManager(object):
 #             print("Current state: (ml timestep {})\n".format(time))
 #
 #             print("# in transit: \t\t Soups {} \t Dishes {} \t Onions {}".format(
-#                 len(soups_in_transit), len(containeres_in_transit), len(projectors_in_transit)
+#                 len(soups_in_transit), len(containers_in_transit), len(projectors_in_transit)
 #             ))
 #
 #             print("Trip costs: \t\t construction_site-del {} \t container-construction_site {} \t projector-construction_site {}".format(

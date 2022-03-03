@@ -55,7 +55,7 @@ class StateVisualizer:
         LAPTOP_DISPENSER: "laptops",
         CONSTRUCTION_SITE: "construction_site",
         SOLAR_CELL_DISPENSER: "solar_cells",
-        CONTAINER_DISPENSER: "containeres",
+        CONTAINER_DISPENSER: "containers",
         SERVING_LOC: "serve"
     }
 
