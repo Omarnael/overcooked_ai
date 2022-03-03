@@ -881,7 +881,7 @@ class OvercookedGridworld(object):
     # INSTANTIATION METHODS #
     #########################
 
-    def __init__(self, terrain, start_player_positions, start_bonus_orders=[], rew_shaping_params=None, layout_name="unnamed_layout", start_all_orders=[], num_items_for_soup=3, order_bonus=2, start_state=None, **kwargs):
+    def __init__(self, terrain, start_player_positions, start_bonus_orders=[], rew_shaping_params=None, layout_name="unnamed_layout", start_all_orders=[], num_items_for_soup=3, order_bonus=2, start_state=None, single=False, **kwargs):
         """
         terrain: a matrix of strings that encode the MDP layout
         layout_name: string identifier of the layout
@@ -910,7 +910,7 @@ class OvercookedGridworld(object):
         self._opt_recipe_discount_cache = {}
         self._opt_recipe_cache = {}
         self._prev_potential_params = {}
-
+        self.single = single
 
     @staticmethod
     def from_layout_name(layout_name, **params_to_overwrite):
@@ -950,11 +950,13 @@ class OvercookedGridworld(object):
             mdp_config["layout_name"] = layout_name
 
         player_positions = [None] * 9
+        single = 'single' in mdp_config["layout_name"]
         for y, row in enumerate(layout_grid):
             for x, c in enumerate(row):
                 if c in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
                     layout_grid[y][x] = ' '
-
+                    if c == '2' and single:
+                        layout_grid[y][x] = 'X'
                     # -1 is to account for fact that player indexing starts from 1 rather than 0
                     assert player_positions[int(c) - 1] is None, 'Duplicate player in grid'
                     player_positions[int(c) - 1] = (x, y)
@@ -1511,10 +1513,11 @@ class OvercookedGridworld(object):
         - Objects have a valid state (eg. no construction_site with 4 projectors)
         """
         all_objects = list(state.objects.values())
-        for player_state in state.players:
+        for i, player_state in enumerate(state.players):
             # Check that players are not on terrain
             pos = player_state.position
-            assert pos in self.get_valid_player_positions()
+            if i<1:
+                assert pos in self.get_valid_player_positions()
 
             # Check that held objects have the same position
             if player_state.held_object is not None:
@@ -1637,12 +1640,12 @@ class OvercookedGridworld(object):
         def is_not_free(c):
             return c in 'XOPCDST'
 
-        for y in range(height):
-            assert is_not_free(grid[y][0]), 'Left border must not be free'
-            assert is_not_free(grid[y][-1]), 'Right border must not be free'
-        for x in range(width):
-            assert is_not_free(grid[0][x]), 'Top border must not be free'
-            assert is_not_free(grid[-1][x]), 'Bottom border must not be free'
+        # for y in range(height):
+        #     assert is_not_free(grid[y][0]), 'Left border must not be free'
+        #     assert is_not_free(grid[y][-1]), 'Right border must not be free'
+        # for x in range(width):
+        #     assert is_not_free(grid[0][x]), 'Top border must not be free'
+        #     assert is_not_free(grid[-1][x]), 'Bottom border must not be free'
 
         all_elements = [element for row in grid for element in row]
         digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']

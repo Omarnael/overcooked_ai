@@ -104,7 +104,7 @@ class StateVisualizer:
         return [StateVisualizer.default_hud_data(state, score=scores[i])
             for i, state in enumerate(trajectories["ep_states"][trajectory_idx])]
 
-    def display_rendered_trajectory(self, trajectories, trajectory_idx=0,  hud_data=None, action_probs=None, img_directory_path=None, img_extension=".png", img_prefix="", ipython_display=True):
+    def display_rendered_trajectory(self, trajectories, trajectory_idx=0,  hud_data=None, action_probs=None, img_directory_path=None, img_extension=".png", img_prefix="", ipython_display=True, single=False):
         """
         saves images of every timestep from trajectory in img_directory_path (or temporary directory if not path is not specified)
         trajectories (dict): trajectories dict, same format as used by AgentEvaluator
@@ -116,6 +116,9 @@ class StateVisualizer:
         """
         states = trajectories["ep_states"][trajectory_idx]
         grid = trajectories["mdp_params"][trajectory_idx]["terrain"]
+        for y in range(len(grid)):
+            for x in range(len(grid[0])):
+                grid[y][x] = grid[y][x] if grid[y][x] != '2' else 'X'
         if hud_data is None:
             if self.is_rendering_hud:
                 hud_data = StateVisualizer.default_hud_data_from_trajectories(trajectories, trajectory_idx)
@@ -132,14 +135,14 @@ class StateVisualizer:
         for i, state in enumerate(states):
             img_name = img_prefix + str(i) + img_extension
             img_path = os.path.join(img_directory_path, img_name)
-            img_pathes.append(self.display_rendered_state(state=state, hud_data=hud_data[i], action_probs=action_probs[i], grid=grid, img_path=img_path, ipython_display=False, window_display=False))
+            img_pathes.append(self.display_rendered_state(state=state, hud_data=hud_data[i], action_probs=action_probs[i], grid=grid, img_path=img_path, ipython_display=False, window_display=False, single=single))
 
         if ipython_display:
             return show_ipython_images_slider(img_pathes, "timestep")
 
         return img_directory_path
 
-    def display_rendered_state(self, state, hud_data=None, action_probs=None, grid=None, img_path=None, ipython_display=False, window_display=False):
+    def display_rendered_state(self, state, hud_data=None, action_probs=None, grid=None, img_path=None, ipython_display=False, window_display=False, single=False):
         """
         renders state as image
         state (OvercookedState): state to render
@@ -151,7 +154,7 @@ class StateVisualizer:
         action_probs(list(list(float))): action probs for every player acessed in the way action_probs[player][action]
         """
         assert window_display or img_path or ipython_display, "specify at least one of the ways to output result state image: window_display, img_path, or ipython_display"
-        surface = self.render_state(state, grid, hud_data, action_probs=action_probs)
+        surface = self.render_state(state, grid, hud_data, action_probs=action_probs, single=single)
 
         if img_path is None and ipython_display:
             img_path = generate_temporary_file_path(prefix="overcooked_visualized_state_", extension=".png")
@@ -167,7 +170,7 @@ class StateVisualizer:
 
         return img_path
 
-    def render_state(self, state, grid, hud_data=None, action_probs=None):
+    def render_state(self, state, grid, hud_data=None, action_probs=None, single=False):
         """
         returns surface with rendered game state scaled to selected size,
         decoupled from display_rendered_state function to make testing easier
@@ -177,6 +180,10 @@ class StateVisualizer:
         assert grid
         grid_surface = pygame.surface.Surface(self._unscaled_grid_pixel_size(grid))
         self._render_grid(grid_surface, grid)
+
+        if single:
+            state.players = state.players[:1]
+
         self._render_players(grid_surface, state.players)
         self._render_objects(grid_surface, state.objects, grid)       
 
