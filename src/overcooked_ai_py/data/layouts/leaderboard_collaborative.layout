@@ -13,7 +13,7 @@
 
 
     ],
-    "recipe_values" : [20, 30, 40, 40, 70],
-    "recipe_times" : [30, 40, 50, 50, 70],
+    "recipe_values" : [20],
+    "recipe_times" : [30],
     "rew_shaping_params": None
 }
