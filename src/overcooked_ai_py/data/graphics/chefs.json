@@ -3,7 +3,7 @@
 		"EAST.png": {
 			"frame": {
 				"x": 1,
-				"y": 1,
+				"y": 0,
 				"w": 15,
 				"h": 15
 			},
@@ -23,7 +23,7 @@
 		"EAST-bluehat.png": {
 			"frame": {
 				"x": 18,
-				"y": 1,
+				"y": 0,
 				"w": 15,
 				"h": 15
 			},
@@ -40,10 +40,10 @@
 				"h": 15
 			}
 		},
-		"EAST-dish.png": {
+		"EAST-container.png": {
 			"frame": {
 				"x": 35,
-				"y": 1,
+				"y": 0,
 				"w": 15,
 				"h": 15
 			},
@@ -63,7 +63,7 @@
 		"EAST-greenhat.png": {
 			"frame": {
 				"x": 52,
-				"y": 1,
+				"y": 0,
 				"w": 15,
 				"h": 15
 			},
@@ -80,10 +80,10 @@
 				"h": 15
 			}
 		},
-		"EAST-onion.png": {
+		"EAST-projector.png": {
 			"frame": {
 				"x": 69,
-				"y": 1,
+				"y": 0,
 				"w": 15,
 				"h": 15
 			},
@@ -103,7 +103,7 @@
 		"EAST-orangehat.png": {
 			"frame": {
 				"x": 86,
-				"y": 1,
+				"y": 0,
 				"w": 15,
 				"h": 15
 			},
@@ -123,7 +123,7 @@
 		"EAST-purplehat.png": {
 			"frame": {
 				"x": 1,
-				"y": 18,
+				"y": 17,
 				"w": 15,
 				"h": 15
 			},
@@ -143,7 +143,7 @@
 		"EAST-redhat.png": {
 			"frame": {
 				"x": 18,
-				"y": 18,
+				"y": 17,
 				"w": 15,
 				"h": 15
 			},
@@ -160,10 +160,10 @@
 				"h": 15
 			}
 		},
-		"EAST-soup-onion.png": {
+		"EAST-soup-projector.png": {
 			"frame": {
 				"x": 35,
-				"y": 18,
+				"y": 17,
 				"w": 15,
 				"h": 15
 			},
@@ -180,10 +180,10 @@
 				"h": 15
 			}
 		},
-		"EAST-soup-tomato.png": {
+		"EAST-soup-laptop.png": {
 			"frame": {
 				"x": 52,
-				"y": 18,
+				"y": 17,
 				"w": 15,
 				"h": 15
 			},
@@ -200,10 +200,10 @@
 				"h": 15
 			}
 		},
-		"EAST-tomato.png": {
+		"EAST-laptop.png": {
 			"frame": {
 				"x": 69,
-				"y": 18,
+				"y": 17,
 				"w": 15,
 				"h": 15
 			},
@@ -223,7 +223,7 @@
 		"NORTH.png": {
 			"frame": {
 				"x": 86,
-				"y": 18,
+				"y": 17,
 				"w": 15,
 				"h": 15
 			},
@@ -243,7 +243,7 @@
 		"NORTH-bluehat.png": {
 			"frame": {
 				"x": 1,
-				"y": 35,
+				"y": 34,
 				"w": 15,
 				"h": 15
 			},
@@ -260,10 +260,10 @@
 				"h": 15
 			}
 		},
-		"NORTH-dish.png": {
+		"NORTH-container.png": {
 			"frame": {
 				"x": 18,
-				"y": 35,
+				"y": 34,
 				"w": 15,
 				"h": 15
 			},
@@ -283,7 +283,7 @@
 		"NORTH-greenhat.png": {
 			"frame": {
 				"x": 35,
-				"y": 35,
+				"y": 34,
 				"w": 15,
 				"h": 15
 			},
@@ -300,10 +300,10 @@
 				"h": 15
 			}
 		},
-		"NORTH-onion.png": {
+		"NORTH-projector.png": {
 			"frame": {
 				"x": 52,
-				"y": 35,
+				"y": 34,
 				"w": 15,
 				"h": 15
 			},
@@ -323,7 +323,7 @@
 		"NORTH-orangehat.png": {
 			"frame": {
 				"x": 69,
-				"y": 35,
+				"y": 34,
 				"w": 15,
 				"h": 15
 			},
@@ -343,7 +343,7 @@
 		"NORTH-purplehat.png": {
 			"frame": {
 				"x": 86,
-				"y": 35,
+				"y": 34,
 				"w": 15,
 				"h": 15
 			},
@@ -363,7 +363,7 @@
 		"NORTH-redhat.png": {
 			"frame": {
 				"x": 1,
-				"y": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},
@@ -380,10 +380,10 @@
 				"h": 15
 			}
 		},
-		"NORTH-soup-onion.png": {
+		"NORTH-soup-projector.png": {
 			"frame": {
 				"x": 18,
-				"y": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},
@@ -400,10 +400,10 @@
 				"h": 15
 			}
 		},
-		"NORTH-soup-tomato.png": {
+		"NORTH-soup-laptop.png": {
 			"frame": {
 				"x": 35,
-				"y": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},
@@ -420,10 +420,10 @@
 				"h": 15
 			}
 		},
-		"NORTH-tomato.png": {
+		"NORTH-laptop.png": {
 			"frame": {
 				"x": 52,
-				"y": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},
@@ -443,7 +443,7 @@
 		"SOUTH.png": {
 			"frame": {
 				"x": 69,
-				"y": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},
@@ -463,7 +463,7 @@
 		"SOUTH-bluehat.png": {
 			"frame": {
 				"x": 86,
-				"y": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},
@@ -480,10 +480,10 @@
 				"h": 15
 			}
 		},
-		"SOUTH-dish.png": {
+		"SOUTH-container.png": {
 			"frame": {
 				"x": 1,
-				"y": 69,
+				"y": 68,
 				"w": 15,
 				"h": 15
 			},
@@ -503,7 +503,7 @@
 		"SOUTH-greenhat.png": {
 			"frame": {
 				"x": 18,
-				"y": 69,
+				"y": 68,
 				"w": 15,
 				"h": 15
 			},
@@ -520,10 +520,10 @@
 				"h": 15
 			}
 		},
-		"SOUTH-onion.png": {
+		"SOUTH-projector.png": {
 			"frame": {
 				"x": 35,
-				"y": 69,
+				"y": 68,
 				"w": 15,
 				"h": 15
 			},
@@ -543,7 +543,7 @@
 		"SOUTH-orangehat.png": {
 			"frame": {
 				"x": 52,
-				"y": 69,
+				"y": 68,
 				"w": 15,
 				"h": 15
 			},
@@ -563,7 +563,7 @@
 		"SOUTH-purplehat.png": {
 			"frame": {
 				"x": 69,
-				"y": 69,
+				"y": 68,
 				"w": 15,
 				"h": 15
 			},
@@ -583,7 +583,7 @@
 		"SOUTH-redhat.png": {
 			"frame": {
 				"x": 86,
-				"y": 69,
+				"y": 68,
 				"w": 15,
 				"h": 15
 			},
@@ -600,10 +600,10 @@
 				"h": 15
 			}
 		},
-		"SOUTH-soup-onion.png": {
+		"SOUTH-soup-projector.png": {
 			"frame": {
 				"x": 1,
-				"y": 86,
+				"y": 85,
 				"w": 15,
 				"h": 15
 			},
@@ -620,10 +620,10 @@
 				"h": 15
 			}
 		},
-		"SOUTH-soup-tomato.png": {
+		"SOUTH-soup-laptop.png": {
 			"frame": {
 				"x": 18,
-				"y": 86,
+				"y": 85,
 				"w": 15,
 				"h": 15
 			},
@@ -640,10 +640,10 @@
 				"h": 15
 			}
 		},
-		"SOUTH-tomato.png": {
+		"SOUTH-laptop.png": {
 			"frame": {
 				"x": 35,
-				"y": 86,
+				"y": 85,
 				"w": 15,
 				"h": 15
 			},
@@ -663,7 +663,7 @@
 		"WEST.png": {
 			"frame": {
 				"x": 52,
-				"y": 86,
+				"y": 85,
 				"w": 15,
 				"h": 15
 			},
@@ -683,7 +683,7 @@
 		"WEST-bluehat.png": {
 			"frame": {
 				"x": 69,
-				"y": 86,
+				"y": 85,
 				"w": 15,
 				"h": 15
 			},
@@ -700,10 +700,10 @@
 				"h": 15
 			}
 		},
-		"WEST-dish.png": {
+		"WEST-container.png": {
 			"frame": {
 				"x": 86,
-				"y": 86,
+				"y": 85,
 				"w": 15,
 				"h": 15
 			},
@@ -723,7 +723,7 @@
 		"WEST-greenhat.png": {
 			"frame": {
 				"x": 103,
-				"y": 1,
+				"y": 0,
 				"w": 15,
 				"h": 15
 			},
@@ -740,10 +740,10 @@
 				"h": 15
 			}
 		},
-		"WEST-onion.png": {
+		"WEST-projector.png": {
 			"frame": {
 				"x": 103,
-				"y": 18,
+				"y": 17,
 				"w": 15,
 				"h": 15
 			},
@@ -763,7 +763,7 @@
 		"WEST-orangehat.png": {
 			"frame": {
 				"x": 103,
-				"y": 35,
+				"y": 34,
 				"w": 15,
 				"h": 15
 			},
@@ -783,7 +783,7 @@
 		"WEST-purplehat.png": {
 			"frame": {
 				"x": 103,
-				"y": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},
@@ -803,7 +803,7 @@
 		"WEST-redhat.png": {
 			"frame": {
 				"x": 103,
-				"y": 69,
+				"y": 68,
 				"w": 15,
 				"h": 15
 			},
@@ -820,10 +820,10 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-onion.png": {
+		"WEST-soup-projector.png": {
 			"frame": {
 				"x": 103,
-				"y": 86,
+				"y": 85,
 				"w": 15,
 				"h": 15
 			},
@@ -840,10 +840,10 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-tomato.png": {
+		"WEST-soup-laptop.png": {
 			"frame": {
 				"x": 1,
-				"y": 103,
+				"y": 102,
 				"w": 15,
 				"h": 15
 			},
@@ -860,10 +860,90 @@
 				"h": 15
 			}
 		},
-		"WEST-tomato.png": {
+		"WEST-laptop.png": {
 			"frame": {
 				"x": 18,
-				"y": 103,
+				"y": 102,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"SOUTH-solar_cell.png": {
+			"frame": {
+				"x": 37,
+				"y": 102,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"WEST-solar_cell.png": {
+			"frame": {
+				"x": 53,
+				"y": 102,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"EAST-solar_cell.png": {
+			"frame": {
+				"x": 69,
+				"y": 102,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"NORTH-solar_cell.png": {
+			"frame": {
+				"x": 52,
+				"y": 51,
 				"w": 15,
 				"h": 15
 			},

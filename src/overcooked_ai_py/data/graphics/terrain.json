@@ -20,7 +20,7 @@
 				"h": 15
 			}
 		},
-		"dishes.png": {
+		"containers.png": {
 			"frame": {
 				"x": 18,
 				"y": 1,
@@ -60,7 +60,7 @@
 				"h": 15
 			}
 		},
-		"onions.png": {
+		"projectors.png": {
 			"frame": {
 				"x": 52,
 				"y": 1,
@@ -80,7 +80,7 @@
 				"h": 15
 			}
 		},
-		"pot.png": {
+		"construction_site.png": {
 			"frame": {
 				"x": 69,
 				"y": 1,
@@ -120,9 +120,29 @@
 				"h": 15
 			}
 		},
-		"tomatoes.png": {
+		"laptops.png": {
 			"frame": {
 				"x": 103,
+				"y": 1,
+				"w": 15,
+				"h": 15
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 15,
+				"h": 15
+			},
+			"sourceSize": {
+				"w": 15,
+				"h": 15
+			}
+		},
+		"solar_cells.png": {
+			"frame": {
+				"x": 120,
 				"y": 1,
 				"w": 15,
 				"h": 15
