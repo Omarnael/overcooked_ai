@@ -28,7 +28,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -59,7 +59,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -86,7 +86,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 1
@@ -97,7 +97,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -113,7 +113,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 1,
                 1
@@ -131,7 +131,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 1
@@ -142,7 +142,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -158,7 +158,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 1,
                 1
@@ -176,7 +176,7 @@
               -1
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 1
@@ -187,7 +187,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -203,7 +203,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 1,
                 1
@@ -231,14 +231,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -254,7 +254,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 1
@@ -282,14 +282,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -305,7 +305,7 @@
               -1
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 1
@@ -323,7 +323,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 1
@@ -340,14 +340,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -374,7 +374,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 1
@@ -391,14 +391,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               2,
               0
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -425,7 +425,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 1
@@ -442,14 +442,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               2,
               0
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -476,7 +476,7 @@
               -1
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 1
@@ -493,14 +493,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               2,
               0
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -516,7 +516,7 @@
               1
             ],
             "held_object": {
-              "name": "dish",
+              "name": "container",
               "position": [
                 1,
                 2
@@ -544,14 +544,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               3,
               1
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -567,7 +567,7 @@
               0
             ],
             "held_object": {
-              "name": "dish",
+              "name": "container",
               "position": [
                 1,
                 2
@@ -595,14 +595,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               3,
               2
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -618,7 +618,7 @@
               0
             ],
             "held_object": {
-              "name": "dish",
+              "name": "container",
               "position": [
                 2,
                 2
@@ -646,14 +646,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               3,
               3
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -669,7 +669,7 @@
               -1
             ],
             "held_object": {
-              "name": "dish",
+              "name": "container",
               "position": [
                 2,
                 1
@@ -697,14 +697,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               3,
               4
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -720,7 +720,7 @@
               -1
             ],
             "held_object": {
-              "name": "dish",
+              "name": "container",
               "position": [
                 2,
                 1
@@ -738,7 +738,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 1
@@ -755,14 +755,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               3,
               5
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -778,7 +778,7 @@
               -1
             ],
             "held_object": {
-              "name": "dish",
+              "name": "container",
               "position": [
                 2,
                 1
@@ -796,7 +796,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 1
@@ -813,14 +813,14 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               3,
               5
             ]
           }
         ],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -842,7 +842,7 @@
                 1
               ],
               "state": [
-                "onion",
+                "projector",
                 3,
                 5
               ]
@@ -858,7 +858,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 1
@@ -869,7 +869,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -891,7 +891,7 @@
                 1
               ],
               "state": [
-                "onion",
+                "projector",
                 3,
                 5
               ]
@@ -907,7 +907,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 1
@@ -918,7 +918,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -940,7 +940,7 @@
                 1
               ],
               "state": [
-                "onion",
+                "projector",
                 3,
                 5
               ]
@@ -956,7 +956,7 @@
               1
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 2
@@ -967,7 +967,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -989,7 +989,7 @@
                 1
               ],
               "state": [
-                "onion",
+                "projector",
                 3,
                 5
               ]
@@ -1005,7 +1005,7 @@
               1
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 3,
                 2
@@ -1016,7 +1016,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -1038,7 +1038,7 @@
                 2
               ],
               "state": [
-                "onion",
+                "projector",
                 3,
                 5
               ]
@@ -1054,7 +1054,7 @@
               0
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 2
@@ -1065,7 +1065,7 @@
         ],
         "objects": [],
         "order_list": [
-          "onion",
+          "projector",
           "any"
         ]
       },
@@ -1092,7 +1092,7 @@
               -1
             ],
             "held_object": {
-              "name": "onion",
+              "name": "projector",
               "position": [
                 2,
                 1
@@ -1139,7 +1139,7 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
@@ -1161,7 +1161,7 @@
               0
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 3,
                 2
@@ -1189,7 +1189,7 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
@@ -1211,7 +1211,7 @@
               0
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 2,
                 2
@@ -1239,7 +1239,7 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
@@ -1261,7 +1261,7 @@
               -1
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 2,
                 1
@@ -1279,7 +1279,7 @@
               0
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 1,
                 2
@@ -1296,7 +1296,7 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
@@ -1318,7 +1318,7 @@
               -1
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 2,
                 1
@@ -1336,7 +1336,7 @@
               0
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 1,
                 2
@@ -1353,7 +1353,7 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
@@ -1375,7 +1375,7 @@
               1
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 2,
                 2
@@ -1393,7 +1393,7 @@
               0
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 1,
                 2
@@ -1410,7 +1410,7 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
@@ -1443,7 +1443,7 @@
               0
             ],
             "held_object": {
-              "name": "tomato",
+              "name": "laptop",
               "position": [
                 1,
                 2
@@ -1460,7 +1460,7 @@
               0
             ],
             "state": [
-              "onion",
+              "projector",
               1,
               0
             ]
@@ -1472,7 +1472,7 @@
               3
             ],
             "state": [
-              "tomato",
+              "laptop",
               1,
               0
             ]
@@ -1796,7 +1796,7 @@
       "layout_name": "mdp_test",
       "cook_time": 5,
       "start_order_list": [
-        "onion",
+        "projector",
         "any"
       ],
       "num_items_for_soup": 3,
