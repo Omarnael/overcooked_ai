@@ -497,16 +497,16 @@ class JointMotionPlanner(object):
             action_plans.append(action_plan)
             pos_and_or_paths.append(pos_and_or_path)
         plan_lengths = tuple(len(p) for p in action_plans)
-        assert all([plan_lengths[i] == len(pos_and_or_paths[i]) for i in range(2)])
+        assert all([plan_lengths[i] == len(pos_and_or_paths[i]) for i in range(1)])
         return action_plans, pos_and_or_paths, plan_lengths
 
     def plans_have_conflict(self, joint_start_state, joint_goal_state, pos_and_or_paths, plan_lengths):
         """Check if the sequence of pos_and_or_paths for the two agents conflict"""
         min_length = min(plan_lengths)
-        prev_positions = tuple(s[0] for s in joint_start_state)
+        prev_positions = tuple(s[0] for s in joint_start_state[:1])
         for t in range(min_length):
-            curr_pos_or0, curr_pos_or1 = pos_and_or_paths[0][t], pos_and_or_paths[1][t]
-            curr_positions = (curr_pos_or0[0], curr_pos_or1[0])
+            curr_pos_or0 = pos_and_or_paths[0][t]
+            curr_positions = (curr_pos_or0[0])
             if self.mdp.is_transition_collision(prev_positions, curr_positions):
                 return True
             prev_positions = curr_positions
@@ -515,8 +515,8 @@ class JointMotionPlanner(object):
     def _join_single_agent_action_plans(self, joint_start_state, action_plans, pos_and_or_paths, finishing_time):
         """Returns the joint action plan and end joint state obtained by joining the individual action plans"""
         assert finishing_time > 0
-        end_joint_state = (pos_and_or_paths[0][finishing_time - 1], pos_and_or_paths[1][finishing_time - 1])
-        joint_action_plan = list(zip(*[action_plans[0][:finishing_time], action_plans[1][:finishing_time]]))
+        end_joint_state = (pos_and_or_paths[0][finishing_time - 1])
+        joint_action_plan = list(zip(*[action_plans[0][:finishing_time]]))
         return joint_action_plan, end_joint_state
 
     def _handle_path_conflict_with_same_goal(self, joint_start_state, joint_goal_state, action_plans, pos_and_or_paths):
@@ -608,7 +608,7 @@ class JointMotionPlanner(object):
         if not self.is_valid_joint_motion_goal(joint_goal_state):
             return False
         return all([ \
-            self.motion_planner.is_valid_motion_start_goal_pair(joint_start_state[i], joint_goal_state[i]) for i in range(2)])
+            self.motion_planner.is_valid_motion_start_goal_pair(joint_start_state[i], joint_goal_state[i]) for i in range(1)])
 
     def _agents_are_in_same_position(self, joint_motion_state):
         agent_positions = [player_pos_and_or[0] for player_pos_and_or in joint_motion_state]
@@ -646,7 +646,7 @@ class JointMotionPlanner(object):
             joint_goal_state (tuple): pair of goal positions and orientations
         """
         action_plans = []
-        for i in range(2):
+        for i in range(1):
             agent_position_sequence = [joint_position[i] for joint_position in joint_positions]
             action_plan, _, _ = self.motion_planner.action_plan_from_positions(
                                     agent_position_sequence, joint_start_state[i], joint_goal_state[i])
@@ -1398,7 +1398,7 @@ class MediumLevelActionManager(object):
 #         motion_goal_indices = (0, 0)
 #         total_cost = 0
 #         while not self.at_least_one_finished_hl_action(joint_hl_action, motion_goal_indices):
-#             curr_jm_goal = tuple(joint_hl_action[i].motion_goals[motion_goal_indices[i]] for i in range(2))
+#             curr_jm_goal = tuple(joint_hl_action[i].motion_goals[motion_goal_indices[i]] for i in range(1))
 #             joint_motion_action_plans, end_pos_and_ors, plan_costs = \
 #                 self.jmp.get_low_level_action_plan(curr_state.players_pos_and_or, curr_jm_goal)
 #             curr_state = self.jmp.derive_state(curr_state, end_pos_and_ors, joint_motion_action_plans)
@@ -1410,7 +1410,7 @@ class MediumLevelActionManager(object):
 #     def at_least_one_finished_hl_action(self, joint_hl_action, motion_goal_indices):
 #         """Returns whether either agent has reached the end of the motion goal list it was supposed
 #         to perform to finish it's high level action"""
-#         return any([len(joint_hl_action[i].motion_goals) == motion_goal_indices[i] for i in range(2)])
+#         return any([len(joint_hl_action[i].motion_goals) == motion_goal_indices[i] for i in range(1)])
 #
 #     def get_low_level_action_plan(self, start_state, h_fn, debug=False):
 #         """
