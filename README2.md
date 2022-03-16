@@ -21,7 +21,7 @@
 - `search.py`: A* search and shortest path logic
 
 ## Agents
-In `hacktrick_agent.py` you will find two base classes `MainAgent()` and `OptionalAgent()`, but you don't need to implement both. 
+In `hacktrick_agent.py` you will find two base classes `MainAgent()` and `OptionalAgent()`. Implement according to the following cases. 
 - In single mode, implement only one of them but make sure you are testing and submitting the correct agent.
 - In collaborative mode, implement both classes if you want to implement different agent logic.
 - In collaborative mode, implement one class only if you want to apply the same logic on both agents.
