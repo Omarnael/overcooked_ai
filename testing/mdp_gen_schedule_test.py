@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
 
-from overcooked_ai_py.mdp.actions import Direction, Action
-from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, PlayerState, ObjectState
-from overcooked_ai_py.agents.benchmarking import AgentEvaluator
+from hacktrick_ai_py.mdp.actions import Direction, Action
+from hacktrick_ai_py.mdp.hacktrick_mdp import HacktrickGridworld, PlayerState, ObjectState
+from hacktrick_ai_py.agents.benchmarking import AgentEvaluator
 
 np.random.seed(42)
 
@@ -16,8 +16,8 @@ force_compute_large = False
 force_compute = True
 DISPLAY = False
 
-simple_mdp = OvercookedGridworld.from_layout_name('cramped_room')
-large_mdp = OvercookedGridworld.from_layout_name('corridor')
+simple_mdp = HacktrickGridworld.from_layout_name('cramped_room')
+large_mdp = HacktrickGridworld.from_layout_name('corridor')
 
 
 def params_schedule_fn_constant_09_01(outside_information):

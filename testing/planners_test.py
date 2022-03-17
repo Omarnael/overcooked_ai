@@ -1,10 +1,10 @@
 import unittest
-from overcooked_ai_py.planning.planners import MediumLevelActionManager
-from overcooked_ai_py.mdp.actions import Direction, Action
-from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, PlayerState, ObjectState, SolarlabState, OvercookedState
-from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv
-from overcooked_ai_py.agents.benchmarking import AgentEvaluator
-from overcooked_ai_py.agents.agent import AgentPair, GreedyHumanModel
+from hacktrick_ai_py.planning.planners import MediumLevelActionManager
+from hacktrick_ai_py.mdp.actions import Direction, Action
+from hacktrick_ai_py.mdp.hacktrick_mdp import HacktrickGridworld, PlayerState, ObjectState, SolarlabState, HacktrickState
+from hacktrick_ai_py.mdp.hacktrick_env import HacktrickEnv
+from hacktrick_ai_py.agents.benchmarking import AgentEvaluator
+from hacktrick_ai_py.agents.agent import AgentPair, GreedyHumanModel
 
 large_mdp_tests = False
 force_compute = True
@@ -16,7 +16,7 @@ stay, interact = Action.STAY, Action.INTERACT
 P, Obj = PlayerState, ObjectState
 
 # Simple MDP Setup
-simple_mdp = OvercookedGridworld.from_layout_name('simple_o')
+simple_mdp = HacktrickGridworld.from_layout_name('simple_o')
 
 
 base_params = {
@@ -30,7 +30,7 @@ base_params = {
 action_manger_filename = "simple_1_am.pkl"
 ml_action_manager_simple = MediumLevelActionManager.from_pickle_or_compute(
     simple_mdp, mlam_params=base_params, custom_filename=action_manger_filename, force_compute=force_compute)
-ml_action_manager_simple.env = OvercookedEnv.from_mdp(simple_mdp)
+ml_action_manager_simple.env = HacktrickEnv.from_mdp(simple_mdp)
 
 base_params_start_or = {
     'start_orientations': True,
@@ -48,7 +48,7 @@ if large_mdp_tests:
     # Not testing by default
 
     # Large MDP Setup
-    large_mdp = OvercookedGridworld.from_layout_name('corridor', cook_time=5)
+    large_mdp = HacktrickGridworld.from_layout_name('corridor', cook_time=5)
 
     no_counters_params = {
         'start_orientations': False,
@@ -162,7 +162,7 @@ class TestMotionPlanner(unittest.TestCase):
 
     def check_single_motion_plan(self, motion_planner, start_pos_and_or, goal_pos_and_or, expected_length=None):
         dummy_agent = P((3, 2), n)
-        start_state = OvercookedState([P(*start_pos_and_or), dummy_agent], {}, all_orders=simple_mdp.start_all_orders)
+        start_state = HacktrickState([P(*start_pos_and_or), dummy_agent], {}, all_orders=simple_mdp.start_all_orders)
         action_plan, pos_and_or_plan, plan_cost = motion_planner.get_plan(start_pos_and_or, goal_pos_and_or)
         
         # Checking that last state obtained matches goal position
@@ -174,7 +174,7 @@ class TestMotionPlanner(unittest.TestCase):
         self.assertEqual(plan_cost, graph_plan_cost)
 
         joint_action_plan = [(a, stay) for a in action_plan]
-        env = OvercookedEnv.from_mdp(motion_planner.mdp, horizon=1000)
+        env = HacktrickEnv.from_mdp(motion_planner.mdp, horizon=1000)
         resulting_state, _ = env.execute_plan(start_state, joint_action_plan)
         self.assertEqual(resulting_state.players_pos_and_or[0], goal_pos_and_or)
 
@@ -331,8 +331,8 @@ class TestJointMotionPlanner(unittest.TestCase):
         action_plan, end_pos_and_orients, plan_lengths = joint_motion_planner.get_low_level_action_plan(start, goal)
         if debug: print("Start state: {}, Goal state: {}, Action plan: {}".format(start, goal, action_plan))
 
-        start_state = OvercookedState([P(*start[0]), P(*start[1])], {}, all_orders=simple_mdp.start_all_orders)
-        env = OvercookedEnv.from_mdp(joint_motion_planner.mdp, horizon=1000)
+        start_state = HacktrickState([P(*start[0]), P(*start[1])], {}, all_orders=simple_mdp.start_all_orders)
+        env = HacktrickEnv.from_mdp(joint_motion_planner.mdp, horizon=1000)
         resulting_state, _ = env.execute_plan(start_state, action_plan, display=display)
 
         self.assertTrue(any([agent_goal in resulting_state.players_pos_and_or for agent_goal in goal]))
@@ -393,7 +393,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
     SOLARLAB_DELIVER = ((3, 2), (0, 1))
 
     def simple_mpd_empty_hands(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {},
@@ -404,7 +404,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_deliver_solarlab(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, done_solarlab_obj((2, 1)))],
             {},
@@ -422,7 +422,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          )
 
     def simple_mdp_pickup_counter_solarlab(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(0, 2): done_solarlab_obj((0, 2))},
@@ -433,7 +433,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_pickup_counter_container(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(0, 2): Obj('container', (0, 2))},
@@ -444,7 +444,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_pickup_counter_projector(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(0, 2): Obj('projector', (0, 2))},
@@ -455,7 +455,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_drop_useless_container_with_solarlab_idle(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, Obj('container', (2, 1)))],
             {(2, 0): idle_solarlab_obj((2, 0), 3)},
@@ -472,7 +472,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          )
 
     def simple_mdp_pickup_solarlab(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, Obj('container', (2, 1)))],
             {(2, 0): done_solarlab_obj((2, 0))},
@@ -489,7 +489,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          )
 
     def simple_mdp_pickup_container(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(2, 0): done_solarlab_obj((2, 0))},
@@ -500,7 +500,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_start_good_solarlab_cooking(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(2, 0): idle_solarlab_obj((2, 0), 3)},
@@ -511,7 +511,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_start_bad_solarlab_cooking(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(2, 0): idle_solarlab_obj((2, 0), 2)},
@@ -522,7 +522,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_start_1_projector_solarlab_cooking(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n)],
             {(2, 0): idle_solarlab_obj((2, 0), 1)},
@@ -533,7 +533,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      )
 
     def simple_mdp_drop_useless_projector_good_solarlab(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): done_solarlab_obj((2, 0))},
@@ -550,7 +550,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          )
 
     def simple_mdp_drop_useless_projector_bad_solarlab(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): done_solarlab_obj((2, 0), 2)},
@@ -567,7 +567,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          )
 
     def simple_mdp_add_3rd_projector(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): idle_solarlab_obj((2, 0), 2)},
@@ -584,7 +584,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          )
 
     def simple_mdp_add_2nd_projector(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
             {(2, 0): idle_solarlab_obj((2, 0), 1)},
@@ -601,7 +601,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          )
 
     def simple_mdp_drop_useless_container(self, planner, counter_drop_forbidden=False):
-        s = OvercookedState(
+        s = HacktrickState(
             [P((2, 2), n),
              P((2, 1), n, Obj('container', (2, 1)))],
             {(2, 0): idle_solarlab_obj((2, 0), 1)},
@@ -620,7 +620,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
     def check_ml_action_manager(self, state, am, expected_mla_0, expected_mla_1, debug=False):
         """
         args:
-            state (OvercookedState): an overcooked state
+            state (HacktrickState): an hacktrick state
             am (MediumLevelActionManager): the planer whose action manager will be tested
 
         This function checks if all the mid-level actions make sense for each player state inside STATE
@@ -672,7 +672,7 @@ class TestScenarios(unittest.TestCase):
         # This test does not allow counter by using the default NO_COUNTER_PARAMS when calling from_layout_name
 
         mdp_params = {"layout_name": "scenario3"}
-        mdp = OvercookedGridworld.from_layout_name(**mdp_params)
+        mdp = HacktrickGridworld.from_layout_name(**mdp_params)
         start_state = mdp.get_standard_start_state()
 
         env_params = {"start_state_fn": lambda: start_state, "horizon": 1000}
@@ -694,7 +694,7 @@ class TestScenarios(unittest.TestCase):
         # This test does not allow only (5. 3) as the only counter
 
         mdp_params = {"layout_name": "scenario3"}
-        mdp = OvercookedGridworld.from_layout_name(**mdp_params)
+        mdp = HacktrickGridworld.from_layout_name(**mdp_params)
         start_state = mdp.get_standard_start_state()
 
         valid_counters = [(5, 3)]
@@ -717,14 +717,14 @@ class TestScenarios(unittest.TestCase):
 #
 #     def test_basic_hl_planning(self):
 #         if large_mdp_tests:
-#             s = OvercookedState(
+#             s = HacktrickState(
 #                 [P((2, 2), n),
 #                 P((2, 1), n)],
 #                 {}, order_list=[])
 #             h = Heuristic(hlp.mp)
 #             hlp.get_hl_plan(s, h.simple_heuristic)
 #
-#             s = OvercookedState(
+#             s = HacktrickState(
 #                 [P((2, 2), n),
 #                 P((2, 1), n)],
 #                 {}, order_list=['any', 'any', 'any'])

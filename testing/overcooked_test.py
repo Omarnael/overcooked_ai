@@ -2,16 +2,16 @@ import unittest, os, shutil, glob
 import json, copy
 import numpy as np
 from math import factorial
-from overcooked_ai_py.mdp.actions import Action, Direction
-from overcooked_ai_py.mdp.overcooked_mdp import PlayerState, OvercookedGridworld, OvercookedState, ObjectState, SolarlabState, Recipe
-from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv, DEFAULT_ENV_PARAMS
-from overcooked_ai_py.mdp.overcooked_trajectory import append_trajectories, DEFAULT_TRAJ_KEYS, TIMESTEP_TRAJ_KEYS, EPISODE_TRAJ_KEYS
-from overcooked_ai_py.mdp.layout_generator import LayoutGenerator, ONION_DISPENSER, TOMATO_DISPENSER, CONSTRUCTION_SITE, CONTAINER_DISPENSER, SERVING_LOC
-from overcooked_ai_py.agents.agent import AgentGroup, AgentPair, GreedyHumanModel, FixedPlanAgent, RandomAgent
-from overcooked_ai_py.agents.benchmarking import AgentEvaluator
-from overcooked_ai_py.planning.planners import MediumLevelActionManager, NO_COUNTERS_PARAMS, MotionPlanner
-from overcooked_ai_py.utils import save_pickle, load_pickle, iterate_over_json_files_in_dir, load_from_json, save_as_json
-from overcooked_ai_py.static import TESTING_DATA_DIR
+from hacktrick_ai_py.mdp.actions import Action, Direction
+from hacktrick_ai_py.mdp.hacktrick_mdp import PlayerState, HacktrickGridworld, HacktrickState, ObjectState, SolarlabState, Recipe
+from hacktrick_ai_py.mdp.hacktrick_env import HacktrickEnv, DEFAULT_ENV_PARAMS
+from hacktrick_ai_py.mdp.hacktrick_trajectory import append_trajectories, DEFAULT_TRAJ_KEYS, TIMESTEP_TRAJ_KEYS, EPISODE_TRAJ_KEYS
+from hacktrick_ai_py.mdp.layout_generator import LayoutGenerator, ONION_DISPENSER, TOMATO_DISPENSER, CONSTRUCTION_SITE, CONTAINER_DISPENSER, SERVING_LOC
+from hacktrick_ai_py.agents.agent import AgentGroup, AgentPair, GreedyHumanModel, FixedPlanAgent, RandomAgent
+from hacktrick_ai_py.agents.benchmarking import AgentEvaluator
+from hacktrick_ai_py.planning.planners import MediumLevelActionManager, NO_COUNTERS_PARAMS, MotionPlanner
+from hacktrick_ai_py.utils import save_pickle, load_pickle, iterate_over_json_files_in_dir, load_from_json, save_as_json
+from hacktrick_ai_py.static import TESTING_DATA_DIR
 from utils import generate_serialized_trajectory
 
 START_ORDER_LIST = ["any"]
@@ -276,45 +276,45 @@ class TestGridworld(unittest.TestCase):
     verbose = False
 
     def setUp(self):
-        self.base_mdp = OvercookedGridworld.from_layout_name("mdp_test")
+        self.base_mdp = HacktrickGridworld.from_layout_name("mdp_test")
 
 
     def test_constructor_invalid_inputs(self):
         # Height and width must be at least 3.
         with self.assertRaises(AssertionError):
-            mdp = OvercookedGridworld.from_grid(['X', 'X', 'X'])
+            mdp = HacktrickGridworld.from_grid(['X', 'X', 'X'])
         with self.assertRaises(AssertionError):
-            mdp = OvercookedGridworld.from_grid([['X', 'X', 'X']])
+            mdp = HacktrickGridworld.from_grid([['X', 'X', 'X']])
         with self.assertRaises(AssertionError):
             # Borders must be present.
-            mdp = OvercookedGridworld.from_grid(['XOSX',
+            mdp = HacktrickGridworld.from_grid(['XOSX',
                                                  'P  D',
                                                  ' 21 '])
 
         with self.assertRaises(AssertionError):
             # The grid can't be ragged.
-            mdp = OvercookedGridworld.from_grid(['XXPXX',
+            mdp = HacktrickGridworld.from_grid(['XXPXX',
                                                  'O  2XX',
                                                  'X1 3 X',
                                                  'XDXSXX'])
 
         with self.assertRaises(AssertionError):
             # The agents must be numbered 1 and 2.
-            mdp = OvercookedGridworld.from_grid(['XXPXX',
+            mdp = HacktrickGridworld.from_grid(['XXPXX',
                                                  'O  3O',
                                                  'X1  X',
                                                  'XDXSX'])
 
         with self.assertRaises(AssertionError):
             # The agents must be numbered 1 and 2.
-            mdp = OvercookedGridworld.from_grid(['XXPXX',
+            mdp = HacktrickGridworld.from_grid(['XXPXX',
                                                  'O  1O',
                                                  'X1  X',
                                                  'XDXSX'])
 
         with self.assertRaises(AssertionError):
             # B is not a valid element.
-            mdp = OvercookedGridworld.from_grid(['XBPXX',
+            mdp = HacktrickGridworld.from_grid(['XBPXX',
                                                  'O  2O',
                                                  'X1  X',
                                                  'XDXSX'])
@@ -326,19 +326,19 @@ class TestGridworld(unittest.TestCase):
         # NOTE: Uncomment the following line if expected start state deliberately changed
         # save_as_json(actual_start_state.to_dict(), expected_state_path)
 
-        expected_start_state = OvercookedState.from_dict(load_from_json(expected_state_path))
+        expected_start_state = HacktrickState.from_dict(load_from_json(expected_state_path))
         self.assertEqual(actual_start_state, expected_start_state, '\n' + str(actual_start_state) + '\n' + str(expected_start_state))
 
     def test_file_constructor(self):
-        mdp = OvercookedGridworld.from_layout_name('corridor')
-        expected_start_state = OvercookedState(
+        mdp = HacktrickGridworld.from_layout_name('corridor')
+        expected_start_state = HacktrickState(
             [PlayerState((3, 1), Direction.NORTH), PlayerState((10, 1), Direction.NORTH)], {},
             all_orders=[{ "ingredients" : ["projector", "projector", "projector"]}])
         actual_start_state = mdp.get_standard_start_state()
         self.assertEqual(actual_start_state, expected_start_state, '\n' + str(actual_start_state) + '\n' + str(expected_start_state))
 
     def test_actions(self):
-        bad_state = OvercookedState(
+        bad_state = HacktrickState(
             [PlayerState((0, 0), Direction.NORTH), PlayerState((3, 1), Direction.NORTH)], {})
         with self.assertRaises(AssertionError):
             self.base_mdp.get_actions(bad_state)
@@ -348,17 +348,17 @@ class TestGridworld(unittest.TestCase):
 
     def test_from_dict(self):
         state_dict = {"players": [{"position": [2, 1], "orientation": [0, -1], "held_object": None }, {"position": [1, 1], "orientation": [0, -1], "held_object": None }], "objects": [{"name": "projector", "position": [1, 0], "state": None }], "order_list": None }
-        state = OvercookedState.from_dict(state_dict)
+        state = HacktrickState.from_dict(state_dict)
 
 
     def test_transitions_and_environment(self):
-        bad_state = OvercookedState(
+        bad_state = HacktrickState(
             [P((0, 0), s), P((3, 1), s)], {})
 
         with self.assertRaises(AssertionError):
             self.base_mdp.get_state_transition(bad_state, stay)
 
-        env = OvercookedEnv.from_mdp(self.base_mdp, info_level=0)
+        env = HacktrickEnv.from_mdp(self.base_mdp, info_level=0)
 
         def check_transition(action, expected_path, recompute=False):
             # Compute actual values
@@ -377,7 +377,7 @@ class TestGridworld(unittest.TestCase):
 
             # Compute expected values
             expected = load_from_json(expected_path)
-            expected_state = OvercookedState.from_dict(expected['state'])
+            expected_state = HacktrickState.from_dict(expected['state'])
             expected_reward = expected['reward']
             
             # Make sure everything lines up (note __eq__ is transitive)
@@ -413,7 +413,7 @@ class TestGridworld(unittest.TestCase):
             state = self.base_mdp.get_standard_start_state()
             for _ in range(1500):
                 # Ensure serialization and deserializations are inverses
-                reconstructed_state = OvercookedState.from_dict(load_from_json(save_as_json(state.to_dict(), dummy_path)))
+                reconstructed_state = HacktrickState.from_dict(load_from_json(save_as_json(state.to_dict(), dummy_path)))
                 self.assertEqual(state, reconstructed_state, "\nState: \t\t\t{}\nReconstructed State: \t{}".format(state, reconstructed_state))
 
                 # Advance state
@@ -424,7 +424,7 @@ class TestGridworld(unittest.TestCase):
 
     def test_four_player_mdp(self):
         try:
-            OvercookedGridworld.from_layout_name("multiplayer_schelling")
+            HacktrickGridworld.from_layout_name("multiplayer_schelling")
         except AssertionError as e:
             print("Loading > 2 player map failed with error:", e)
 
@@ -777,9 +777,9 @@ def random_joint_action():
 class TestFeaturizations(unittest.TestCase):
 
     def setUp(self):
-        self.base_mdp = OvercookedGridworld.from_layout_name("cramped_room")
+        self.base_mdp = HacktrickGridworld.from_layout_name("cramped_room")
         self.mlam = MediumLevelActionManager.from_pickle_or_compute(self.base_mdp, NO_COUNTERS_PARAMS, force_compute=True)
-        self.env = OvercookedEnv.from_mdp(self.base_mdp, **DEFAULT_ENV_PARAMS, info_level=0)
+        self.env = HacktrickEnv.from_mdp(self.base_mdp, **DEFAULT_ENV_PARAMS, info_level=0)
         self.greedy_human_model_pair = AgentPair(GreedyHumanModel(self.mlam), GreedyHumanModel(self.mlam))
         np.random.seed(0)
 
@@ -822,15 +822,15 @@ class TestFeaturizations(unittest.TestCase):
             self.assertTrue(np.array_equal(expected_featurization, featurized_observations))
 
 
-class TestOvercookedEnvironment(unittest.TestCase):
+class TestHacktrickEnvironment(unittest.TestCase):
 
-    dummy_dir = 'overcooked_test_temp'
+    dummy_dir = 'hacktrick_test_temp'
 
     def setUp(self):
         if not os.path.exists(self.dummy_dir):
             os.makedirs(self.dummy_dir)
-        self.base_mdp = OvercookedGridworld.from_layout_name("cramped_room")
-        self.env = OvercookedEnv.from_mdp(self.base_mdp, info_level=0, **DEFAULT_ENV_PARAMS)
+        self.base_mdp = HacktrickGridworld.from_layout_name("cramped_room")
+        self.env = HacktrickEnv.from_mdp(self.base_mdp, info_level=0, **DEFAULT_ENV_PARAMS)
         self.rnd_agent_pair = AgentPair(FixedPlanAgent([stay, w, w]), FixedPlanAgent([stay, e, e]))
         np.random.seed(0)
 
@@ -848,12 +848,12 @@ class TestOvercookedEnvironment(unittest.TestCase):
 
     def test_constructor(self):
         try:
-            OvercookedEnv.from_mdp(self.base_mdp, horizon=10, info_level=0)
+            HacktrickEnv.from_mdp(self.base_mdp, horizon=10, info_level=0)
         except Exception as e:
-            self.fail("Failed to instantiate OvercookedEnv:\n{}".format(e))
+            self.fail("Failed to instantiate HacktrickEnv:\n{}".format(e))
 
         with self.assertRaises(TypeError):
-            OvercookedEnv.from_mdp(self.base_mdp, **{"invalid_env_param": None})
+            HacktrickEnv.from_mdp(self.base_mdp, **{"invalid_env_param": None})
 
     def test_step_fn(self):
         for _ in range(10):
@@ -877,8 +877,8 @@ class TestOvercookedEnvironment(unittest.TestCase):
             self.fail("Failed to get rollouts from environment:\n{}".format(e))
 
     def test_one_player_env(self):
-        mdp = OvercookedGridworld.from_layout_name("cramped_room_single")
-        env = OvercookedEnv.from_mdp(mdp, horizon=12, info_level=0)
+        mdp = HacktrickGridworld.from_layout_name("cramped_room_single")
+        env = HacktrickEnv.from_mdp(mdp, horizon=12, info_level=0)
         a0 = FixedPlanAgent([stay, w, w, e, e, n, e, interact, w, n, interact])
         ag = AgentGroup(a0)
         env.run_agents(ag, display=False)
@@ -888,9 +888,9 @@ class TestOvercookedEnvironment(unittest.TestCase):
         )
 
     def test_four_player_env_fixed(self):
-        mdp = OvercookedGridworld.from_layout_name("multiplayer_schelling")
+        mdp = HacktrickGridworld.from_layout_name("multiplayer_schelling")
         assert mdp.num_players == 4
-        env = OvercookedEnv.from_mdp(mdp, horizon=16, info_level=0)
+        env = HacktrickEnv.from_mdp(mdp, horizon=16, info_level=0)
         a0 = FixedPlanAgent([stay, w, w])
         a1 = FixedPlanAgent([stay, stay, e, e, n, n, n, e, interact, n, n, w, w, w, n, interact, e])
         a2 = FixedPlanAgent([stay, w, interact, n, n, e, e, e, n, e, n, interact, w])
@@ -903,9 +903,9 @@ class TestOvercookedEnvironment(unittest.TestCase):
         )
 
     def test_display(self):
-        mdp0 = OvercookedGridworld.from_layout_name("cramped_room")
+        mdp0 = HacktrickGridworld.from_layout_name("cramped_room")
         mdp_fn = lambda _ignored: mdp0
-        env = OvercookedEnv(mdp_fn, horizon=20)
+        env = HacktrickEnv(mdp_fn, horizon=20)
         env.get_rollouts(self.rnd_agent_pair, 1, display=True, info=False, dir=self.dummy_dir)
 
         expected_display_file = os.path.join(TESTING_DATA_DIR, 'test_display', 'expected.txt')
@@ -916,9 +916,9 @@ class TestOvercookedEnvironment(unittest.TestCase):
         self._assert_files_equal(expected_display_file, actual_display_file)
 
     def test_display_phi(self):
-        mdp0 = OvercookedGridworld.from_layout_name("cramped_room")
+        mdp0 = HacktrickGridworld.from_layout_name("cramped_room")
         mdp_fn = lambda _ignored: mdp0
-        env = OvercookedEnv(mdp_fn, horizon=20)
+        env = HacktrickEnv(mdp_fn, horizon=20)
         env.get_rollouts(self.rnd_agent_pair, 1, display=True, display_phi=True, info=False, dir=self.dummy_dir)
 
         expected_display_file = os.path.join(TESTING_DATA_DIR, 'test_display_phi', 'expected.txt')
@@ -929,18 +929,18 @@ class TestOvercookedEnvironment(unittest.TestCase):
         self._assert_files_equal(expected_display_file, actual_display_file)
 
     def test_multiple_mdp_env(self):
-        mdp0 = OvercookedGridworld.from_layout_name("cramped_room")
-        mdp1 = OvercookedGridworld.from_layout_name("counter_circuit")
+        mdp0 = HacktrickGridworld.from_layout_name("cramped_room")
+        mdp1 = HacktrickGridworld.from_layout_name("counter_circuit")
         mdp_fn = lambda _ignored: np.random.choice([mdp0, mdp1])
         
         # Default env
-        env = OvercookedEnv(mdp_fn, horizon=100)
+        env = HacktrickEnv(mdp_fn, horizon=100)
         env.get_rollouts(self.rnd_agent_pair, 5, info=False)
 
     def test_starting_position_randomization(self):
-        self.base_mdp = OvercookedGridworld.from_layout_name("cramped_room")
+        self.base_mdp = HacktrickGridworld.from_layout_name("cramped_room")
         start_state_fn = self.base_mdp.get_random_start_state_fn(random_start_pos=True, rnd_obj_prob_thresh=0.0)
-        env = OvercookedEnv.from_mdp(self.base_mdp, start_state_fn, info_level=0)
+        env = HacktrickEnv.from_mdp(self.base_mdp, start_state_fn, info_level=0)
         start_state = env.state.players_pos_and_or
         for _ in range(3):
             env.reset()
@@ -948,9 +948,9 @@ class TestOvercookedEnvironment(unittest.TestCase):
             self.assertFalse(np.array_equal(start_state, curr_terrain))
 
     def test_starting_obj_randomization(self):
-        self.base_mdp = OvercookedGridworld.from_layout_name("cramped_room")
+        self.base_mdp = HacktrickGridworld.from_layout_name("cramped_room")
         start_state_fn = self.base_mdp.get_random_start_state_fn(random_start_pos=False, rnd_obj_prob_thresh=0.8)
-        env = OvercookedEnv.from_mdp(self.base_mdp, start_state_fn, info_level=0)
+        env = HacktrickEnv.from_mdp(self.base_mdp, start_state_fn, info_level=0)
         start_state = env.state.all_objects_list
         for _ in range(3):
             env.reset()
@@ -961,7 +961,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
         with self.assertRaises(TypeError):
             mdp_gen_params = {"None": None}
             mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(**mdp_gen_params)
-            OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+            HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
 
     def test_random_layout(self):
         mdp_gen_params = {"inner_shape": (5, 4),
@@ -975,7 +975,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
                             "display": False
                           }
         mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params, outer_shape=(5, 4))
-        env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+        env = HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         start_terrain = env.mdp.terrain_mtx
 
         for _ in range(3):
@@ -985,7 +985,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
 
         mdp_gen_params = {"layout_name": 'cramped_room'}
         mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params)
-        env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+        env = HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         
         layouts_seen = []
         for _ in range(5):
@@ -997,7 +997,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
 
         mdp_gen_params = {"layout_name": 'asymmetric_advantages'}
         mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params)
-        env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+        env = HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         for _ in range(5):
             layouts_seen.append(env.mdp.terrain_mtx)
             env.reset()
@@ -1022,7 +1022,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
                                 { "ingredients" : ["projector", "projector", "projector"]}
                             ]}
             mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params, outer_shape=(6, 5))
-            env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+            env = HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
             for _ in range(10):
                 env.reset()
                 curr_terrain = env.mdp.terrain_mtx
@@ -1042,7 +1042,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
                         "inner_shape": (6, 5),
                         "display": False}
         mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params, outer_shape=(6, 5))
-        env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+        env = HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         for _ in range(10):
             env.reset()
             self.assertCountEqual(env.mdp.start_all_orders, only_projectors_dict_recipes)
@@ -1057,7 +1057,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
                         "inner_shape": (6, 5),
                         "display": False}
         mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params, outer_shape=(6,5))
-        env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+        env = HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         for _ in range(10):
             env.reset()
             self.assertCountEqual(env.mdp.start_all_orders, only_projectors_dict_recipes)
@@ -1073,7 +1073,7 @@ class TestOvercookedEnvironment(unittest.TestCase):
                         "feature_types": [CONSTRUCTION_SITE, CONTAINER_DISPENSER, SERVING_LOC, ONION_DISPENSER, TOMATO_DISPENSER]
                         }
         mdp_fn = LayoutGenerator.mdp_gen_fn_from_dict(mdp_gen_params, outer_shape=(6,5))
-        env = OvercookedEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
+        env = HacktrickEnv(mdp_fn, **DEFAULT_ENV_PARAMS)
         generated_recipes_strings = set()
         for _ in range(20):
             env.reset()
@@ -1084,8 +1084,8 @@ class TestOvercookedEnvironment(unittest.TestCase):
 class TestGymEnvironment(unittest.TestCase):
 
     def setUp(self):
-        self.base_mdp = OvercookedGridworld.from_layout_name("cramped_room")
-        self.env = OvercookedEnv.from_mdp(self.base_mdp, **DEFAULT_ENV_PARAMS)
+        self.base_mdp = HacktrickGridworld.from_layout_name("cramped_room")
+        self.env = HacktrickEnv.from_mdp(self.base_mdp, **DEFAULT_ENV_PARAMS)
         self.rnd_agent_pair = AgentPair(FixedPlanAgent([]), FixedPlanAgent([]))
         np.random.seed(0)
 
@@ -1094,9 +1094,9 @@ class TestGymEnvironment(unittest.TestCase):
 class TestTrajectories(unittest.TestCase):
 
     def setUp(self):
-        self.base_mdp = OvercookedGridworld.from_layout_name("cramped_room")
+        self.base_mdp = HacktrickGridworld.from_layout_name("cramped_room")
         self.mlam = MediumLevelActionManager.from_pickle_or_compute(self.base_mdp, NO_COUNTERS_PARAMS, force_compute=True)
-        self.env = OvercookedEnv.from_mdp(self.base_mdp, **DEFAULT_ENV_PARAMS, info_level=0)
+        self.env = HacktrickEnv.from_mdp(self.base_mdp, **DEFAULT_ENV_PARAMS, info_level=0)
         self.greedy_human_model_pair = AgentPair(GreedyHumanModel(self.mlam), GreedyHumanModel(self.mlam))
         np.random.seed(0)
 

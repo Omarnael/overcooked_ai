@@ -1,15 +1,15 @@
 ## Installation
 
-- `cd overcooked_ai/`
+- `cd hacktrick_ai/`
 - `pip install -e .`
 
 ## Code Structure Overview
 
-`overcooked_ai_py` contains:
+`hacktrick_ai_py` contains:
 
 `mdp/`:
-- `overcooked_mdp.py`: main Overcooked game logic
-- `overcooked_env.py`: environment classes built on top of the Overcooked mdp
+- `hacktrick_mdp.py`: main Hacktrick game logic
+- `hacktrick_env.py`: environment classes built on top of the Hacktrick mdp
 - `layout_generator.py`: functions to generate random layouts programmatically
 
 `agents/`:

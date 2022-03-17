@@ -1,12 +1,12 @@
 import unittest
 import numpy as np
 
-from overcooked_ai_py.agents.agent import AgentPair, FixedPlanAgent, GreedyHumanModel, RandomAgent, SampleAgent
-from overcooked_ai_py.mdp.actions import Direction, Action
-from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, OvercookedState, PlayerState, ObjectState
-from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv
-from overcooked_ai_py.planning.planners import MediumLevelActionManager, NO_COUNTERS_PARAMS
-from overcooked_ai_py.agents.benchmarking import AgentEvaluator
+from hacktrick_ai_py.agents.agent import AgentPair, FixedPlanAgent, GreedyHumanModel, RandomAgent, SampleAgent
+from hacktrick_ai_py.mdp.actions import Direction, Action
+from hacktrick_ai_py.mdp.hacktrick_mdp import HacktrickGridworld, HacktrickState, PlayerState, ObjectState
+from hacktrick_ai_py.mdp.hacktrick_env import HacktrickEnv
+from hacktrick_ai_py.planning.planners import MediumLevelActionManager, NO_COUNTERS_PARAMS
+from hacktrick_ai_py.agents.benchmarking import AgentEvaluator
 
 np.random.seed(42)
 
@@ -19,8 +19,8 @@ force_compute_large = False
 force_compute = True
 DISPLAY = False
 
-simple_mdp = OvercookedGridworld.from_layout_name('cramped_room')
-large_mdp = OvercookedGridworld.from_layout_name('corridor')
+simple_mdp = HacktrickGridworld.from_layout_name('cramped_room')
+large_mdp = HacktrickGridworld.from_layout_name('corridor')
 
 
 class TestAgentEvaluator(unittest.TestCase):
@@ -59,25 +59,25 @@ class TestBasicAgents(unittest.TestCase):
         a0 = FixedPlanAgent([s, e, n, w])
         a1 = FixedPlanAgent([s, w, n, e])
         agent_pair = AgentPair(a0, a1)
-        env = OvercookedEnv.from_mdp(large_mdp, horizon=10)
+        env = HacktrickEnv.from_mdp(large_mdp, horizon=10)
         trajectory, time_taken, _, _ = env.run_agents(agent_pair, include_final_state=True, display=DISPLAY)
         end_state = trajectory[-1][0]
         self.assertEqual(time_taken, 10)
         self.assertEqual(env.mdp.get_standard_start_state().player_positions, end_state.player_positions)
 
     def test_two_greedy_human_open_map(self):
-        scenario_2_mdp = OvercookedGridworld.from_layout_name('scenario2')
+        scenario_2_mdp = HacktrickGridworld.from_layout_name('scenario2')
         mlam = MediumLevelActionManager.from_pickle_or_compute(scenario_2_mdp, NO_COUNTERS_PARAMS, force_compute=force_compute)
         a0 = GreedyHumanModel(mlam)
         a1 = GreedyHumanModel(mlam)
         agent_pair = AgentPair(a0, a1)
-        start_state = OvercookedState(
+        start_state = HacktrickState(
             [P((8, 1), s),
              P((1, 1), s)],
             {},
             all_orders=scenario_2_mdp.start_all_orders
         )
-        env = OvercookedEnv.from_mdp(scenario_2_mdp, start_state_fn=lambda: start_state, horizon=100)
+        env = HacktrickEnv.from_mdp(scenario_2_mdp, start_state_fn=lambda: start_state, horizon=100)
         trajectory, time_taken, _, _ = env.run_agents(agent_pair, include_final_state=True, display=DISPLAY)
 
     def test_sample_agent(self):
@@ -94,14 +94,14 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
 
     def test_from_mdp(self):
         for layout_name in self.layout_name_lst:
-            orignal_mdp = OvercookedGridworld.from_layout_name(layout_name)
+            orignal_mdp = HacktrickGridworld.from_layout_name(layout_name)
             ae = AgentEvaluator.from_mdp(mdp=orignal_mdp, env_params={"horizon": 400})
             ae_mdp = ae.env.mdp
             self.assertEqual(orignal_mdp, ae_mdp, "mdp with name " + layout_name + " experienced an inconsistency")
 
     def test_from_mdp_params_layout(self):
         for layout_name in self.layout_name_lst:
-            orignal_mdp = OvercookedGridworld.from_layout_name(layout_name)
+            orignal_mdp = HacktrickGridworld.from_layout_name(layout_name)
             ae = AgentEvaluator.from_layout_name(mdp_params={"layout_name": layout_name}, env_params={"horizon": 400})
             ae_mdp = ae.env.mdp
             self.assertEqual(orignal_mdp, ae_mdp, "mdp with name " + layout_name + " experienced an inconsistency")
@@ -212,7 +212,7 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
     num_reset = 200000
 
     def test_from_mdp_lst_default(self):
-        mdp_lst = [OvercookedGridworld.from_layout_name(name) for name in self.layout_name_short_lst]
+        mdp_lst = [HacktrickGridworld.from_layout_name(name) for name in self.layout_name_short_lst]
         ae = AgentEvaluator.from_mdp_lst(mdp_lst=mdp_lst, env_params={"horizon": 400})
         counts = {}
 
@@ -227,7 +227,7 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
             self.assertAlmostEqual(0.2, v/self.num_reset, 2, "more than 2 places off for " + k)
 
     def test_from_mdp_lst_uniform(self):
-        mdp_lst = [OvercookedGridworld.from_layout_name(name) for name in self.layout_name_short_lst]
+        mdp_lst = [HacktrickGridworld.from_layout_name(name) for name in self.layout_name_short_lst]
         ae = AgentEvaluator.from_mdp_lst(mdp_lst=mdp_lst, env_params={"horizon": 400}, sampling_freq=[0.2, 0.2, 0.2, 0.2, 0.2])
         counts = {}
 
@@ -242,7 +242,7 @@ class TestAgentEvaluatorStatic(unittest.TestCase):
             self.assertAlmostEqual(0.2, v/self.num_reset, 2, "more than 2 places off for " + k)
 
     def test_from_mdp_lst_biased(self):
-        mdp_lst = [OvercookedGridworld.from_layout_name(name) for name in self.layout_name_short_lst]
+        mdp_lst = [HacktrickGridworld.from_layout_name(name) for name in self.layout_name_short_lst]
         ae = AgentEvaluator.from_mdp_lst(mdp_lst=mdp_lst, env_params={"horizon": 400}, sampling_freq=self.biased)
         counts = {}
 

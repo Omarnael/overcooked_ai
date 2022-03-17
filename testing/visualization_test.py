@@ -1,25 +1,25 @@
 import unittest, os, pygame, copy, json
 import numpy as np
-from overcooked_ai_py.agents.benchmarking import AgentEvaluator
-from overcooked_ai_py.agents.agent import RandomAgent
-from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, OvercookedState
-from overcooked_ai_py.visualization.state_visualizer import StateVisualizer
-from overcooked_ai_py.utils import load_from_json, generate_temporary_file_path
-from overcooked_ai_py.mdp.overcooked_mdp import Recipe
-from overcooked_ai_py.static import TESTING_DATA_DIR
+from hacktrick_ai_py.agents.benchmarking import AgentEvaluator
+from hacktrick_ai_py.agents.agent import RandomAgent
+from hacktrick_ai_py.mdp.hacktrick_mdp import HacktrickGridworld, HacktrickState
+from hacktrick_ai_py.visualization.state_visualizer import StateVisualizer
+from hacktrick_ai_py.utils import load_from_json, generate_temporary_file_path
+from hacktrick_ai_py.mdp.hacktrick_mdp import Recipe
+from hacktrick_ai_py.static import TESTING_DATA_DIR
 
 def get_file_count(directory_path):
     path, dirs, files = next(os.walk(directory_path))
     return len(files)
 
 state_visualizer_dir = os.path.join(TESTING_DATA_DIR, "test_state_visualizer")
-example_img_path = generate_temporary_file_path(prefix="overcooked_visualized_state_", extension=".png")
+example_img_path = generate_temporary_file_path(prefix="hacktrick_visualized_state_", extension=".png")
 
 
 def test_render_state_from_dict(test_dict):
     input_dict = copy.deepcopy(test_dict)
     test_dict = copy.deepcopy(test_dict)
-    test_dict["kwargs"]["state"] = OvercookedState.from_dict(test_dict["kwargs"]["state"])
+    test_dict["kwargs"]["state"] = HacktrickState.from_dict(test_dict["kwargs"]["state"])
     # check only if it raise error or not, for image fidelity render_state check is used
     StateVisualizer(**test_dict["config"]).display_rendered_state(img_path=example_img_path, **test_dict["kwargs"])
 
@@ -125,7 +125,7 @@ class TestStateVisualizer(unittest.TestCase):
         result_img_directory_path = StateVisualizer().display_rendered_trajectory(test_trajectory, action_probs=action_probs, ipython_display=False)
         self.assertEqual(get_file_count(result_img_directory_path), expected_images_num)
 
-        custom_img_directory_path = generate_temporary_file_path(prefix="overcooked_visualized_trajectory", extension="")
+        custom_img_directory_path = generate_temporary_file_path(prefix="hacktrick_visualized_trajectory", extension="")
         self.assertNotEqual(custom_img_directory_path, result_img_directory_path)
         result_img_directory_path = StateVisualizer().display_rendered_trajectory(test_trajectory, img_directory_path=custom_img_directory_path, ipython_display=False)
         self.assertEqual(custom_img_directory_path, result_img_directory_path)

@@ -6,7 +6,7 @@ __pycache__/
 # C extensions
 *.so
 hackit/
-overcooked/
+hacktrick/
 
 # Distribution / packaging
 .Python
@@ -130,8 +130,8 @@ dmypy.json
 .Trashes
 
 # Custom gitignore items:
-/overcooked_ai_py/agents/old/
-/overcooked_ai_py/mdp/old/
+/hacktrick_ai_py/agents/old/
+/hacktrick_ai_py/mdp/old/
 
 # Vscode
 **/.vscode/
