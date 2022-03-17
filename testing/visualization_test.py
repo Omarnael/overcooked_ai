@@ -102,7 +102,7 @@ class TestStateVisualizer(unittest.TestCase):
             test_render_state_from_dict(d)
 
     def test_default_hud_data_from_trajectories(self):
-        traj_path = os.path.join(TESTING_DATA_DIR, 'test_state_visualizer', 'test_trajectory.json') # NOTE: for test purposes reward is added here despite there was no soup delivery in trajectory
+        traj_path = os.path.join(TESTING_DATA_DIR, 'test_state_visualizer', 'test_trajectory.json') # NOTE: for test purposes reward is added here despite there was no solarlab delivery in trajectory
         test_trajectory = AgentEvaluator.load_traj_from_json(traj_path)
         hud_data_path = os.path.join(TESTING_DATA_DIR, 'test_state_visualizer', 'expected_default_hud_data_from_trajectories.json')
         expected_hud_data = load_from_json(hud_data_path)

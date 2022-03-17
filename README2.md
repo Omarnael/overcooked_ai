@@ -17,8 +17,9 @@
 - `benchmarking.py`: sample trajectories of agents (both trained and planners) and load various models
 
 `planning/`:
-- `planners.py`: near-optimal agent planning logic
-- `search.py`: A* search and shortest path logic
+- This directory contains some logic that might help you in implementing a rule-based agent.
+- You are free to disregard this directory and implement your own functions.
+- If you find any functions that make your implementation easier, or even as a guide/starter, feel free to use them. 
 
 ## Agents
 In `hacktrick_agent.py` you will find two base classes `MainAgent()` and `OptionalAgent()`. Implement according to the following cases. 

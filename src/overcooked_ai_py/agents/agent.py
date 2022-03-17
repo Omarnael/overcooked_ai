@@ -249,7 +249,7 @@ class GreedyHumanModel(Agent):
 
     NOTE: MIGHT NOT WORK IN ALL ENVIRONMENTS, for example forced_coordination.layout,
     in which an individual agent cannot complete the task on their own.
-    Will work only in environments where the only order is 3 projector soup.
+    Will work only in environments where the only order is 3 projector solarlab.
     """
 
     def __init__(self, mlam, hl_boltzmann_rational=False, ll_boltzmann_rational=False, hl_temp=1, ll_temp=1,
@@ -385,7 +385,7 @@ class GreedyHumanModel(Agent):
         Motion goals can be thought of instructions of the form:
             [do X] at location [Y]
 
-        In this method, X (e.g. deliver the soup, pick up an projector, etc) is chosen based on
+        In this method, X (e.g. deliver the solarlab, pick up an projector, etc) is chosen based on
         a simple set of greedy heuristics based on the current state.
 
         Effectively, will return a list of all possible locations Y in which the selected
@@ -400,25 +400,25 @@ class GreedyHumanModel(Agent):
 
 
         if not player.has_object():
-            ready_soups = construction_site_states_dict['ready']
-            cooking_soups = construction_site_states_dict['cooking']
+            ready_solarlabs = construction_site_states_dict['ready']
+            cooking_solarlabs = construction_site_states_dict['cooking']
 
-            soup_nearly_ready = len(ready_soups) > 0 or len(cooking_soups) > 0
+            solarlab_nearly_ready = len(ready_solarlabs) > 0 or len(cooking_solarlabs) > 0
             other_has_container = other_player.has_object() and other_player.get_object().name == 'container'
 
-            if soup_nearly_ready and not other_has_container:
+            if solarlab_nearly_ready and not other_has_container:
                 motion_goals = am.pickup_container_actions(counter_objects)
             else:
                 # assert len(state.all_orders) == 1, \
-                #     "The current mid level action manager only support 3-projector-soup order, but got orders" \
+                #     "The current mid level action manager only support 3-projector-solarlab order, but got orders" \
                 #     + str(state.all_orders)
                 next_order = list(state.all_orders)[0]
-                soups_ready_to_cook_key = '{}_items'.format(len(next_order.ingredients))
-                soups_ready_to_cook = construction_site_states_dict[soups_ready_to_cook_key]
-                if soups_ready_to_cook:
+                solarlabs_ready_to_cook_key = '{}_items'.format(len(next_order.ingredients))
+                solarlabs_ready_to_cook = construction_site_states_dict[solarlabs_ready_to_cook_key]
+                if solarlabs_ready_to_cook:
                     only_construction_site_states_ready_to_cook = defaultdict(list)
-                    only_construction_site_states_ready_to_cook[soups_ready_to_cook_key] = soups_ready_to_cook
-                    # we want to cook only soups that has same len as order
+                    only_construction_site_states_ready_to_cook[solarlabs_ready_to_cook_key] = solarlabs_ready_to_cook
+                    # we want to cook only solarlabs that has same len as order
                     motion_goals = am.start_cooking_actions(only_construction_site_states_ready_to_cook)
                 elif 'projector' in next_order:
                     motion_goals = am.pickup_projector_actions(counter_objects)
@@ -428,7 +428,7 @@ class GreedyHumanModel(Agent):
                     motion_goals = am.pickup_solar_cell_actions(counter_objects)
                 else:
                     motion_goals = am.pickup_projector_actions(counter_objects) + am.pickup_laptop_actions(counter_objects) + am.pickup_solar_cell_actions(counter_objects)
-                # it does not make sense to have laptop logic when the only possible order is 3 projector soup (see assertion above)
+                # it does not make sense to have laptop logic when the only possible order is 3 projector solarlab (see assertion above)
                 # elif 'projector' in next_order:
                 #     motion_goals = am.pickup_projector_actions(counter_objects)
                 # elif 'laptop' in next_order:
@@ -450,10 +450,10 @@ class GreedyHumanModel(Agent):
                 motion_goals = am.put_solar_cell_in_construction_site_actions(construction_site_states_dict)
 
             elif player_obj.name == 'container':
-                motion_goals = am.pickup_soup_with_container_actions(construction_site_states_dict, only_nearly_ready=True)
+                motion_goals = am.pickup_solarlab_with_container_actions(construction_site_states_dict, only_nearly_ready=True)
 
-            elif player_obj.name == 'soup':
-                motion_goals = am.deliver_soup_actions()
+            elif player_obj.name == 'solarlab':
+                motion_goals = am.deliver_solarlab_actions()
 
             else:
                 raise ValueError()

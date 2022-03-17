@@ -75,11 +75,11 @@ class MultiFramePygameImage:
     @staticmethod
     def load_frames_rectangles(json_path):
         frames_json = load_from_json(json_path)
-        if "textures" in frames_json.keys(): # check if its format of soups.json
+        if "textures" in frames_json.keys(): # check if its format of solarlabs.json
             assert frames_json["textures"][0]["scale"] == 1 # not implemented support for scale here
             frames = frames_json["textures"][0]["frames"]
 
-        else: # assume its format of objects.json, terrain.json and chefs.json
+        else: # assume its format of objects.json, terrain.json and robots.json
             frames = []
             for filename, frame_dict in frames_json["frames"].items():
                 frame_dict["filename"] = filename

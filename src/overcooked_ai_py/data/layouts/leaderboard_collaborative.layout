@@ -9,7 +9,7 @@
                 
     "start_bonus_orders": [],
     "start_all_orders" : [
-        { "ingredients" : ["laptop", "laptop", "laptop"]},
+        { "ingredients" : ["solar_cell", "solar_cell", "solar_cell"]},
 
 
     ],

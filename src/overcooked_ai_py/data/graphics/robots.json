@@ -160,7 +160,7 @@
 				"h": 15
 			}
 		},
-		"EAST-soup-projector.png": {
+		"EAST-solarlab-projector.png": {
 			"frame": {
 				"x": 35,
 				"y": 17,
@@ -180,7 +180,7 @@
 				"h": 15
 			}
 		},
-		"EAST-soup-laptop.png": {
+		"EAST-solarlab-laptop.png": {
 			"frame": {
 				"x": 52,
 				"y": 17,
@@ -380,7 +380,7 @@
 				"h": 15
 			}
 		},
-		"NORTH-soup-projector.png": {
+		"NORTH-solarlab-projector.png": {
 			"frame": {
 				"x": 18,
 				"y": 51,
@@ -400,7 +400,7 @@
 				"h": 15
 			}
 		},
-		"NORTH-soup-laptop.png": {
+		"NORTH-solarlab-laptop.png": {
 			"frame": {
 				"x": 35,
 				"y": 51,
@@ -600,7 +600,7 @@
 				"h": 15
 			}
 		},
-		"SOUTH-soup-projector.png": {
+		"SOUTH-solarlab-projector.png": {
 			"frame": {
 				"x": 1,
 				"y": 85,
@@ -620,7 +620,7 @@
 				"h": 15
 			}
 		},
-		"SOUTH-soup-laptop.png": {
+		"SOUTH-solarlab-laptop.png": {
 			"frame": {
 				"x": 18,
 				"y": 85,
@@ -820,7 +820,7 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-projector.png": {
+		"WEST-solarlab-projector.png": {
 			"frame": {
 				"x": 103,
 				"y": 85,
@@ -840,7 +840,7 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-laptop.png": {
+		"WEST-solarlab-laptop.png": {
 			"frame": {
 				"x": 1,
 				"y": 102,
@@ -960,7 +960,7 @@
 				"h": 15
 			}
 		},
-		"SOUTH-soup-solar_cell.png": {
+		"SOUTH-solarlab-solar_cell.png": {
 			"frame": {
 				"x": 1,
 				"y": 85,
@@ -980,7 +980,7 @@
 				"h": 15
 			}
 		},
-		"WEST-soup-solar_cell.png": {
+		"WEST-solarlab-solar_cell.png": {
 			"frame": {
 				"x": 103,
 				"y": 85,
@@ -1000,7 +1000,7 @@
 				"h": 15
 			}
 		},
-		"EAST-soup-solar_cell.png": {
+		"EAST-solarlab-solar_cell.png": {
 			"frame": {
 				"x": 35,
 				"y": 17,
@@ -1020,7 +1020,7 @@
 				"h": 15
 			}
 		},
-		"NORTH-soup-solar_cell.png": {
+		"NORTH-solarlab-solar_cell.png": {
 			"frame": {
 				"x": 52,
 				"y": 51,

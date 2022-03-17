@@ -3,7 +3,7 @@ import json, copy
 import numpy as np
 from math import factorial
 from overcooked_ai_py.mdp.actions import Action, Direction
-from overcooked_ai_py.mdp.overcooked_mdp import PlayerState, OvercookedGridworld, OvercookedState, ObjectState, SoupState, Recipe
+from overcooked_ai_py.mdp.overcooked_mdp import PlayerState, OvercookedGridworld, OvercookedState, ObjectState, SolarlabState, Recipe
 from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv, DEFAULT_ENV_PARAMS
 from overcooked_ai_py.mdp.overcooked_trajectory import append_trajectories, DEFAULT_TRAJ_KEYS, TIMESTEP_TRAJ_KEYS, EPISODE_TRAJ_KEYS
 from overcooked_ai_py.mdp.layout_generator import LayoutGenerator, ONION_DISPENSER, TOMATO_DISPENSER, CONSTRUCTION_SITE, CONTAINER_DISPENSER, SERVING_LOC
@@ -128,14 +128,14 @@ class TestRecipe(unittest.TestCase):
     def _expected_num_recipes(self, num_ingredients, max_len):
         return comb(num_ingredients + max_len, num_ingredients) - 1
 
-class TestSoupState(unittest.TestCase):
+class TestSolarlabState(unittest.TestCase):
     
     def setUp(self):
         Recipe.configure({})
-        self.s1 = SoupState.get_soup((0, 0), num_projectors=0, num_laptops=0)
-        self.s2 = SoupState.get_soup((0, 1), num_projectors=2, num_laptops=1)
-        self.s3 = SoupState.get_soup((1, 1), num_projectors=1, num_laptops=0, cooking_tick=1)
-        self.s4 = SoupState.get_soup((1, 0), num_projectors=0, num_laptops=2, finished=True)
+        self.s1 = SolarlabState.get_solarlab((0, 0), num_projectors=0, num_laptops=0)
+        self.s2 = SolarlabState.get_solarlab((0, 1), num_projectors=2, num_laptops=1)
+        self.s3 = SolarlabState.get_solarlab((1, 1), num_projectors=1, num_laptops=0, cooking_tick=1)
+        self.s4 = SolarlabState.get_solarlab((1, 0), num_projectors=0, num_laptops=2, finished=True)
 
     def test_position(self):
         new_pos = (2, 0)
@@ -217,34 +217,34 @@ class TestSoupState(unittest.TestCase):
 
     def test_invalid_ops(self):
         
-        # Cannot cook an empty soup
+        # Cannot cook an empty solarlab
         self.assertRaises(ValueError, self.s1.begin_cooking)
 
-        # Must call 'begin_cooking' before cooking a soup
+        # Must call 'begin_cooking' before cooking a solarlab
         self.assertRaises(ValueError, self.s2.cook)
 
-        # Cannot cook a done soup
+        # Cannot cook a done solarlab
         self.assertRaises(ValueError, self.s4.cook)
 
-        # Cannot begin cooking a soup that is already cooking
+        # Cannot begin cooking a solarlab that is already cooking
         self.assertRaises(ValueError, self.s3.begin_cooking)
 
-        # Cannot begin cooking a soup that is already done
+        # Cannot begin cooking a solarlab that is already done
         self.assertRaises(ValueError, self.s4.begin_cooking)
 
-        # Cannot add ingredients to a soup that is cooking
+        # Cannot add ingredients to a solarlab that is cooking
         self.assertRaises(ValueError, self.s3.add_ingredient_from_str, Recipe.ONION)
 
-        # Cannot add ingredients to a soup that is ready
+        # Cannot add ingredients to a solarlab that is ready
         self.assertRaises(ValueError, self.s4.add_ingredient_from_str, Recipe.ONION)
 
-        # Cannot remove an ingredient from a soup that is ready
+        # Cannot remove an ingredient from a solarlab that is ready
         self.assertRaises(ValueError, self.s4.pop_ingredient)
 
-        # Cannot remove an ingredient from a soup that is cooking
+        # Cannot remove an ingredient from a solarlab that is cooking
         self.assertRaises(ValueError, self.s3.pop_ingredient)
 
-        # Cannot remove an ingredient from a soup that is empty
+        # Cannot remove an ingredient from a solarlab that is empty
         self.assertRaises(ValueError, self.s1.pop_ingredient)
 
 
@@ -565,7 +565,7 @@ class TestGridworld(unittest.TestCase):
         self.assertLessEqual(val9, val8, "Extraneous pickup should not increase potential")
         self.assertLessEqual(val10, val8, "Extraneous pickup should not increase potential")
 
-        ## Catastrophic soup failure ##
+        ## Catastrophic solarlab failure ##
         
         # construction_site laptop
         if self.verbose:
@@ -580,7 +580,7 @@ class TestGridworld(unittest.TestCase):
 
         self.assertLess(val11, val10, "Catastrophic construction_siteting should decrease potential")
 
-        ## Bonus soup creation
+        ## Bonus solarlab creation
 
         # pick up projector
         if self.verbose:
@@ -604,9 +604,9 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val13 = self.base_mdp.potential_function(state, mp)
 
-        # Cook soup
+        # Cook solarlab
         if self.verbose:
-            print("cook soup")
+            print("cook solarlab")
         actions = [Action.INTERACT, Direction.WEST]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -617,9 +617,9 @@ class TestGridworld(unittest.TestCase):
 
         self.assertLess(val11, val12, "Useful projector pickup should increase potential")
         self.assertLess(val12, val13, "Potting useful projector should increase potential")
-        self.assertLess(val13, val14, "Cooking optimal soup should increase potential")
+        self.assertLess(val13, val14, "Cooking optimal solarlab should increase potential")
 
-        ## Soup pickup ##
+        ## Solarlab pickup ##
 
         # Pick up container
         if self.verbose:
@@ -643,9 +643,9 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val16 = self.base_mdp.potential_function(state, mp)
 
-        # Pickup soup
+        # Pickup solarlab
         if self.verbose:
-            print("pickup soup")
+            print("pickup solarlab")
         state, _ = self.base_mdp.get_state_transition(state, [Action.STAY, Action.INTERACT])
         if self.verbose:
             print(self.base_mdp.state_string(state))
@@ -653,14 +653,14 @@ class TestGridworld(unittest.TestCase):
         val17 = self.base_mdp.potential_function(state, mp)
 
         self.assertLess(val14, val15, "Useful container pickups should increase potential")
-        self.assertLess(val15, val16, "Moving towards soup with container should increase potential")
-        self.assertLess(val16, val17, "Picking up soup should increase potential")
+        self.assertLess(val15, val16, "Moving towards solarlab with container should increase potential")
+        self.assertLess(val16, val17, "Picking up solarlab should increase potential")
 
-        ## Removing failed soup from construction_site
+        ## Removing failed solarlab from construction_site
 
-        # move towards failed soup
+        # move towards failed solarlab
         if self.verbose:
-            print("move torwards failed soup")
+            print("move torwards failed solarlab")
         actions = [Direction.SOUTH, Direction.EAST, Direction.SOUTH]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -669,7 +669,7 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val18 = self.base_mdp.potential_function(state, mp)
 
-        # Cook failed soup
+        # Cook failed solarlab
         actions = [Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -689,9 +689,9 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val20 = self.base_mdp.potential_function(state, mp)
 
-        # Move towards soup
+        # Move towards solarlab
         if self.verbose:
-            print("move towards soup")
+            print("move towards solarlab")
         actions = [Direction.EAST, Direction.SOUTH]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -700,14 +700,14 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val21 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val17, val18, "Moving towards failed soup should increase potential")
-        self.assertLess(val18, val19, "Cooking failed soup should increase potential")
-        self.assertLess(val19, val20, "Dish pickup for failed soup is still useful")
+        self.assertLess(val17, val18, "Moving towards failed solarlab should increase potential")
+        self.assertLess(val18, val19, "Cooking failed solarlab should increase potential")
+        self.assertLess(val19, val20, "Dish pickup for failed solarlab is still useful")
         self.assertLess(val20, val21, "Moving towars pertinant construction_site with container should increase potential")
 
-        ## Deliver failed soup ##
+        ## Deliver failed solarlab ##
 
-        # Pickup failed soup
+        # Pickup failed solarlab
         actions = [Action.INTERACT]
         for action in actions:
             state, _ = self.base_mdp.get_state_transition(state, [action, Action.STAY])
@@ -736,11 +736,11 @@ class TestGridworld(unittest.TestCase):
             print("potential: ", self.base_mdp.potential_function(state, mp))
         val24 = self.base_mdp.potential_function(state, mp)
 
-        self.assertLess(val21, val22, "Picking up failed soup should increase potential")
-        self.assertAlmostEqual(val23, val22, delta=0.2, msg="Moving to serve failed soup doesn't change potential much")
-        self.assertAlmostEqual(val23, val24, delta=0.2, msg="Moving away from serving area with failed soup doesn't change much")
+        self.assertLess(val21, val22, "Picking up failed solarlab should increase potential")
+        self.assertAlmostEqual(val23, val22, delta=0.2, msg="Moving to serve failed solarlab doesn't change potential much")
+        self.assertAlmostEqual(val23, val24, delta=0.2, msg="Moving away from serving area with failed solarlab doesn't change much")
 
-        ## Deliver successful soup ##
+        ## Deliver successful solarlab ##
 
         # Move towards serving area
         if self.verbose:
@@ -753,16 +753,16 @@ class TestGridworld(unittest.TestCase):
                 print("potential: ", self.base_mdp.potential_function(state, mp))
         val25 = self.base_mdp.potential_function(state, mp)
 
-        # Deliver soup
+        # Deliver solarlab
         if self.verbose:
-            print("deliver successful soup")
+            print("deliver successful solarlab")
         state, rewards = self.base_mdp.get_state_transition(state, [Action.STAY, Action.INTERACT])
         if self.verbose:
             print(self.base_mdp.state_string(state))
             print("potential: ", self.base_mdp.potential_function(state, mp))
 
-        self.assertLess(val24, val25, "Moving towards serving area with valid soup increases potential")
-        self.assertEqual(sum(rewards['sparse_reward_by_agent']), 50, "Soup was not properly devivered, probably an error with MDP logic")
+        self.assertLess(val24, val25, "Moving towards serving area with valid solarlab increases potential")
+        self.assertEqual(sum(rewards['sparse_reward_by_agent']), 50, "Solarlab was not properly devivered, probably an error with MDP logic")
 
 
 

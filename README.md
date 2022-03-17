@@ -12,7 +12,7 @@
 
 Overcooked-AI is a benchmark environment for fully cooperative human-AI task performance, based on the wildly popular video game [Overcooked](http://www.ghosttowngames.com/overcooked/).
 
-The goal of the game is to deliver soups as fast as possible. Each soup requires placing up to 3 ingredients in a construction_site, waiting for the soup to cook, and then having an agent pick up the soup and delivering it. The agents should split up tasks on the fly and coordinate effectively in order to achieve high reward.
+The goal of the game is to deliver solarlabs as fast as possible. Each solarlab requires placing up to 3 ingredients in a construction_site, waiting for the solarlab to cook, and then having an agent pick up the solarlab and delivering it. The agents should split up tasks on the fly and coordinate effectively in order to achieve high reward.
 
 You can **try out the game [here](https://humancompatibleai.github.io/overcooked-demo/)** (playing with some previously trained DRL agents). To play with your own trained agents using this interface, you can use [this repo](https://github.com/HumanCompatibleAI/overcooked-demo). To run human-AI experiments, check out [this repo](https://github.com/HumanCompatibleAI/overcooked-hAI-exp). You can find some human-human and human-AI gameplay data already collected [here](https://github.com/HumanCompatibleAI/human_aware_rl/tree/master/human_aware_rl/static/human_data).
 

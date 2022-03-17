@@ -1,7 +1,7 @@
 import unittest
 from overcooked_ai_py.planning.planners import MediumLevelActionManager
 from overcooked_ai_py.mdp.actions import Direction, Action
-from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, PlayerState, ObjectState, SoupState, OvercookedState
+from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, PlayerState, ObjectState, SolarlabState, OvercookedState
 from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv
 from overcooked_ai_py.agents.benchmarking import AgentEvaluator
 from overcooked_ai_py.agents.agent import AgentPair, GreedyHumanModel
@@ -78,23 +78,23 @@ if large_mdp_tests:
     # hlp = HighLevelPlanner(hlam)
 
 
-def done_soup_obj(soup_loc, num_projector_inside=3):
-    return soup_obj(soup_loc, num_projector_inside, 20)
+def done_solarlab_obj(solarlab_loc, num_projector_inside=3):
+    return solarlab_obj(solarlab_loc, num_projector_inside, 20)
 
 
-def idle_soup_obj(soup_loc, num_projector_inside):
-    return soup_obj(soup_loc, num_projector_inside, -1)
+def idle_solarlab_obj(solarlab_loc, num_projector_inside):
+    return solarlab_obj(solarlab_loc, num_projector_inside, -1)
 
 
-def cooking_soup_obj(soup_loc, num_projector_inside=3, cooking_tick=0):
+def cooking_solarlab_obj(solarlab_loc, num_projector_inside=3, cooking_tick=0):
     assert cooking_tick >= 0
     assert num_projector_inside >= 0
-    return soup_obj(soup_loc, num_projector_inside, cooking_tick)
+    return solarlab_obj(solarlab_loc, num_projector_inside, cooking_tick)
 
 
-def soup_obj(soup_loc, num_projector_inside, cooking_tick):
-    ingredient_obj_lst = [Obj('projector', soup_loc)] * num_projector_inside
-    return SoupState(soup_loc, ingredient_obj_lst, cooking_tick)
+def solarlab_obj(solarlab_loc, num_projector_inside, cooking_tick):
+    ingredient_obj_lst = [Obj('projector', solarlab_loc)] * num_projector_inside
+    return SolarlabState(solarlab_loc, ingredient_obj_lst, cooking_tick)
 
 
 class TestMotionPlanner(unittest.TestCase):
@@ -349,18 +349,18 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         print("Simple - no start orientations (& shared motion goals)")
         mlam = ml_action_manager_simple
         self.simple_mpd_empty_hands(mlam)
-        self.simple_mdp_deliver_soup(mlam)
-        self.simple_mdp_pickup_counter_soup(mlam)
+        self.simple_mdp_deliver_solarlab(mlam)
+        self.simple_mdp_pickup_counter_solarlab(mlam)
         self.simple_mdp_pickup_counter_container(mlam)
         self.simple_mdp_pickup_counter_projector(mlam)
-        self.simple_mdp_drop_useless_container_with_soup_idle(mlam)
-        self.simple_mdp_pickup_soup(mlam)
+        self.simple_mdp_drop_useless_container_with_solarlab_idle(mlam)
+        self.simple_mdp_pickup_solarlab(mlam)
         self.simple_mdp_pickup_container(mlam)
-        self.simple_mdp_start_good_soup_cooking(mlam)
-        self.simple_mdp_start_bad_soup_cooking(mlam)
-        self.simple_mdp_start_1_projector_soup_cooking(mlam)
-        self.simple_mdp_drop_useless_projector_good_soup(mlam)
-        self.simple_mdp_drop_useless_projector_bad_soup(mlam)
+        self.simple_mdp_start_good_solarlab_cooking(mlam)
+        self.simple_mdp_start_bad_solarlab_cooking(mlam)
+        self.simple_mdp_start_1_projector_solarlab_cooking(mlam)
+        self.simple_mdp_drop_useless_projector_good_solarlab(mlam)
+        self.simple_mdp_drop_useless_projector_bad_solarlab(mlam)
         self.simple_mdp_add_3rd_projector(mlam)
         self.simple_mdp_add_2nd_projector(mlam)
         self.simple_mdp_drop_useless_container(mlam)
@@ -369,18 +369,18 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         print("Simple - with start orientations (no shared motion goals)")
         mlam = or_ml_action_manager_simple
         self.simple_mpd_empty_hands(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_deliver_soup(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_pickup_counter_soup(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_deliver_solarlab(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_pickup_counter_solarlab(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_counter_container(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_counter_projector(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_drop_useless_container_with_soup_idle(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_pickup_soup(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_drop_useless_container_with_solarlab_idle(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_pickup_solarlab(mlam, counter_drop_forbidden=True)
         self.simple_mdp_pickup_container(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_start_good_soup_cooking(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_start_bad_soup_cooking(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_start_1_projector_soup_cooking(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_drop_useless_projector_good_soup(mlam, counter_drop_forbidden=True)
-        self.simple_mdp_drop_useless_projector_bad_soup(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_start_good_solarlab_cooking(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_start_bad_solarlab_cooking(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_start_1_projector_solarlab_cooking(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_drop_useless_projector_good_solarlab(mlam, counter_drop_forbidden=True)
+        self.simple_mdp_drop_useless_projector_bad_solarlab(mlam, counter_drop_forbidden=True)
         self.simple_mdp_add_3rd_projector(mlam, counter_drop_forbidden=True)
         self.simple_mdp_add_2nd_projector(mlam, counter_drop_forbidden=True)
         self.simple_mdp_drop_useless_container(mlam, counter_drop_forbidden=True)
@@ -390,7 +390,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
     COUNTER_DROP = ((1, 1), (0, -1))
     COUNTER_PICKUP = ((1, 2), (-1, 0))
     CONSTRUCTION_SITE_INTERACT = ((2, 1), (00, -1))
-    SOUP_DELIVER = ((3, 2), (0, 1))
+    SOLARLAB_DELIVER = ((3, 2), (0, 1))
 
     def simple_mpd_empty_hands(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
@@ -403,29 +403,29 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP]
                                      )
 
-    def simple_mdp_deliver_soup(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_deliver_solarlab(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
-             P((2, 1), n, done_soup_obj((2, 1)))],
+             P((2, 1), n, done_solarlab_obj((2, 1)))],
             {},
             all_orders=simple_mdp.start_all_orders)
 
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
                                          [self.ONION_PICKUP, self.CONTAINER_PICKUP],
-                                         [self.SOUP_DELIVER]
+                                         [self.SOLARLAB_DELIVER]
                                          )
         else:
             self.check_ml_action_manager(s, planner,
                                          [self.ONION_PICKUP, self.CONTAINER_PICKUP],
-                                         [self.COUNTER_DROP, self.SOUP_DELIVER]
+                                         [self.COUNTER_DROP, self.SOLARLAB_DELIVER]
                                          )
 
-    def simple_mdp_pickup_counter_soup(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_pickup_counter_solarlab(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
-            {(0, 2): done_soup_obj((0, 2))},
+            {(0, 2): done_solarlab_obj((0, 2))},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP],
@@ -454,11 +454,11 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.COUNTER_PICKUP]
                                      )
 
-    def simple_mdp_drop_useless_container_with_soup_idle(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_drop_useless_container_with_solarlab_idle(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n, Obj('container', (2, 1)))],
-            {(2, 0): idle_soup_obj((2, 0), 3)},
+            {(2, 0): idle_solarlab_obj((2, 0), 3)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
@@ -471,11 +471,11 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          [self.COUNTER_DROP]
                                          )
 
-    def simple_mdp_pickup_soup(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_pickup_solarlab(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n, Obj('container', (2, 1)))],
-            {(2, 0): done_soup_obj((2, 0))},
+            {(2, 0): done_solarlab_obj((2, 0))},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
@@ -492,51 +492,51 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
-            {(2, 0): done_soup_obj((2, 0))},
+            {(2, 0): done_solarlab_obj((2, 0))},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP],
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP]
                                      )
 
-    def simple_mdp_start_good_soup_cooking(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_start_good_solarlab_cooking(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
-            {(2, 0): idle_soup_obj((2, 0), 3)},
+            {(2, 0): idle_solarlab_obj((2, 0), 3)},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT]
                                      )
 
-    def simple_mdp_start_bad_soup_cooking(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_start_bad_solarlab_cooking(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
-            {(2, 0): idle_soup_obj((2, 0), 2)},
+            {(2, 0): idle_solarlab_obj((2, 0), 2)},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT]
                                      )
 
-    def simple_mdp_start_1_projector_soup_cooking(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_start_1_projector_solarlab_cooking(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n)],
-            {(2, 0): idle_soup_obj((2, 0), 1)},
+            {(2, 0): idle_solarlab_obj((2, 0), 1)},
             all_orders=simple_mdp.start_all_orders)
         self.check_ml_action_manager(s, planner,
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT],
                                      [self.ONION_PICKUP, self.CONTAINER_PICKUP, self.CONSTRUCTION_SITE_INTERACT]
                                      )
 
-    def simple_mdp_drop_useless_projector_good_soup(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_drop_useless_projector_good_solarlab(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
-            {(2, 0): done_soup_obj((2, 0))},
+            {(2, 0): done_solarlab_obj((2, 0))},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
@@ -549,11 +549,11 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
                                          [self.COUNTER_DROP]
                                          )
 
-    def simple_mdp_drop_useless_projector_bad_soup(self, planner, counter_drop_forbidden=False):
+    def simple_mdp_drop_useless_projector_bad_solarlab(self, planner, counter_drop_forbidden=False):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
-            {(2, 0): done_soup_obj((2, 0), 2)},
+            {(2, 0): done_solarlab_obj((2, 0), 2)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
@@ -570,7 +570,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
-            {(2, 0): idle_soup_obj((2, 0), 2)},
+            {(2, 0): idle_solarlab_obj((2, 0), 2)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
@@ -587,7 +587,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n, Obj('projector', (2, 1)))],
-            {(2, 0): idle_soup_obj((2, 0), 1)},
+            {(2, 0): idle_solarlab_obj((2, 0), 1)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,
@@ -604,7 +604,7 @@ class TestMediumLevelActionManagerSimple(unittest.TestCase):
         s = OvercookedState(
             [P((2, 2), n),
              P((2, 1), n, Obj('container', (2, 1)))],
-            {(2, 0): idle_soup_obj((2, 0), 1)},
+            {(2, 0): idle_solarlab_obj((2, 0), 1)},
             all_orders=simple_mdp.start_all_orders)
         if counter_drop_forbidden:
             self.check_ml_action_manager(s, planner,

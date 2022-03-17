@@ -14,8 +14,8 @@ class StateVisualizer:
     TERRAINS_IMG = MultiFramePygameImage(os.path.join(GRAPHICS_DIR, 'terrain.png'), os.path.join(GRAPHICS_DIR, 'terrain.json'))
     #TERRAINS_IMG_2 = MultiFramePygameImage(os.path.join(GRAPHICS_DIR, 'terrain_2.png'), os.path.join(GRAPHICS_DIR, 'terrain_2.json'))
     OBJECTS_IMG = MultiFramePygameImage(os.path.join(GRAPHICS_DIR, 'objects.png'), os.path.join(GRAPHICS_DIR, 'objects.json'))
-    SOUPS_IMG = MultiFramePygameImage(os.path.join(GRAPHICS_DIR, 'soups.png'), os.path.join(GRAPHICS_DIR, 'soups.json'))
-    CHEFS_IMG = MultiFramePygameImage(os.path.join(GRAPHICS_DIR, 'chefs.png'), os.path.join(GRAPHICS_DIR, 'chefs.json'))
+    SOLARLABS_IMG = MultiFramePygameImage(os.path.join(GRAPHICS_DIR, 'solarlabs.png'), os.path.join(GRAPHICS_DIR, 'solarlabs.json'))
+    ROBOTS_IMG = MultiFramePygameImage(os.path.join(GRAPHICS_DIR, 'robots.png'), os.path.join(GRAPHICS_DIR, 'robots.json'))
     ARROW_IMG = pygame.image.load(os.path.join(GRAPHICS_DIR, 'arrow.png'))
     INTERACT_IMG = pygame.image.load(os.path.join(GRAPHICS_DIR, 'interact.png'))
     STAY_IMG = pygame.image.load(os.path.join(GRAPHICS_DIR, 'stay.png'))
@@ -266,7 +266,7 @@ class StateVisualizer:
         return (self.tile_size * x, self.tile_size * y)
 
     def _render_players(self, surface, players):
-        def chef_frame_name(direction_name, held_object_name):
+        def robot_frame_name(direction_name, held_object_name):
             frame_name = direction_name
             if held_object_name:
                 frame_name += "-" + held_object_name
@@ -283,55 +283,55 @@ class StateVisualizer:
             if held_obj is None:
                 held_object_name = ""
             else:
-                if held_obj.name == "soup":
+                if held_obj.name == "solarlab":
                     if "projector" in held_obj.ingredients:
-                        held_object_name = "soup-projector"
+                        held_object_name = "solarlab-projector"
                     elif "solar_cell" in held_obj.ingredients:
-                        held_object_name = "soup-solar_cell"
+                        held_object_name = "solarlab-solar_cell"
                     else:
-                        held_object_name = "soup-laptop"
+                        held_object_name = "solarlab-laptop"
                 else:
                     held_object_name = held_obj.name
 
-            self.CHEFS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(player.position), chef_frame_name(direction_name, held_object_name))
-            self.CHEFS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(player.position), hat_frame_name(direction_name, player_color_name))
+            self.ROBOTS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(player.position), robot_frame_name(direction_name, held_object_name))
+            self.ROBOTS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(player.position), hat_frame_name(direction_name, player_color_name))
 
     @staticmethod
-    def _soup_frame_name(ingredients_names, status):
+    def _solarlab_frame_name(ingredients_names, status):
             num_projectors = ingredients_names.count("projector")
             num_laptops = ingredients_names.count("laptop")
             num_solar_cells = ingredients_names.count("solar_cell")
             if status == 'cooked':
-                return "soup_cooked_laptop_3_projector_0"
+                return "solarlab_cooked_laptop_3_projector_0"
             elif status == 'idle':
-                return "soup_idle_laptop_3_projector_0"
+                return "solarlab_idle_laptop_3_projector_0"
             else:
-                return "soup_done_laptop_3_projector_0"
-            #return "soup_%s_laptop_%i_projector_%i_solar_cell_%i" %(status, num_laptops, num_projectors, num_solar_cells)
+                return "solarlab_done_laptop_3_projector_0"
+            #return "solarlab_%s_laptop_%i_projector_%i_solar_cell_%i" %(status, num_laptops, num_projectors, num_solar_cells)
 
     def _render_objects(self, surface, objects, grid):
-        def render_soup(surface, obj, grid):
+        def render_solarlab(surface, obj, grid):
             (x_pos, y_pos) = obj.position
             if grid[y_pos][x_pos] == CONSTRUCTION_SITE:
                 if obj.is_ready:
-                    soup_status = "cooked"
+                    solarlab_status = "cooked"
                 else:
-                    soup_status = "idle"
+                    solarlab_status = "idle"
             else: # grid[x][y] != CONSTRUCTION_SITE
-                soup_status = "done"
-            frame_name = StateVisualizer._soup_frame_name(obj.ingredients, soup_status)
-            self.SOUPS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(obj.position), frame_name)
+                solarlab_status = "done"
+            frame_name = StateVisualizer._solarlab_frame_name(obj.ingredients, solarlab_status)
+            self.SOLARLABS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(obj.position), frame_name)
 
         for obj in objects.values():
-            if obj.name == "soup":
-                render_soup(surface, obj, grid)
+            if obj.name == "solarlab":
+                render_solarlab(surface, obj, grid)
             else:
                 self.OBJECTS_IMG.blit_on_surface(surface, self._position_in_unscaled_pixels(obj.position), obj.name)            
 
     def _render_cooking_timers(self, surface, objects, grid):
         for key, obj in objects.items():
             (x_pos, y_pos) = obj.position
-            if obj.name == "soup" and grid[y_pos][x_pos] == CONSTRUCTION_SITE:
+            if obj.name == "solarlab" and grid[y_pos][x_pos] == CONSTRUCTION_SITE:
                 if obj._cooking_tick != -1 and (obj._cooking_tick <= obj.cook_time or self.show_timer_when_cooked):
                     text_surface = self.cooking_timer_font.render(str(obj._cooking_tick), True, self.cooking_timer_font_color)
                     (tile_pos_x, tile_pos_y) = self._position_in_scaled_pixels(obj.position)
@@ -373,10 +373,10 @@ class StateVisualizer:
             recipes_surface.fill(self.background_color)
             next_surface_x = 0
             for order_dict in orders_dicts:
-                frame_name = StateVisualizer._soup_frame_name(order_dict["ingredients"], "done")
+                frame_name = StateVisualizer._solarlab_frame_name(order_dict["ingredients"], "done")
                 unscaled_order_surface = pygame.surface.Surface(unscaled_order_size)
                 unscaled_order_surface.fill(self.background_color)
-                self.SOUPS_IMG.blit_on_surface(unscaled_order_surface, (0,0), frame_name)
+                self.SOLARLABS_IMG.blit_on_surface(unscaled_order_surface, (0,0), frame_name)
                 if scaled_order_size == unscaled_order_size:
                     scaled_order_surface = unscaled_order_surface 
                 else:

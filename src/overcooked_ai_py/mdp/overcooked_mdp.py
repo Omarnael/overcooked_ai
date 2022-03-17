@@ -338,36 +338,36 @@ class ObjectState(object):
         return ObjectState(**obj_dict)
 
 
-class SoupState(ObjectState):
+class SolarlabState(ObjectState):
 
     def __init__(self, position, ingredients=[], cooking_tick=-1, cook_time=None, **kwargs):
         """
-        Represents a soup object. An object becomes a soup the instant it is placed in a construction_site. The
-        soup's recipe is a list of ingredient names used to create it. A soup's recipe is undetermined
+        Represents a solarlab object. An object becomes a solarlab the instant it is placed in a construction_site. The
+        solarlab's recipe is a list of ingredient names used to create it. A solarlab's recipe is undetermined
         until it has begun cooking. 
 
         position (tupe): (x, y) coordinates in the grid
-        ingrdients (list(ObjectState)): Objects that have been used to cook this soup. Determiens @property recipe
-        cooking (int): How long the soup has been cooking for. -1 means cooking hasn't started yet
-        cook_time(int): How long soup needs to be cooked, used only mostly for getting soup from dict with supplied cook_time, if None self.recipe.time is used
+        ingrdients (list(ObjectState)): Objects that have been used to cook this solarlab. Determiens @property recipe
+        cooking (int): How long the solarlab has been cooking for. -1 means cooking hasn't started yet
+        cook_time(int): How long solarlab needs to be cooked, used only mostly for getting solarlab from dict with supplied cook_time, if None self.recipe.time is used
         """
-        super(SoupState, self).__init__("soup", position)
+        super(SolarlabState, self).__init__("solarlab", position)
         self._ingredients = ingredients
         self._cooking_tick = cooking_tick
         self._recipe = None
         self._cook_time = cook_time
 
     def __eq__(self, other):
-        return isinstance(other, SoupState) and self.name == other.name and self.position == other.position and self._cooking_tick == other._cooking_tick and \
+        return isinstance(other, SolarlabState) and self.name == other.name and self.position == other.position and self._cooking_tick == other._cooking_tick and \
             all([this_i == other_i for this_i, other_i in zip(self._ingredients, other._ingredients)])
 
     def __hash__(self):
         ingredient_hash = hash(tuple([hash(i) for i in self._ingredients]))
-        supercls_hash = super(SoupState, self).__hash__()
+        supercls_hash = super(SolarlabState, self).__hash__()
         return hash((supercls_hash, self._cooking_tick, ingredient_hash))
 
     def __repr__(self):
-        supercls_str = super(SoupState, self).__repr__()
+        supercls_str = super(SolarlabState, self).__repr__()
         ingredients_str = self._ingredients.__repr__()
         return "{}\nIngredients:\t{}\nCooking Tick:\t{}".format(supercls_str, ingredients_str, self._cooking_tick)
 
@@ -398,7 +398,7 @@ class SoupState(ObjectState):
     @property
     def recipe(self):
         if self.is_idle:
-            raise ValueError("Recipe is not determined until soup begins cooking")
+            raise ValueError("Recipe is not determined until solarlab begins cooking")
         if not self._recipe:
             self._recipe = Recipe(self.ingredients)
         return self._recipe
@@ -442,7 +442,7 @@ class SoupState(ObjectState):
 
     def auto_finish(self):
         if len(self.ingredients) == 0:
-            raise ValueError("Cannot finish soup with no ingredients")
+            raise ValueError("Cannot finish solarlab with no ingredients")
         self._cooking_tick = 0
         self._cooking_tick = self.cook_time
 
@@ -460,30 +460,30 @@ class SoupState(ObjectState):
 
     def pop_ingredient(self):
         if not self.is_idle:
-            raise ValueError("Cannot remove an ingredient from this soup at this time")
+            raise ValueError("Cannot remove an ingredient from this solarlab at this time")
         if len(self._ingredients) == 0:
             raise ValueError("No ingredient to remove")
         return self._ingredients.pop()
 
     def begin_cooking(self):
         if not self.is_idle:
-            raise ValueError("Cannot begin cooking this soup at this time")
+            raise ValueError("Cannot begin cooking this solarlab at this time")
         if len(self.ingredients) == 0:
-            raise ValueError("Must add at least one ingredient to soup before you can begin cooking")
+            raise ValueError("Must add at least one ingredient to solarlab before you can begin cooking")
         self._cooking_tick = 0
 
     def cook(self):
         if self.is_idle:
             raise ValueError("Must begin cooking before advancing cook tick")
         if self.is_ready:
-            raise ValueError("Cannot cook a soup that is already done")
+            raise ValueError("Cannot cook a solarlab that is already done")
         self._cooking_tick += 1
 
     def deepcopy(self):
-        return SoupState(self.position, [ingredient.deepcopy() for ingredient in self._ingredients], self._cooking_tick)
+        return SolarlabState(self.position, [ingredient.deepcopy() for ingredient in self._ingredients], self._cooking_tick)
     
     def to_dict(self):
-        info_dict = super(SoupState, self).to_dict()
+        info_dict = super(SolarlabState, self).to_dict()
         ingrdients_dict = [ingredient.to_dict() for ingredient in self._ingredients]
         info_dict['_ingredients'] = ingrdients_dict
         info_dict['cooking_tick'] = self._cooking_tick
@@ -500,43 +500,43 @@ class SoupState(ObjectState):
     @classmethod
     def from_dict(cls, obj_dict):
         obj_dict = copy.deepcopy(obj_dict)
-        if obj_dict['name'] != 'soup':
-            return super(SoupState, cls).from_dict(obj_dict)
+        if obj_dict['name'] != 'solarlab':
+            return super(SolarlabState, cls).from_dict(obj_dict)
 
         if 'state' in obj_dict:
-            # Legacy soup representation
+            # Legacy solarlab representation
             ingredient, num_ingredient, time = obj_dict['state']
             cooking_tick = -1 if time == 0 else time
             finished = time >= 20
             if ingredient == Recipe.LAPTOP:
-                return SoupState.get_soup(obj_dict['position'], num_laptops=num_ingredient, cooking_tick=cooking_tick, finished=finished)
+                return SolarlabState.get_solarlab(obj_dict['position'], num_laptops=num_ingredient, cooking_tick=cooking_tick, finished=finished)
             elif ingredient == Recipe.SOLAR_CELL:
-                return SoupState.get_soup(obj_dict['position'], num_solar_cells=num_ingredient, cooking_tick=cooking_tick, finished=finished)
+                return SolarlabState.get_solarlab(obj_dict['position'], num_solar_cells=num_ingredient, cooking_tick=cooking_tick, finished=finished)
             else:
-                return SoupState.get_soup(obj_dict['position'], num_projectors=num_ingredient, cooking_tick=cooking_tick, finished=finished)
+                return SolarlabState.get_solarlab(obj_dict['position'], num_projectors=num_ingredient, cooking_tick=cooking_tick, finished=finished)
 
         ingredients_objs = [ObjectState.from_dict(ing_dict) for ing_dict in obj_dict['_ingredients']]
         obj_dict['ingredients'] = ingredients_objs
         return cls(**obj_dict)
 
     @classmethod
-    def get_soup(cls, position, num_projectors=1, num_laptops=0, num_solar_cells=0, cooking_tick=-1, finished=False, **kwargs):
+    def get_solarlab(cls, position, num_projectors=1, num_laptops=0, num_solar_cells=0, cooking_tick=-1, finished=False, **kwargs):
         if num_projectors < 0 or num_laptops < 0 or num_solar_cells < 0:
             raise ValueError("Number of active ingredients must be positive")
         if num_projectors + num_laptops + num_solar_cells > Recipe.MAX_NUM_INGREDIENTS:
-            raise ValueError("Too many ingredients specified for this soup")
+            raise ValueError("Too many ingredients specified for this solarlab")
         if cooking_tick >= 0 and num_laptops + num_projectors + num_solar_cells == 0:
-            raise ValueError("_cooking_tick must be -1 for empty soup")
+            raise ValueError("_cooking_tick must be -1 for empty solarlab")
         if finished and num_laptops + num_projectors + num_solar_cells == 0:
-            raise ValueError("Empty soup cannot be finished")
+            raise ValueError("Empty solarlab cannot be finished")
         projectors = [ObjectState(Recipe.PROJECTOR, position) for _ in range(num_projectors)]
         laptops = [ObjectState(Recipe.LAPTOP, position) for _ in range(num_laptops)]
         solar_cells = [ObjectState(Recipe.SOLAR_CELL, position) for _ in range(num_solar_cells)] 
         ingredients = projectors + laptops + solar_cells
-        soup = cls(position, ingredients, cooking_tick)
+        solarlab = cls(position, ingredients, cooking_tick)
         if finished:
-            soup.auto_finish()
-        return soup
+            solarlab.auto_finish()
+        return solarlab
         
 
 class PlayerState(object):
@@ -615,7 +615,7 @@ class PlayerState(object):
         player_dict = copy.deepcopy(player_dict)
         held_obj = player_dict.get("held_object", None)
         if held_obj is not None:
-            player_dict["held_object"] = SoupState.from_dict(held_obj)
+            player_dict["held_object"] = SolarlabState.from_dict(held_obj)
         return PlayerState(**player_dict)
 
 
@@ -791,7 +791,7 @@ class OvercookedState(object):
     def from_dict(state_dict):
         state_dict = copy.deepcopy(state_dict)
         state_dict["players"] = [PlayerState.from_dict(p) for p in state_dict["players"]]
-        object_list = [SoupState.from_dict(o) for o in state_dict["objects"]]
+        object_list = [SolarlabState.from_dict(o) for o in state_dict["objects"]]
         state_dict["objects"] = { ob.position : ob for ob in object_list }
         return OvercookedState(**state_dict)
 
@@ -799,10 +799,10 @@ class OvercookedState(object):
 BASE_REW_SHAPING_PARAMS = {
     "PLACEMENT_IN_CONSTRUCTION_SITE_REW": 3,
     "CONTAINER_PICKUP_REWARD": 3,
-    "SOUP_PICKUP_REWARD": 5,
+    "SOLARLAB_PICKUP_REWARD": 5,
     "CONTAINER_DISP_DISTANCE_REW": 0,
     "CONSTRUCTION_SITE_DISTANCE_REW": 0,
-    "SOUP_DISTANCE_REW": 0
+    "SOLARLAB_DISTANCE_REW": 0
 }
 
 EVENT_TYPES = [
@@ -833,10 +833,10 @@ EVENT_TYPES = [
     'container_drop',
     'useful_container_drop',
 
-    # Soup events
-    'soup_pickup',
-    'soup_delivery',
-    'soup_drop',
+    # Solarlab events
+    'solarlab_pickup',
+    'solarlab_delivery',
+    'solarlab_drop',
 
     # Potting events
     'optimal_projector_construction_siteting',
@@ -881,7 +881,7 @@ class OvercookedGridworld(object):
     # INSTANTIATION METHODS #
     #########################
 
-    def __init__(self, terrain, start_player_positions, start_bonus_orders=[], rew_shaping_params=None, layout_name="unnamed_layout", start_all_orders=[], num_items_for_soup=3, order_bonus=2, start_state=None, single=False, **kwargs):
+    def __init__(self, terrain, start_player_positions, start_bonus_orders=[], rew_shaping_params=None, layout_name="unnamed_layout", start_all_orders=[], num_items_for_solarlab=3, order_bonus=2, start_state=None, single=False, **kwargs):
         """
         terrain: a matrix of strings that encode the MDP layout
         layout_name: string identifier of the layout
@@ -889,11 +889,11 @@ class OvercookedGridworld(object):
         start_bonus_orders: List of recipes dicts that are worth a bonus 
         rew_shaping_params: reward given for completion of specific subgoals
         all_orders: List of all available order dicts the players can make, defaults to all possible recipes if empy list provided
-        num_items_for_soup: Maximum number of ingredients that can be placed in a soup
+        num_items_for_solarlab: Maximum number of ingredients that can be placed in a solarlab
         order_bonus: Multiplicative factor for serving a bonus recipe
         start_state: Default start state returned by get_standard_start_state
         """
-        self._configure_recipes(start_all_orders, num_items_for_soup, **kwargs)
+        self._configure_recipes(start_all_orders, num_items_for_solarlab, **kwargs)
         self.start_all_orders = [r.to_dict() for r in Recipe.ALL_RECIPES] if not start_all_orders else start_all_orders
         self.height = len(terrain)
         self.width = len(terrain[0])
@@ -976,9 +976,9 @@ class OvercookedGridworld(object):
 
         return OvercookedGridworld(**mdp_config)
 
-    def _configure_recipes(self, start_all_orders, num_items_for_soup, **kwargs):
+    def _configure_recipes(self, start_all_orders, num_items_for_solarlab, **kwargs):
         self.recipe_config = {
-            "num_items_for_soup" : num_items_for_soup,
+            "num_items_for_solarlab" : num_items_for_solarlab,
             "all_orders" : start_all_orders,
             **kwargs
         }
@@ -1064,7 +1064,7 @@ class OvercookedGridworld(object):
 
             # Arbitrary hard-coding for randomization of objects
             # For each construction_site, add a random amount of projectors and laptops with prob rnd_obj_prob_thresh
-            # Begin the soup cooking with probability rnd_obj_prob_thresh
+            # Begin the solarlab cooking with probability rnd_obj_prob_thresh
             construction_sites = self.get_construction_site_states(start_state)["empty"]
             for construction_site_loc in construction_sites:
                 p = np.random.rand()
@@ -1074,19 +1074,19 @@ class OvercookedGridworld(object):
                     s = int(np.random.randint(low=0, high=4-n))
                     q = np.random.rand()
                     cooking_tick = 0 if q < rnd_obj_prob_thresh else -1
-                    start_state.objects[construction_site_loc] = SoupState.get_soup(construction_site_loc, num_projectors=n, num_laptops=m, num_solar_cells=s, cooking_tick=cooking_tick)
+                    start_state.objects[construction_site_loc] = SolarlabState.get_solarlab(construction_site_loc, num_projectors=n, num_laptops=m, num_solar_cells=s, cooking_tick=cooking_tick)
 
             # For each player, add a random object with prob rnd_obj_prob_thresh
             for player in start_state.players:
                 p = np.random.rand()
                 if p < rnd_obj_prob_thresh:
                     # Different objects have different probabilities
-                    obj = np.random.choice(["container", "projector", "soup"], p=[0.2, 0.6, 0.2])
+                    obj = np.random.choice(["container", "projector", "solarlab"], p=[0.2, 0.6, 0.2])
                     n = int(np.random.randint(low=1, high=4))
                     m = int(np.random.randint(low=0, high=4-n))
-                    if obj == "soup":
+                    if obj == "solarlab":
                         player.set_object(
-                            SoupState.get_soup(player.position, num_projectors=n, num_laptops=m, num_solar_cells=s, finished=True)
+                            SolarlabState.get_solarlab(player.position, num_projectors=n, num_laptops=m, num_solar_cells=s, finished=True)
                         )
                     else:
                         player.set_object(ObjectState(obj, player.position))
@@ -1103,9 +1103,9 @@ class OvercookedGridworld(object):
         Returns the next state, sparse reward and reward shaping.
         Assumes all actions are deterministic.
 
-        NOTE: Sparse reward is given only when soups are delivered, 
+        NOTE: Sparse reward is given only when solarlabs are delivered, 
         shaped reward is given only for completion of subgoals 
-        (not soup deliveries).
+        (not solarlab deliveries).
         """
         events_infos = { event : [False] * self.num_players for event in EVENT_TYPES }
         assert not self.is_terminal(state), "Trying to find successor of a terminal state: {}".format(state)
@@ -1208,51 +1208,51 @@ class OvercookedGridworld(object):
                 player.set_object(obj)
 
             elif terrain_type == 'P' and not player.has_object():
-                # Cooking soup
-                if self.soup_to_be_cooked_at_location(new_state, i_pos):
-                    soup = new_state.get_object(i_pos)
-                    soup.begin_cooking()
+                # Cooking solarlab
+                if self.solarlab_to_be_cooked_at_location(new_state, i_pos):
+                    solarlab = new_state.get_object(i_pos)
+                    solarlab.begin_cooking()
             
             elif terrain_type == 'P' and player.has_object():
 
-                if player.get_object().name == 'container' and self.soup_ready_at_location(new_state, i_pos):
-                    self.log_object_pickup(events_infos, new_state, "soup", construction_site_states, player_idx)
+                if player.get_object().name == 'container' and self.solarlab_ready_at_location(new_state, i_pos):
+                    self.log_object_pickup(events_infos, new_state, "solarlab", construction_site_states, player_idx)
 
-                    # Pick up soup
+                    # Pick up solarlab
                     player.remove_object() # Remove the container
-                    obj = new_state.remove_object(i_pos) # Get soup
+                    obj = new_state.remove_object(i_pos) # Get solarlab
                     player.set_object(obj)
-                    shaped_reward[player_idx] += self.reward_shaping_params["SOUP_PICKUP_REWARD"]
+                    shaped_reward[player_idx] += self.reward_shaping_params["SOLARLAB_PICKUP_REWARD"]
 
                 elif player.get_object().name in Recipe.ALL_INGREDIENTS:
-                    # Adding ingredient to soup
+                    # Adding ingredient to solarlab
 
                     if not new_state.has_object(i_pos):
-                        # Pot was empty, add soup to it
-                        new_state.add_object(SoupState(i_pos, ingredients=[]))
+                        # Pot was empty, add solarlab to it
+                        new_state.add_object(SolarlabState(i_pos, ingredients=[]))
 
                     # Add ingredient if possible
-                    soup = new_state.get_object(i_pos)
-                    if not soup.is_full:
-                        old_soup = soup.deepcopy()
+                    solarlab = new_state.get_object(i_pos)
+                    if not solarlab.is_full:
+                        old_solarlab = solarlab.deepcopy()
                         obj = player.remove_object()
-                        soup.add_ingredient(obj)
+                        solarlab.add_ingredient(obj)
                         shaped_reward[player_idx] += self.reward_shaping_params["PLACEMENT_IN_CONSTRUCTION_SITE_REW"]
 
                         # Log construction_siteting
-                        self.log_object_construction_siteting(events_infos, new_state, old_soup, soup, obj.name, player_idx)
+                        self.log_object_construction_siteting(events_infos, new_state, old_solarlab, solarlab, obj.name, player_idx)
                         if obj.name == Recipe.PROJECTOR:
                             events_infos['construction_siteting_projector'][player_idx] = True
 
             elif terrain_type == 'S' and player.has_object():
                 obj = player.get_object()
-                if obj.name == 'soup':
+                if obj.name == 'solarlab':
 
-                    delivery_rew = self.deliver_soup(new_state, player, obj)
+                    delivery_rew = self.deliver_solarlab(new_state, player, obj)
                     sparse_reward[player_idx] += delivery_rew
 
-                    # Log soup delivery
-                    events_infos['soup_delivery'][player_idx] = True                        
+                    # Log solarlab delivery
+                    events_infos['solarlab_delivery'][player_idx] = True                        
 
         return sparse_reward, shaped_reward
 
@@ -1285,16 +1285,16 @@ class OvercookedGridworld(object):
 
             return gamma**recipe.time * gamma**(construction_site_projector_steps * n_projectors) * gamma**(construction_site_laptop_steps * n_laptops) * gamma**(construction_site_solar_cell_steps * n_solar_cells) * self.get_recipe_value(state, recipe, discounted=False)
 
-    def deliver_soup(self, state, player, soup):
+    def deliver_solarlab(self, state, player, solarlab):
         """
-        Deliver the soup, and get reward if there is no order list
-        or if the type of the delivered soup matches the next order.
+        Deliver the solarlab, and get reward if there is no order list
+        or if the type of the delivered solarlab matches the next order.
         """
-        assert soup.name == 'soup', "Tried to deliver something that wasn't soup"
-        assert soup.is_ready, "Tried to deliever soup that isn't ready"
+        assert solarlab.name == 'solarlab', "Tried to deliver something that wasn't solarlab"
+        assert solarlab.is_ready, "Tried to deliever solarlab that isn't ready"
         player.remove_object()
 
-        return self.get_recipe_value(state, soup.recipe)
+        return self.get_recipe_value(state, solarlab.recipe)
 
     def resolve_movement(self, state, joint_action):
         """Resolve player movement and deal with possible collisions"""
@@ -1329,7 +1329,7 @@ class OvercookedGridworld(object):
     def step_environment_effects(self, state):
         state.timestep += 1
         for obj in state.objects.values():
-            if obj.name == 'soup' and obj.is_cooking:
+            if obj.name == 'solarlab' and obj.is_cooking:
                 obj.cook()
 
     def _handle_collisions(self, old_positions, new_positions):
@@ -1431,9 +1431,9 @@ class OvercookedGridworld(object):
         """Returns dict with structure:
         {
          empty: [positions of empty construction_sites]
-        'x_items': [soup objects with x items that have yet to start cooking],
-        'cooking': [soup objs that are cooking but not ready]
-        'ready': [ready soup objs],
+        'x_items': [solarlab objects with x items that have yet to start cooking],
+        'cooking': [solarlab objs that are cooking but not ready]
+        'ready': [ready solarlab objs],
         }
         NOTE: all returned construction_sites are just construction_site positions
         """
@@ -1442,14 +1442,14 @@ class OvercookedGridworld(object):
             if not state.has_object(construction_site_pos):
                 construction_sites_states_dict['empty'].append(construction_site_pos)
             else:
-                soup = state.get_object(construction_site_pos)
-                assert soup.name == 'soup', "soup at " + construction_site_pos + " is not a soup but a " + soup.name
-                if soup.is_ready:
+                solarlab = state.get_object(construction_site_pos)
+                assert solarlab.name == 'solarlab', "solarlab at " + construction_site_pos + " is not a solarlab but a " + solarlab.name
+                if solarlab.is_ready:
                     construction_sites_states_dict['ready'].append(construction_site_pos)
-                elif soup.is_cooking:
+                elif solarlab.is_cooking:
                     construction_sites_states_dict['cooking'].append(construction_site_pos)
                 else:
-                    num_ingredients = len(soup.ingredients)
+                    num_ingredients = len(solarlab.ingredients)
                     construction_sites_states_dict['{}_items'.format(num_ingredients)].append(construction_site_pos)
 
         return construction_sites_states_dict
@@ -1489,18 +1489,18 @@ class OvercookedGridworld(object):
     def get_partially_full_construction_sites(self, construction_site_states):
         return list(set().union(*[construction_site_states['{}_items'.format(i)] for i in range(1, Recipe.MAX_NUM_INGREDIENTS)]))
 
-    def soup_ready_at_location(self, state, pos):
+    def solarlab_ready_at_location(self, state, pos):
         if not state.has_object(pos):
             return False
         obj = state.get_object(pos)
-        assert obj.name == 'soup', 'Object in construction_site was not soup'
+        assert obj.name == 'solarlab', 'Object in construction_site was not solarlab'
         return obj.is_ready
 
-    def soup_to_be_cooked_at_location(self, state, pos):
+    def solarlab_to_be_cooked_at_location(self, state, pos):
         if not state.has_object(pos):
             return False
         obj = state.get_object(pos)
-        return obj.name == 'soup' and not obj.is_cooking and not obj.is_ready and len(obj.ingredients) > 0
+        return obj.name == 'solarlab' and not obj.is_cooking and not obj.is_ready and len(obj.ingredients) > 0
 
     def _check_valid_state(self, state):
         """Checks that the state is valid.
@@ -1667,7 +1667,7 @@ class OvercookedGridworld(object):
     # EVENT LOGGING HELPER METHODS #
     ################################
 
-    def log_object_construction_siteting(self, events_infos, state, old_soup, new_soup, obj_name, player_index):
+    def log_object_construction_siteting(self, events_infos, state, old_solarlab, new_solarlab, obj_name, player_index):
         """Player added an ingredient to a construction_site"""
         obj_pickup_key = "construction_siteting_" + obj_name
         if obj_pickup_key not in events_infos:
@@ -1682,7 +1682,7 @@ class OvercookedGridworld(object):
         }
 
         for outcome, outcome_fn in CONSTRUCTION_SITETING_FNS.items():
-            if outcome_fn(state, old_soup, new_soup):
+            if outcome_fn(state, old_solarlab, new_solarlab):
                 construction_siteting_key = "{}_{}_construction_siteting".format(outcome, obj_name)
                 events_infos[construction_siteting_key][player_index] = True
 
@@ -1728,7 +1728,7 @@ class OvercookedGridworld(object):
         NOTE: this only works if self.num_players == 2
         Useful if:
         - Pot is ready/cooking and there is no player with a container               \ 
-        - 2 construction_sites are ready/cooking and there is one player with a container          | -> number of containers in players hands < number of ready/cooking/partially full soups 
+        - 2 construction_sites are ready/cooking and there is one player with a container          | -> number of containers in players hands < number of ready/cooking/partially full solarlabs 
         - Partially full construction_site is ok if the other player is on course to fill it  /
 
         We also want to prevent picking up and dropping containers, so add the condition
@@ -1782,39 +1782,39 @@ class OvercookedGridworld(object):
         other_player_holding_container = other_player.has_object() and other_player.get_object().name == "container"
         return all_construction_sites_full and not other_player_holding_container
 
-    def is_construction_siteting_optimal(self, state, old_soup, new_soup):
+    def is_construction_siteting_optimal(self, state, old_solarlab, new_solarlab):
         """
-        True if the highest valued soup possible is the same before and after the construction_siteting
+        True if the highest valued solarlab possible is the same before and after the construction_siteting
         """
-        old_recipe = Recipe(old_soup.ingredients) if old_soup.ingredients else None
-        new_recipe = Recipe(new_soup.ingredients)
+        old_recipe = Recipe(old_solarlab.ingredients) if old_solarlab.ingredients else None
+        new_recipe = Recipe(new_solarlab.ingredients)
         old_val = self.get_recipe_value(state, self.get_optimal_possible_recipe(state, old_recipe))
         new_val = self.get_recipe_value(state, self.get_optimal_possible_recipe(state, new_recipe))
         return old_val == new_val
 
-    def is_construction_siteting_viable(self, state, old_soup, new_soup):
+    def is_construction_siteting_viable(self, state, old_solarlab, new_solarlab):
         """
-        True if there exists a non-zero reward soup possible from new ingredients
+        True if there exists a non-zero reward solarlab possible from new ingredients
         """
-        new_recipe = Recipe(new_soup.ingredients)
+        new_recipe = Recipe(new_solarlab.ingredients)
         new_val = self.get_recipe_value(state, self.get_optimal_possible_recipe(state, new_recipe))
         return new_val > 0
 
-    def is_construction_siteting_catastrophic(self, state, old_soup, new_soup):
+    def is_construction_siteting_catastrophic(self, state, old_solarlab, new_solarlab):
         """
-        True if no non-zero reward soup is possible from new ingredients
+        True if no non-zero reward solarlab is possible from new ingredients
         """
-        old_recipe = Recipe(old_soup.ingredients) if old_soup.ingredients else None
-        new_recipe = Recipe(new_soup.ingredients)
+        old_recipe = Recipe(old_solarlab.ingredients) if old_solarlab.ingredients else None
+        new_recipe = Recipe(new_solarlab.ingredients)
         old_val = self.get_recipe_value(state, self.get_optimal_possible_recipe(state, old_recipe))
         new_val = self.get_recipe_value(state, self.get_optimal_possible_recipe(state, new_recipe))
         return old_val > 0 and new_val == 0
 
-    def is_construction_siteting_useless(self, state, old_soup, new_soup):
+    def is_construction_siteting_useless(self, state, old_solarlab, new_solarlab):
         """
-        True if ingredient added to a soup that was already gauranteed to be worth at most 0 points
+        True if ingredient added to a solarlab that was already gauranteed to be worth at most 0 points
         """
-        old_recipe = Recipe(old_soup.ingredients) if old_soup.ingredients else None
+        old_recipe = Recipe(old_solarlab.ingredients) if old_solarlab.ingredients else None
         old_val = self.get_recipe_value(state, self.get_optimal_possible_recipe(state, old_recipe))
         return old_val == 0
 
@@ -1845,7 +1845,7 @@ class OvercookedGridworld(object):
                     if player_object:
                         grid_string_add += str(player_idx_lst[0])
                         if player_object.name[0] == "s":
-                            # this is a soup
+                            # this is a solarlab
                             grid_string_add += str(player_object)
                         else:
                             grid_string_add += player_object.name[:1]
@@ -1861,9 +1861,9 @@ class OvercookedGridworld(object):
                             grid_string_add += state_obj.name[:1]
 
                     elif element == "P" and state.has_object((x, y)):
-                        soup = state.get_object((x, y))
-                        # display soup
-                        grid_string_add += str(soup)
+                        solarlab = state.get_object((x, y))
+                        # display solarlab
+                        grid_string_add += str(solarlab)
 
                 grid_string += grid_string_add
                 grid_string += "".join([" "] * (7 - len(grid_string_add)))
@@ -1899,8 +1899,8 @@ class OvercookedGridworld(object):
         assert type(debug) is bool
         base_map_features = ["construction_site_loc", "counter_loc", "projector_disp_loc", "laptop_disp_loc", "solar_cell_disp_loc",
                              "container_disp_loc", "serve_loc"]
-        variable_map_features = ["projectors_in_construction_site", "laptops_in_construction_site", "projectors_in_soup", "laptops_in_soup", "solar_cells_in_construction_site", "solar_cells_in_soup",
-                                 "soup_cook_time_remaining", "soup_done", "containers", "projectors", "laptops", "solar_cells"]
+        variable_map_features = ["projectors_in_construction_site", "laptops_in_construction_site", "projectors_in_solarlab", "laptops_in_solarlab", "solar_cells_in_construction_site", "solar_cells_in_solarlab",
+                                 "solarlab_cook_time_remaining", "solarlab_done", "containers", "projectors", "laptops", "solar_cells"]
         urgency_features = ["urgency"]
         all_objects = overcooked_state.all_objects_list
 
@@ -1953,32 +1953,32 @@ class OvercookedGridworld(object):
 
             # OBJECT & STATE LAYERS
             for obj in all_objects:
-                if obj.name == "soup":
-                    # removed the next line because projector doesn't have to be in all the soups?
+                if obj.name == "solarlab":
+                    # removed the next line because projector doesn't have to be in all the solarlabs?
                     # if Recipe.PROJECTOR in obj.ingredients:
                     # get the ingredients into a {object: number} dictionary
                     ingredients_dict = Counter(obj.ingredients)
                     # assert "projector" in ingredients_dict.keys()
                     if obj.position in self.get_construction_site_locations():
                         if obj.is_idle:
-                            # projectors_in_construction_site and laptops_in_construction_site are used when the soup is idling, and ingredients could still be added
+                            # projectors_in_construction_site and laptops_in_construction_site are used when the solarlab is idling, and ingredients could still be added
                             state_mask_dict["projectors_in_construction_site"] += make_layer(obj.position, ingredients_dict["projector"])
                             state_mask_dict["laptops_in_construction_site"] += make_layer(obj.position, ingredients_dict["laptop"])
                             state_mask_dict["solar_cells_in_construction_site"] += make_layer(obj.position, ingredients_dict["solar_cell"])
                         else:
-                            state_mask_dict["projectors_in_soup"] += make_layer(obj.position, ingredients_dict["projector"])
-                            state_mask_dict["laptops_in_soup"] += make_layer(obj.position, ingredients_dict["laptop"])
-                            state_mask_dict["solar_cells_in_soup"] += make_layer(obj.position, ingredients_dict["solar_cell"])
-                            state_mask_dict["soup_cook_time_remaining"] += make_layer(obj.position, obj.cook_time - obj._cooking_tick)
+                            state_mask_dict["projectors_in_solarlab"] += make_layer(obj.position, ingredients_dict["projector"])
+                            state_mask_dict["laptops_in_solarlab"] += make_layer(obj.position, ingredients_dict["laptop"])
+                            state_mask_dict["solar_cells_in_solarlab"] += make_layer(obj.position, ingredients_dict["solar_cell"])
+                            state_mask_dict["solarlab_cook_time_remaining"] += make_layer(obj.position, obj.cook_time - obj._cooking_tick)
                             if obj.is_ready:
-                                state_mask_dict["soup_done"] += make_layer(obj.position, 1)
+                                state_mask_dict["solarlab_done"] += make_layer(obj.position, 1)
 
                     else:
-                        # If player soup is not in a construction_site, treat it like a soup that is cooked with remaining time 0
-                        state_mask_dict["projectors_in_soup"] += make_layer(obj.position, ingredients_dict["projector"])
-                        state_mask_dict["laptops_in_soup"] += make_layer(obj.position, ingredients_dict["laptop"])
-                        state_mask_dict["solar_cells_in_soup"] += make_layer(obj.position, ingredients_dict["solar_cell"])
-                        state_mask_dict["soup_done"] += make_layer(obj.position, 1)
+                        # If player solarlab is not in a construction_site, treat it like a solarlab that is cooked with remaining time 0
+                        state_mask_dict["projectors_in_solarlab"] += make_layer(obj.position, ingredients_dict["projector"])
+                        state_mask_dict["laptops_in_solarlab"] += make_layer(obj.position, ingredients_dict["laptop"])
+                        state_mask_dict["solar_cells_in_solarlab"] += make_layer(obj.position, ingredients_dict["solar_cell"])
+                        state_mask_dict["solarlab_done"] += make_layer(obj.position, 1)
 
                 elif obj.name == "container":
                     state_mask_dict["containers"] += make_layer(obj.position, 1)
@@ -2050,13 +2050,13 @@ class OvercookedGridworld(object):
                     pi_orientation: length 4 one-hot-encoding of direction currently facing
                     pi_obj: length 4 one-hot-encoding of object currently being held (all 0s if no object held)
                     pi_wall_{j}: {0, 1} boolean value of whether player i has wall immediately in direction j
-                    pi_closest_{projector|laptop|container|soup|serving|empty_counter}: (dx, dy) where dx = x dist to item, dy = y dist to item. (0, 0) if item is currently held
-                    pi_cloest_soup_n_{projectors|laptops}: int value for number of this ingredient in closest soup
+                    pi_closest_{projector|laptop|container|solarlab|serving|empty_counter}: (dx, dy) where dx = x dist to item, dy = y dist to item. (0, 0) if item is currently held
+                    pi_cloest_solarlab_n_{projectors|laptops}: int value for number of this ingredient in closest solarlab
                     pi_closest_construction_site_{j}_exists: {0, 1} depending on whether jth closest construction_site found. If 0, then all other construction_site features are 0. Note: can
                         be 0 even if there are more than j construction_sites on layout, if the construction_site is not reachable by player i
                     pi_closest_construction_site_{j}_{is_empty|is_full|is_cooking|is_ready}: {0, 1} depending on boolean value for jth closest construction_site
                     pi_closest_construction_site_{j}_{num_projectors|num_laptops}: int value for number of this ingredient in jth closest construction_site
-                    pi_closest_construction_site_{j}_cook_time: int value for seconds remaining on soup. -1 if no soup is cooking
+                    pi_closest_construction_site_{j}_cook_time: int value for seconds remaining on solarlab. -1 if no solarlab is cooking
                     pi_closest_construction_site_{j}: (dx, dy) to jth closest construction_site from player i location
 
                 other_player_features (length (num_players - 1)*(num_construction_sites*10 + 24)):
@@ -2090,14 +2090,14 @@ class OvercookedGridworld(object):
                     obj = overcooked_state.get_object(loc)
                 feat_dict["p{}_closest_{}".format(idx, name)] = deltas
 
-            if name == 'soup':
+            if name == 'solarlab':
                 num_projectors = num_laptops = num_solar_cells = 0
                 if obj:
                     ingredients_cnt = Counter(obj.ingredients)
                     num_projectors, num_laptops = ingredients_cnt['projector'], ingredients_cnt['laptop'], ingredients_cnt['solar_cell']
-                feat_dict["p{}_closest_soup_n_projectors".format(i)] = [num_projectors]
-                feat_dict["p{}_closest_soup_n_laptops".format(i)] = [num_laptops]
-                feat_dict["p{}_closest_soup_n_solar_cells".format(i)] = [num_solar_cells]
+                feat_dict["p{}_closest_solarlab_n_projectors".format(i)] = [num_projectors]
+                feat_dict["p{}_closest_solarlab_n_laptops".format(i)] = [num_laptops]
+                feat_dict["p{}_closest_solarlab_n_solar_cells".format(i)] = [num_solar_cells]
 
             return feat_dict
 
@@ -2129,16 +2129,16 @@ class OvercookedGridworld(object):
             is_cooking = int(construction_site_loc in self.get_cooking_construction_sites(construction_site_states))
             is_ready = int(construction_site_loc in self.get_ready_construction_sites(construction_site_states))
 
-            # Get soup state info
+            # Get solarlab state info
             num_projectors = num_laptops = num_solar_cells = 0
             cook_time_remaining = 0
             if not is_empty:
-                soup = overcooked_state.get_object(construction_site_loc)
-                ingredients_cnt = Counter(soup.ingredients)
+                solarlab = overcooked_state.get_object(construction_site_loc)
+                ingredients_cnt = Counter(solarlab.ingredients)
                 num_projectors, num_laptops, num_solar_cells = ingredients_cnt['projector'], ingredients_cnt['laptop'], ingredients_cnt['solar_cell']
-                cook_time_remaining = 0 if soup.is_idle else soup.cook_time_remaining
+                cook_time_remaining = 0 if solarlab.is_idle else solarlab.cook_time_remaining
             
-            # Encode construction_site and soup info
+            # Encode construction_site and solarlab info
             feat_dict["p{}_closest_construction_site_{}_exists".format(idx, construction_site_idx)] = [1]
             feat_dict["p{}_closest_construction_site_{}_is_empty".format(idx, construction_site_idx)] = [is_empty]
             feat_dict["p{}_closest_construction_site_{}_is_full".format(idx, construction_site_idx)] = [is_full]
@@ -2155,7 +2155,7 @@ class OvercookedGridworld(object):
             
 
 
-        IDX_TO_OBJ = ["projector", "soup", "container", "laptop", "solar_cell"]
+        IDX_TO_OBJ = ["projector", "solarlab", "container", "laptop", "solar_cell"]
         OBJ_TO_IDX = {o_name: idx for idx, o_name in enumerate(IDX_TO_OBJ)}
 
         counter_objects = self.get_counter_objects_dict(overcooked_state)
@@ -2180,7 +2180,7 @@ class OvercookedGridworld(object):
             all_features = concat_dicts(all_features, make_closest_feature(i, player, "laptop", self.get_laptop_dispenser_locations() + counter_objects["laptop"]))
             all_features = concat_dicts(all_features, make_closest_feature(i, player, "solar_cell", self.get_solar_cell_dispenser_locations() + counter_objects["solar_cell"]))
             all_features = concat_dicts(all_features, make_closest_feature(i, player, "container", self.get_container_dispenser_locations() + counter_objects["container"]))
-            all_features = concat_dicts(all_features, make_closest_feature(i, player, "soup", counter_objects["soup"]))
+            all_features = concat_dicts(all_features, make_closest_feature(i, player, "solarlab", counter_objects["solarlab"]))
             all_features = concat_dicts(all_features, make_closest_feature(i, player, "serving", self.get_serving_locations()))
             all_features = concat_dicts(all_features, make_closest_feature(i, player, "empty_counter", self.get_empty_counter_locations(overcooked_state)))
 
@@ -2270,29 +2270,29 @@ class OvercookedGridworld(object):
         we calculate the expected discounted reward under this policy
 
         Some implementation details:
-            * the process of delivering a soup is broken into 4 steps
+            * the process of delivering a solarlab is broken into 4 steps
                 * Step 1: placing the first ingredient into an empty construction_site
                 * Step 2: placing the remaining ingredients in the construction_site
-                * Step 3: cooking the soup/retreiving a container with which to serve the soup
-                * Step 4: delivering the soup once it is in a container
+                * Step 3: cooking the solarlab/retreiving a container with which to serve the solarlab
+                * Step 4: delivering the solarlab once it is in a container
             * Here is an exhaustive list of the greedy assumptions made at each step
                 * step 1:
-                    * If an agent is holding an ingredient that could be used to cook an optimal soup, it will use it in that soup
-                    * If no such optimal soup exists, but there is an empty construction_site, the agent will place the ingredient there
+                    * If an agent is holding an ingredient that could be used to cook an optimal solarlab, it will use it in that solarlab
+                    * If no such optimal solarlab exists, but there is an empty construction_site, the agent will place the ingredient there
                     * If neither of the above cases holds, no potential is awarded for possessing the ingredient
                 * step 2:
-                    * The agent will always try to cook the highest valued soup possible based on the current ingredients in a construction_site
-                    * Any agent possessing a missing ingredient for an optimal soup will travel directly to the closest such construction_site
-                    * If the optimal soup has all ingredients, the closest agent not holding anything will go to cook it
+                    * The agent will always try to cook the highest valued solarlab possible based on the current ingredients in a construction_site
+                    * Any agent possessing a missing ingredient for an optimal solarlab will travel directly to the closest such construction_site
+                    * If the optimal solarlab has all ingredients, the closest agent not holding anything will go to cook it
                 * step 3:
-                    * Any player holding a container attempts to serve the highest valued soup based on recipe values and cook time remaining
+                    * Any player holding a container attempts to serve the highest valued solarlab based on recipe values and cook time remaining
                 * step 4:
-                    * Any agent holding a soup will go directly to the nearest serving area
+                    * Any agent holding a solarlab will go directly to the nearest serving area
             * At every step, the expected reward is discounted by multiplying the optimal reward by gamma ^ (estimated #steps to complete greedy action)
-            * In the case that certain actions are infeasible (i.e. an agent is holding a soup in step 4, but no path exists to a serving
+            * In the case that certain actions are infeasible (i.e. an agent is holding a solarlab in step 4, but no path exists to a serving
               area), estimated number of steps in order to complete the action defaults to `max_steps`
             * Cooperative behavior between the two agents is not considered for complexity reasons
-            * Soups that are worth <1 points are rounded to be worth 1 point. This is to incentivize the agent to cook a worthless soup
+            * Solarlabs that are worth <1 points are rounded to be worth 1 point. This is to incentivize the agent to cook a worthless solarlab
               that happens to be in a construction_site in order to free up the construction_site
 
         Parameters:
@@ -2317,27 +2317,27 @@ class OvercookedGridworld(object):
         }
         construction_site_states = self.get_construction_site_states(state)
 
-        # Base potential value is the geometric sum of making optimal soups infinitely
+        # Base potential value is the geometric sum of making optimal solarlabs infinitely
         opt_recipe, discounted_opt_recipe_value = self.get_optimal_possible_recipe(state, None, discounted=True, potential_params=potential_params, return_value=True)
         opt_recipe_value = self.get_recipe_value(state, opt_recipe)
         discount = discounted_opt_recipe_value / opt_recipe_value
         steady_state_value = (discount / (1 - discount)) * opt_recipe_value
         potential = steady_state_value
 
-        # Get list of all soups that have >0 ingredients, sorted based on value of best possible recipe 
-        idle_soups = [state.get_object(pos) for pos in self.get_full_but_not_cooking_construction_sites(construction_site_states)]
-        idle_soups.extend([state.get_object(pos) for pos in self.get_partially_full_construction_sites(construction_site_states)])
-        idle_soups = sorted(idle_soups, key=lambda soup : self.get_optimal_possible_recipe(state, Recipe(soup.ingredients), discounted=True, potential_params=potential_params, return_value=True)[1], reverse=True)
+        # Get list of all solarlabs that have >0 ingredients, sorted based on value of best possible recipe 
+        idle_solarlabs = [state.get_object(pos) for pos in self.get_full_but_not_cooking_construction_sites(construction_site_states)]
+        idle_solarlabs.extend([state.get_object(pos) for pos in self.get_partially_full_construction_sites(construction_site_states)])
+        idle_solarlabs = sorted(idle_solarlabs, key=lambda solarlab : self.get_optimal_possible_recipe(state, Recipe(solarlab.ingredients), discounted=True, potential_params=potential_params, return_value=True)[1], reverse=True)
 
-        # Build mapping of non_idle soups to the potential value each one will contribue
+        # Build mapping of non_idle solarlabs to the potential value each one will contribue
         # Default potential value is maximimal discount for last two steps applied to optimal recipe value
-        cooking_soups = [state.get_object(pos) for pos in self.get_cooking_construction_sites(construction_site_states)]
-        done_soups = [state.get_object(pos) for pos in self.get_ready_construction_sites(construction_site_states)]
-        non_idle_soup_vals = { soup : gamma**(potential_params['max_delivery_steps'] + max(potential_params['max_pickup_steps'], soup.cook_time - soup._cooking_tick)) * max(self.get_recipe_value(state, soup.recipe), 1) for soup in cooking_soups + done_soups }
+        cooking_solarlabs = [state.get_object(pos) for pos in self.get_cooking_construction_sites(construction_site_states)]
+        done_solarlabs = [state.get_object(pos) for pos in self.get_ready_construction_sites(construction_site_states)]
+        non_idle_solarlab_vals = { solarlab : gamma**(potential_params['max_delivery_steps'] + max(potential_params['max_pickup_steps'], solarlab.cook_time - solarlab._cooking_tick)) * max(self.get_recipe_value(state, solarlab.recipe), 1) for solarlab in cooking_solarlabs + done_solarlabs }
 
         # Get descriptive list of players based on different attributes
         # Note that these lists are mutually exclusive
-        players_holding_soups = [player for player in state.players if player.has_object() and player.get_object().name == 'soup']
+        players_holding_solarlabs = [player for player in state.players if player.has_object() and player.get_object().name == 'solarlab']
         players_holding_containers = [player for player in state.players if player.has_object() and player.get_object().name == 'container']
         players_holding_laptops = [player for player in state.players if player.has_object() and player.get_object().name == Recipe.LAPTOP]
         players_holding_projectors = [player for player in state.players if player.has_object() and player.get_object().name == Recipe.PROJECTOR]
@@ -2346,9 +2346,9 @@ class OvercookedGridworld(object):
 
         ### Step 4 potential ###
 
-        # Add potential for each player with a soup
-        for player in players_holding_soups:
-            # Even if delivery_dist is infinite, we still award potential (as an agent might need to pass the soup to other player first)
+        # Add potential for each player with a solarlab
+        for player in players_holding_solarlabs:
+            # Even if delivery_dist is infinite, we still award potential (as an agent might need to pass the solarlab to other player first)
             delivery_dist = mp.min_cost_to_feature(player.pos_and_or, self.terrain_pos_dict['S'])
             potential += gamma**min(delivery_dist, potential_params['max_delivery_steps']) * max(self.get_recipe_value(state, player.get_object().recipe), 1)
 
@@ -2356,62 +2356,62 @@ class OvercookedGridworld(object):
 
         ### Step 3 potential ###
 
-        # Reweight each non-idle soup value based on agents with containers performing greedily-optimally as outlined in docstring
+        # Reweight each non-idle solarlab value based on agents with containers performing greedily-optimally as outlined in docstring
         for player in players_holding_containers:
-            best_pickup_soup = None
+            best_pickup_solarlab = None
             best_pickup_value = 0
 
-            # find best soup to pick up with container agent currently has
-            for soup in non_idle_soup_vals:
-                # How far away the soup is (inf if not-reachable)
-                pickup_dist = mp.min_cost_to_feature(player.pos_and_or, [soup.position])
+            # find best solarlab to pick up with container agent currently has
+            for solarlab in non_idle_solarlab_vals:
+                # How far away the solarlab is (inf if not-reachable)
+                pickup_dist = mp.min_cost_to_feature(player.pos_and_or, [solarlab.position])
 
                 # mask to award zero score if not reachable
                 # Note: this means that potentially "useful" container pickups (where agent passes container to other agent
-                # that can reach the soup) do not recive a potential bump
+                # that can reach the solarlab) do not recive a potential bump
                 is_useful = int(pickup_dist < np.inf)
 
-                # Always assume worst-case discounting for step 4, and bump zero-valued soups to 1 as mentioned in docstring
-                pickup_soup_value = gamma**potential_params['max_delivery_steps'] * max(self.get_recipe_value(state, soup.recipe), 1)
-                cook_time_remaining = soup.cook_time - soup._cooking_tick
+                # Always assume worst-case discounting for step 4, and bump zero-valued solarlabs to 1 as mentioned in docstring
+                pickup_solarlab_value = gamma**potential_params['max_delivery_steps'] * max(self.get_recipe_value(state, solarlab.recipe), 1)
+                cook_time_remaining = solarlab.cook_time - solarlab._cooking_tick
                 discount = gamma**max(cook_time_remaining, min(pickup_dist, potential_params['max_pickup_steps']))
 
-                # Final discount-adjusted value for this player pursuing this soup
-                pickup_value = discount * pickup_soup_value * is_useful
+                # Final discount-adjusted value for this player pursuing this solarlab
+                pickup_value = discount * pickup_solarlab_value * is_useful
 
-                # Update best soup found for this player
+                # Update best solarlab found for this player
                 if pickup_dist < np.inf and pickup_value > best_pickup_value:
-                    best_pickup_soup = soup
+                    best_pickup_solarlab = solarlab
                     best_pickup_value = pickup_value
             
-            # Set best-case score for this soup. Can only improve upon previous players policies
+            # Set best-case score for this solarlab. Can only improve upon previous players policies
             # Note cooperative policies between players not considered
-            if best_pickup_soup:
-                non_idle_soup_vals[best_pickup_soup] = max(non_idle_soup_vals[best_pickup_soup], best_pickup_value)
+            if best_pickup_solarlab:
+                non_idle_solarlab_vals[best_pickup_solarlab] = max(non_idle_solarlab_vals[best_pickup_solarlab], best_pickup_value)
 
-        # Apply potential for each idle soup as calculated above
-        for soup in non_idle_soup_vals:
-            potential += non_idle_soup_vals[soup]
+        # Apply potential for each idle solarlab as calculated above
+        for solarlab in non_idle_solarlab_vals:
+            potential += non_idle_solarlab_vals[solarlab]
 
 
 
         ### Step 2 potential ###
 
-        # Iterate over idle soups in decreasing order of value so we greedily prioritize higher valued soups
-        for soup in idle_soups:
+        # Iterate over idle solarlabs in decreasing order of value so we greedily prioritize higher valued solarlabs
+        for solarlab in idle_solarlabs:
             # Calculate optimal recipe
-            curr_recipe = Recipe(soup.ingredients)
+            curr_recipe = Recipe(solarlab.ingredients)
             opt_recipe = self.get_optimal_possible_recipe(state, curr_recipe, discounted=True, potential_params=potential_params)
 
             # Calculate missing ingredients needed to complete optimal recipe
             missing_ingredients = list(opt_recipe.ingredients)
-            for ingredient in soup.ingredients:
+            for ingredient in solarlab.ingredients:
                 missing_ingredients.remove(ingredient)
 
             # Base discount for steps 3-4
             discount = gamma**(max(potential_params['max_pickup_steps'], opt_recipe.time) + potential_params['max_delivery_steps'])
 
-            # Add a multiplicative discount for each needed ingredient (this has the effect of giving more award to soups
+            # Add a multiplicative discount for each needed ingredient (this has the effect of giving more award to solarlabs
             # that are closer to being completed)
             for ingredient in missing_ingredients:
                 # Players who might have an ingredient we need
@@ -2428,7 +2428,7 @@ class OvercookedGridworld(object):
 
                 # Find closest player with ingredient we need
                 for player in pertinent_players:
-                    curr_dist = mp.min_cost_to_feature(player.pos_and_or, [soup.position])
+                    curr_dist = mp.min_cost_to_feature(player.pos_and_or, [solarlab.position])
                     if curr_dist < dist:
                         dist = curr_dist
                         closest_player = player
@@ -2440,14 +2440,14 @@ class OvercookedGridworld(object):
                 if closest_player:
                     pertinent_players.remove(closest_player)
 
-            # Update discount to account for time it takes to start the soup cooking once last ingredient is added
+            # Update discount to account for time it takes to start the solarlab cooking once last ingredient is added
             if missing_ingredients:
                 # We assume it only takes one timestep if there are missing ingredients since the agent delivering the last ingredient
                 # will be at the construction_site already
                 discount *= gamma
             else:
-                # Otherwise, we assume that every player holding nothing will make a beeline to this soup since it's already optimal
-                cook_dist = min([mp.min_cost_to_feature(player.pos_and_or, [soup.position]) for player in players_holding_nothing], default=np.inf)
+                # Otherwise, we assume that every player holding nothing will make a beeline to this solarlab since it's already optimal
+                cook_dist = min([mp.min_cost_to_feature(player.pos_and_or, [solarlab.position]) for player in players_holding_nothing], default=np.inf)
                 discount *= gamma**min(cook_dist, potential_params['max_pickup_steps'])
 
             potential += discount * max(self.get_recipe_value(state, opt_recipe), 1)
@@ -2525,7 +2525,7 @@ class OvercookedGridworld(object):
     #             if min_dist_to_d_old > min_dist_to_d_new:
     #                 distance_based_shaped_reward += self.reward_shaping_params["CONTAINER_DISP_DISTANCE_REW"] * (1 - min(min_dist_to_d_new / max_dist, 1))
     #
-    #         if player_new.held_object is not None and player_new.held_object.name == 'soup':
+    #         if player_new.held_object is not None and player_new.held_object.name == 'solarlab':
     #             min_dist_to_s_new = np.inf
     #             min_dist_to_s_old = np.inf
     #             for serving_loc in self.terrain_pos_dict['S']:
@@ -2538,6 +2538,6 @@ class OvercookedGridworld(object):
     #                     min_dist_to_s_old = old_dist
     #
     #             if min_dist_to_s_old > min_dist_to_s_new:
-    #                 distance_based_shaped_reward += self.reward_shaping_params["SOUP_DISTANCE_REW"] * (1 - min(min_dist_to_s_new / max_dist, 1))
+    #                 distance_based_shaped_reward += self.reward_shaping_params["SOLARLAB_DISTANCE_REW"] * (1 - min(min_dist_to_s_new / max_dist, 1))
     #
     #     return distance_based_shaped_reward

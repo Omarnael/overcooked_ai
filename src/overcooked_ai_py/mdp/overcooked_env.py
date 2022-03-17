@@ -189,7 +189,7 @@ class OvercookedEnv(object):
         and providing a reward.
         
         On being done, stats about the episode are added to info:
-            ep_sparse_r: the environment sparse reward, given only at soup delivery
+            ep_sparse_r: the environment sparse reward, given only at solarlab delivery
             ep_shaped_r: the component of the reward that is due to reward shaped (excluding sparse rewards)
             ep_length: length of rollout
         """
@@ -546,7 +546,7 @@ class Overcooked(gym.Env):
         dummy_mdp = self.base_env.mdp
         dummy_state = dummy_mdp.get_standard_start_state()
         obs_shape = self.featurize_fn(dummy_mdp, dummy_state)[0].shape
-        high = np.ones(obs_shape) * max(dummy_mdp.soup_cooking_time, dummy_mdp.num_items_for_soup, 5)
+        high = np.ones(obs_shape) * max(dummy_mdp.solarlab_cooking_time, dummy_mdp.num_items_for_solarlab, 5)
         return gym.spaces.Box(high * 0, high, dtype=np.float32)
 
     def step(self, action):
