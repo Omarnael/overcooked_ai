@@ -294,7 +294,7 @@ class MotionPlanner(object):
         position and orientation to any feature in feature_pos_list and perform an interact action
         """
         start_pos = start_pos_and_or[0]
-        assert self.mdp.get_terrain_type_at_pos(start_pos) != 'X'
+        assert self.mdp.get_terrain_type_at_pos(start_pos) != 'X' or self.mdp.get_terrain_type_at_pos(start_pos) != '2'
         min_dist = np.Inf
         best_feature = None
         for feature_pos in feature_pos_list:
